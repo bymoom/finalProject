@@ -1,0 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<div class="ticket-event-wrap"><div class="ticket-event-img" ><img  style="width:360px; height:450px;" src="<%=request.getContextPath() %>/resources/bootstrap/assets/img/portfolio/cabin.png" alt=""></div><div class="ticket-event-desc"><input id="closePopup" type="checkbox">오늘 하루 보지않기</div></div></div>
+
+
+<script>
+	$('#closePopup').on('click',function(){
+		window.close();
+	});
+</script>

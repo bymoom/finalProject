@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FreeBoard-Mapper">
+
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and free_board.free_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and member.mem_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and free_board.free_contents like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and (
+			free_board.free_title like '%'||#{keyword}||'%'
+			or
+			free_board.free_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'cw'.toString()">
+			and (
+			member.mem_name like '%'||#{keyword}||'%'
+			or
+			free_board.free_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'tcw'.toString()">
+			and (
+			free_board.free_title like '%'||#{keyword}||'%'
+			or
+			member.mem_name like '%'||#{keyword}||'%'
+			or
+			free_board.free_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+	</sql>
+	
+	<select id="selectSearchFreeBoardList" parameterType="cri" resultType="freeBoard">
+		select free_board.*, member.mem_name
+		from free_board, member
+		where free_board.free_num is not null
+		and free_board.mem_num = member.mem_num  			  	
+		<include refid="search" />
+		order by free_num desc
+	</select>
+	
+	<select id="selectSearchFreeBoardListTotalCount" resultType="int">
+		select count(*)
+		from
+			(select free_board.*, member.mem_name
+			from free_board, member
+			where free_board.free_num is not null
+			and free_board.mem_num = member.mem_num  			  	
+			<include refid="search" />)
+	</select>
+	
+	<select id="selectSearchFreeBoardListForEnabled" parameterType="cri" resultType="freeBoard">
+		select free_board.*, member.mem_name
+		from free_board, member
+		where free_board.free_num is not null
+		and free_board.mem_num = member.mem_num
+		and free_board.free_enabled = 1  			  	
+		<include refid="search" />
+		order by free_num desc
+	</select>
+	
+	<select id="selectSearchFreeBoardListForEnabledTotalCount" resultType="int">
+		select count(*)
+		from
+			(select free_board.*, member.mem_name
+			from free_board, member
+			where free_board.free_num is not null
+			and free_board.mem_num = member.mem_num
+			and free_board.free_enabled = 1   			  	
+			<include refid="search" />)
+	</select>
+	
+	<select id="selectFreeBoardList" resultType="freeBoard">
+		select * 
+		from free_board 
+		order by free_num desc		
+	</select>
+	
+	<select id="selectFreeBoardByFreeNum"  resultType="freeBoard">
+		select * 
+		from view_free_board 
+		where free_num = #{free_num}
+	</select>
+
+	<update id="registFreeBoard" parameterType="freeBoard">
+		insert into free_board(free_num, free_title, free_contents, free_like, free_regdate, free_view_cnt, free_enabled, mem_num)
+		values (#{free_num}, #{free_title}, #{free_contents}, 0, sysdate, 0, 1, #{mem_num})
+	</update>
+
+	<update id="modifyFreeBoard" parameterType="freeBoard">
+		update free_board 
+		set free_title = #{free_title}, free_contents = #{free_contents}, free_moddate = sysdate 
+		where free_num = #{free_num}
+	</update>
+
+	<update id="modifyFreeBoardEnabled" parameterType="freeBoard">
+		update free_board
+		set free_enabled = #{free_enabled}
+		where free_num = #{free_num}
+	</update>	
+	
+	<update id="removeFreeBoard" parameterType="int">
+		delete 
+		from free_board 
+		where free_num = #{free_num}
+	</update>
+	
+	<update id="increaseFreeViewCnt" parameterType="int">
+		update free_board 
+		set free_view_cnt = free_view_cnt + 1 
+		where free_num = #{free_num}
+	</update>
+	
+	<update id="increaseFreeLike" parameterType="int">
+		update free_board 
+		set free_like = free_like + 1 
+		where free_num = #{free_num}
+	</update>
+
+	<update id="decreaseFreeLike" parameterType="int">
+		update free_board 
+		set free_like = free_like - 1 
+		where free_num = #{free_num}
+	</update>
+		
+	<select id="selectFreeBoardSeqNext" resultType="int">
+		select seq_free_num.nextval as free_num from dual
+	</select>
+	
+	<select id="selectPreOrNext" parameterType="int" resultType="preOrNextForBoardRequest">
+		select a.*
+		from (
+		    select
+		        free_num,
+		        free_title,
+		        lead(free_num, 1) over (order by free_num desc) as pre_no,
+		        lead(free_title, 1, '이전글이 없습니다') over (order by free_num desc) as pre_title,
+		        lag(free_num, 1) over (order by free_num desc) as next_no,
+		        lag(free_title, 1, '다음글이 없습니다') over (order by free_num desc) as next_title
+		    from free_board
+		    where free_enabled = 1
+		) a
+		where free_num = #{free_num}
+	</select>
+
+	<select id="selectPreOrNextForAdmin" parameterType="int" resultType="preOrNextForBoardRequest">
+		select a.*
+		from (
+		    select
+		        free_num,
+		        free_title,
+		        lead(free_num, 1) over (order by free_num desc) as pre_no,
+		        lead(free_title, 1, '이전글이 없습니다') over (order by free_num desc) as pre_title,
+		        lag(free_num, 1) over (order by free_num desc) as next_no,
+		        lag(free_title, 1, '다음글이 없습니다') over (order by free_num desc) as next_title
+		    from free_board
+		) a
+		where free_num = #{free_num}
+	</select>
+</mapper>

@@ -1,0 +1,108 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    
+<!-- Main content -->
+<section class="content container-fluid">
+	<div class="row justify-content-center">
+		<div class="col-md-9" style="max-width:960px;">
+				<div class="card-header">
+					<h3>팝업 등록</h3>
+					<div class ="card-tools">
+						<button type="button" class="btn btn-outline-success btn-flat" id="registBtn">등 록</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-outline-success btn-flat" id="cancelBtn">취 소</button>
+					</div>
+				</div><!--end card-header  -->
+				<div class="card-body pad">
+					<form role="form" method="post" action="regist" name="registForm" id="registForm" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="p_name">팝업 제목</label> 
+							<input type="text" id="p_name" name='p_name' class="form-control" placeholder="제목을 쓰세요">
+						</div>							
+						<div class="form-group">
+							<label for="p_url">URL</label> 
+							<input type="text" id="p_url" name='p_url' class="form-control" value="https://">
+						</div>							
+						<div class="form-group">
+							<label for="p_top">TOP SIZE</label> 
+							<input type="text" id="p_top" name='p_top' class="form-control" placeholder="위에서 부터의 위치">
+						</div>							
+						<div class="form-group">
+							<label for="p_left">LEFT SIZE</label> 
+							<input type="text" id="p_left" name='p_left' class="form-control" placeholder="왼쪽에서 부터의 위치">
+						</div>
+						<div class="form-group">
+							<label for="p_width">가로 길이</label> 
+							<input type="text" id="p_width" name='p_width' class="form-control" >
+						</div>
+						<div class="form-group">
+							<label for="p_height">세로 길이</label> 
+							<input type="text" id="p_height" name='p_height' class="form-control">
+						</div>
+													
+						<div class="form-group">
+							<label for="p_enddate"><b style="color:red;">종료</b> 날짜</label> 
+							<input type="date" id="p_enddate" name='p_enddate' class="form-control">
+						</div>							
+						
+							<label for="uploadFile">파일 선택</label> 
+							<input type="file" id="uploadFile" name="uploadFile" class="form-control">
+						
+					</form>
+				</div><!--end card-body  -->
+				<div class="card-footer" style="display:none">
+				
+				</div><!--end card-footer  -->
+		</div><!-- end col-md-12 -->
+	</div><!-- end row -->
+</section>
+<!-- /.content -->
+
+
+<script>
+	  $('#registBtn').on('click',function(e){
+		//alert("regist click");
+		
+		var form = $('#registForm');
+		
+		if($('#p_name').val() == ""){
+			alert("제목은 필수입니다.");
+			return;
+		}
+		if($('#p_url').val() == ""){
+			alert("url은 필수입니다.");
+			return;
+		}
+		if($('#p_top').val() == ""){
+			alert("top위치는 필수입니다.");
+			return;
+		}
+		if($('#p_left').val() == ""){
+			alert("left위치는 필수입니다.");
+			return;
+		}
+		if($('#p_width').val() == ""){
+			alert("가로 크기는 필수입니다.");
+			return;
+		}
+		if($('#p_height').val() == ""){
+			alert("가로 크기는 필수입니다.");
+			return;
+		}
+		
+	 	
+		
+
+		form.submit();
+	}); 
+	
+	
+	$('#cancelBtn').on('click', function(e){
+		//alert("cancel btn click");
+		window.opener.location.href='list';
+		window.close();
+	});
+</script>

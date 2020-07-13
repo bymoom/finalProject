@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Pjt_bank_sum_attach-Mapper">
+
+<update id="insertPjtBankSumAttach" parameterType="pjt_bank_sum_attach">
+insert into pjt_bank_sum_attach
+(pjt_atc_num,pjt_atc_bankbook_path,pjt_atc_bankbook_name,pjt_atc_sum_path,
+pjt_atc_sum_name,pjt_num)
+values(seq_pjt_atc_num.nextval,
+#{pjt_atc_bankbook_path},#{pjt_atc_bankbook_name},#{pjt_atc_sum_path},
+#{pjt_atc_sum_name},#{pjt_num})
+</update>
+
+<select id="selectSumNameByPjtNum" parameterType="int" resultType="str">
+select pjt_atc_sum_name
+from pjt_bank_sum_attach
+where pjt_num=#{pjt_num}
+</select>
+
+<select id="selectPjtBankSumAttachByPjtNum" parameterType="int" resultType="pjt_bank_sum_attach">
+select *
+from pjt_bank_sum_attach
+where pjt_num=#{pjt_num}
+</select>
+
+<update id="updatePjtBankSumAttach" parameterType="pjt_bank_sum_attach">
+update pjt_bank_sum_attach set 
+pjt_atc_bankbook_path=#{pjt_atc_bankbook_path},
+pjt_atc_bankbook_name=#{pjt_atc_bankbook_name},
+pjt_atc_sum_path=#{pjt_atc_sum_path},
+pjt_atc_sum_name=#{pjt_atc_sum_name},
+pjt_atc_moddate=sysdate
+where pjt_num=#{pjt_num}
+</update>
+
+</mapper>

@@ -1,0 +1,74 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.Project_ProposeVO;
+import com.funding.dto.Thumb_upVO;
+import com.funding.request.PreOrNextForBoardRequest;
+import com.funding.request.SearchCriteria;
+
+public interface ProjectProposeDAO {
+	
+	List<Project_ProposeVO> proposeList(SearchCriteria cri)throws SQLException;
+	
+	//새로운 시퀀스 번호 조회
+	int selectProposeSeqNext()throws SQLException;
+	
+	// 회원 이름으로 회원번호 조회
+	int selectMemberNum(String mem_name)throws SQLException;
+	
+	//응원하기 갯수 많은것부터 출력
+	List<Project_ProposeVO> selectLikeDesc()throws SQLException;
+	
+	// 글작성
+	void insertPropose(Project_ProposeVO propose)throws SQLException;
+	
+	//글 수정
+	void updatePropose(Project_ProposeVO propose)throws SQLException;
+	
+	//글 삭제
+	void deletePropose(int pjtprp_num)throws SQLException;
+	
+	//비활성화 시키기
+	void disabledPropose(int pjtprp_num)throws SQLException;
+	
+	//활성화 시키기
+	void enabledPropose(int pjtprp_num)throws SQLException;
+	
+	//전체 글 비활성화 시키기
+	void listDisabledPropose(int pjtprp_num)throws SQLException;
+	
+	//글 갯수 조회
+	int proposeListCount(SearchCriteria cri)throws SQLException;
+	
+	//글 활성화 여부 조회
+	int selectEnabled(int pjtprp_num)throws SQLException;
+	
+	//조회수 증가
+	void increaseViewCnt(int pjtprp_num)throws SQLException;
+	
+	//응원하기 카운트 증가
+	void proposeLikePlusCnt(int pjtprp_num)throws SQLException;
+	
+	//응원하기 카운트 감소(응원하기 취소)
+	void proposeLikeMinusCnt(int pjtprp_num)throws SQLException;
+	
+	//응원하기 버튼 클릭상태 확인
+	List<Thumb_upVO> selectLikeClick(int mem_num)throws SQLException;
+	
+	//회원조회
+	Project_ProposeVO selectProposeBy_num(int pjtprp_num)throws SQLException;
+	
+	//오늘 글 작성 했는지 확인
+	Project_ProposeVO checkTodayRegist(int mem_num)throws SQLException;
+	
+	//이전글 클릭
+	Project_ProposeVO proposeByNum(int pjtprp_num)throws SQLException;
+	
+	//프로젝트 등록완료
+	void successPropose(int pjtprp_num)throws SQLException;
+	
+	PreOrNextForBoardRequest preOrNext(int pjtprp_num)throws SQLException;
+	
+}

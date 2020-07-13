@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Thumb_up-Mapper">
+
+	<select id="selectThumbUpForPJTPRP" parameterType="thumbUp" resultType="thumbUp">
+		select *
+		from thumb_up
+		where pjtprp_num = #{pjtprp_num}
+		and mem_num = #{mem_num}
+	</select>
+	
+	<select id="selectThumbUpForPJTPRP_CMTS" parameterType="thumbUp" resultType="thumbUp">
+		select *
+		from thumb_up
+		where pjtprp_cmts_num = #{pjtprp_cmts_num}
+		and mem_num = #{mem_num}
+	</select>
+	
+	<select id="selectThumbUpForFreeBoard" parameterType="thumbUp" resultType="thumbUp">
+		select *
+		from thumb_up
+		where free_num = #{free_num}
+		and mem_num = #{mem_num}
+	</select>
+
+	<select id="selectThumbUpForFreeBoard_CMTS" parameterType="thumbUp" resultType="thumbUp">
+		select *
+		from thumb_up
+		where free_cmts_num = #{free_cmts_num}
+		and mem_num = #{mem_num}
+	</select>
+	
+	<update id="registThumbUpForPJTPRP" parameterType="thumbUp">
+		insert into thumb_up(thumbup_num, pjtprp_num, mem_num)
+		values(seq_thumb_up.nextval, #{pjtprp_num}, #{mem_num})
+	</update>
+	
+	<update id="registThumbUpForPJTPRP_CMTS" parameterType="thumbUp">
+		insert into thumb_up(thumbup_num, pjtprp_cmts_num, mem_num)
+		values(seq_thumb_up.nextval, #{pjtprp_cmts_num}, #{mem_num})
+	</update>
+	
+	<update id="registThumbUpForFreeBoard" parameterType="thumbUp">
+		insert into thumb_up(thumbup_num, free_num, mem_num)
+		values(seq_thumb_up.nextval, #{free_num}, #{mem_num})
+	</update>
+		
+	<update id="registThumbUpForFreeBoard_CMTS" parameterType="thumbUp">
+		insert into thumb_up(thumbup_num, free_cmts_num, mem_num)
+		values(seq_thumb_up.nextval, #{free_cmts_num}, #{mem_num})
+	</update>
+	
+	<update id="removeThumbUp" parameterType="int">
+		delete
+		from thumb_up
+		where thumbup_num = #{thumbup_num}
+	</update>
+	
+</mapper>

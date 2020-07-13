@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- DAO -->
+	<bean id="projectDAO"
+		class="com.funding.dao.project.ProjectDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+		
+	<bean id="memberDAO"
+		class="com.funding.dao.MemberDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+		
+	<bean id="proposeDAO"
+		  class="com.funding.dao.ProjectProposeDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+	
+		
+	<bean id="noticeDAO"
+		  class="com.funding.dao.NoticeDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+
+		
+	<!-- Service -->
+	<bean id="projectService"
+		class="com.funding.service.project.ProjectServiceImpl"
+		p:projectDAO-ref="projectDAO"
+		/>
+		
+	<bean id="memberService"
+		class="com.funding.service.MemberServiceImpl"
+		p:memberDAO-ref="memberDAO"
+		/>
+	
+	<bean id="noticeService"
+		  class="com.funding.service.NoticeServiceImpl"
+		  p:noticeDAO-ref="noticeDAO"
+	/>
+		
+	<bean id="proposeService"
+		  class="com.funding.service.ProjectProposeServiceImpl"
+		  p:prpDAO-ref="proposeDAO"
+		  />
+
+		
+		
+		
+		
+		
+</beans>

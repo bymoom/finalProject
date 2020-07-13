@@ -1,0 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+<script>
+	alert("${mem_email} 으로 인증키가 발송되었습니다.");
+	self.close();
+</script>

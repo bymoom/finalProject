@@ -1,0 +1,239 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.InterestCancleRequest;
+import com.funding.request.MainSearchCriteria;
+import com.funding.request.PjtSearchCriteria;
+import com.funding.request.SearchCriteria;
+
+public class ProjectDAOImpl implements ProjectDAO {
+	
+	@Autowired
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	@Override
+	public List<ProjectVO> categorySelectDonationProjectList(PjtSearchCriteria pjtCri) throws SQLException {
+		int offset = pjtCri.getPageStartRowNum();
+		int limit=pjtCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.categorySelectDonationProjectList",pjtCri,rowBounds);
+		
+		return projectList;
+	}
+	
+	@Override
+	public List<ProjectVO> categorySelectLoanProjectList(PjtSearchCriteria pjtCri) throws SQLException {
+		int offset = pjtCri.getPageStartRowNum();
+		int limit=pjtCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.categorySelectLoanProjectList",pjtCri,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public List<ProjectVO> selectProjectList() throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.selectProjectList",null);
+		return projectList;
+	}
+
+	@Override
+	public ProjectVO selectProjectByNum(int pjt_num) throws SQLException {
+		ProjectVO project = sqlSession.selectOne("Project-Mapper.selectProjectByNum",pjt_num);
+		return project;
+	}
+
+	@Override
+	public List<ProjectVO> searchSelectProjectList(String val) throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.searchSelectProjectList",val);
+		return projectList;
+	}
+
+	@Override
+	public int selectProjectCount(String val) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.selectProjectCount",val);
+		return count;
+	}
+
+	@Override
+	public int categorySelectDonationProjectListCount(PjtSearchCriteria pjtCri) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.categorySelectDonationProjectListCount",pjtCri);
+		return count;
+	}
+	@Override
+	public int categorySelectLoanProjectListCount(PjtSearchCriteria pjtCri) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.categorySelectLoanProjectListCount",pjtCri);
+		return count;
+	}
+
+	@Override
+	public int insertProjectSeq() throws SQLException {
+		int seq = sqlSession.selectOne("Project-Mapper.insertProjectSeq");
+		return seq;
+	}
+
+	@Override
+	public void insertDonationProject(ProjectVO project) throws SQLException {
+		sqlSession.update("Project-Mapper.insertDonationProject",project);
+	}
+	@Override
+	public void insertLoanProject(ProjectVO project) throws SQLException {
+		sqlSession.update("Project-Mapper.insertLoanProject",project);
+	}
+
+	@Override
+	public void projectViewCount(int pjt_num) throws SQLException {
+		sqlSession.update("Project-Mapper.projectViewCount",pjt_num);
+	}
+
+	@Override
+	public List<ProjectVO> projectRegistList(SearchCriteria cri, int mem_num) throws SQLException {
+		int offset = cri.getPageStartRowNum();
+		int limit=cri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		Map<String,Object> map = new HashMap<>();
+		map.put("cri", cri);
+		map.put("mem_num", mem_num);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.projectRegistList",map,rowBounds);
+		
+		System.out.println(projectList.size());
+		return projectList;
+	}
+
+	@Override
+	public int projectRegistListCount(SearchCriteria cri, int mem_num) throws SQLException {
+		Map<String,Object> map = new HashMap<>();
+		map.put("cri", cri);
+		map.put("mem_num", mem_num);
+		int count = sqlSession.selectOne("Project-Mapper.projectRegistListCount",map);
+		
+		return count;
+	}
+
+	@Override
+	public void updateProject(ProjectVO project) throws SQLException {
+		sqlSession.update("Project-Mapper.updateProject",project);
+	}
+
+	@Override
+	public List<ProjectVO> projectProgressList(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		int offset = pjtCri.getPageStartRowNum();
+		int limit=pjtCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		Map<String,Object> map = new HashMap<>();
+		map.put("pjtCri", pjtCri);
+		map.put("mem_num", mem_num);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.projectProgressList",map,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public int projectProgressListCount(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		Map<String,Object> map = new HashMap<>();
+		map.put("pjtCri", pjtCri);
+		map.put("mem_num", mem_num);
+		int count = sqlSession.selectOne("Project-Mapper.projectProgressListCount",map);
+		
+		return count;
+	}
+
+	@Override
+	public List<ProjectVO> selectProjectListMain(MainSearchCriteria mainCri) throws SQLException {
+		int offset = mainCri.getPageStartRowNum();
+		int limit=mainCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.selectProjectListMain",mainCri,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public int selectProjectListMainCount(MainSearchCriteria mainCri) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.selectProjectListMainCount",mainCri);
+		return count;
+	}
+
+	@Override
+	public List<InterestCancleRequest> selectInterestPjtListBymemNum(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		int offset = pjtCri.getPageStartRowNum();
+		int limit=pjtCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		Map<String,Object> map = new HashMap<>();
+		map.put("pjtCri", pjtCri);
+		map.put("mem_num", mem_num);
+		
+		List<InterestCancleRequest> projectList = sqlSession.selectList("Project-Mapper.selectInterestPjtListBymemNum",map,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public int selectInterestPjtListBymemNumCount(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		Map<String,Object> map = new HashMap<>();
+		map.put("pjtCri", pjtCri);
+		map.put("mem_num", mem_num);
+		int count = sqlSession.selectOne("Project-Mapper.selectInterestPjtListBymemNumCount",map);
+		return count;
+	}
+
+	@Override
+	public List<ProjectVO> selectPjtPayListByMemNum(MainSearchCriteria mainCri, int mem_num) throws SQLException {
+		int offset = mainCri.getPageStartRowNum();
+		int limit=mainCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		Map<String,Object> map = new HashMap<>();
+		map.put("mainCri", mainCri);
+		map.put("mem_num", mem_num);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.selectPjtPayListByMemNum",map,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public int selectPjtPayListByMemNumCount(MainSearchCriteria mainCri, int mem_num) throws SQLException {
+		Map<String,Object> map = new HashMap<>();
+		map.put("mainCri", mainCri);
+		map.put("mem_num", mem_num);
+		int count = sqlSession.selectOne("Project-Mapper.selectPjtPayListByMemNumCount",map);
+		return count;
+	}
+
+
+}

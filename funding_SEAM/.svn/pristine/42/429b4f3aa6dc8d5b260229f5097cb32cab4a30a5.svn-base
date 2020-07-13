@@ -1,0 +1,150 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<!-- daterange picker -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/resources/bootstrap/plugins/daterangepicker/daterangepicker.css">
+<script src="<%= request.getContextPath() %>/resources/bootstrap/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="<%= request.getContextPath() %>/resources/bootstrap/plugins/moment/moment.min.js"></script>
+<%-- <script src="<%= request.getContextPath() %>/resources/bootstrap/plugins/jquery/jquery.min.js"></script> --%>
+
+<div class="row">
+	<!-- 사이드 메뉴 -->
+	<nav class="guide_nav col-md-3" style="padding:0px 50px 0px 100px;">
+		<div class="card">
+			<div class="card-header ui-sortable-handle">
+				<a href="/guide/common#comCro" class="link_cont">회원 관리</a>
+			</div>
+			<div class="card-body">
+				<ul class="lnb_depth">
+					<li id="memberManage"><a href="<%= request.getContextPath() %>/admin/member/list" class="navMenu">일반 회원 관리</a></li>
+					<li id="commemberManage"><a href="/guide/common#comJoi" class="navMenu">소상공인 회원 관리</a></li>
+				</ul>			
+			</div>
+		</div>
+	</nav>
+
+	<!-- 일반 회원 리스트 -->
+      <div class="col-8">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">일반 회원 리스트</h3>
+             
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body table-responsive p-0" style="height: auto;">
+          <div class="card-tools" style="padding:10px 20px 10px 90px;">
+                <div class="input-group row">
+                	<div class="col-md-2">						
+						<select class="form-control" name="stateCode" id="stateCode" onchange="searchList_go(1,'stateList');">
+		             		<option>회원 상태</option>
+		             		<c:forEach items="${memStateCodeList }" var="memStateCode">
+								<option value="${memStateCode.code_state }" ${pageMaker.cri.searchType eq '${memStateCode.code_state }' ? 'selected':'' }>${memStateCode.code_state }</option>
+		             		</c:forEach>
+						</select>		             	
+					</div>
+					<div class="input-group col-md-5">
+						<div class="form-group">
+		                    <div class="input-group-prepend">
+		                      <span class="input-group-text">
+		                        <i class="far fa-calendar-alt"></i>
+		                      </span>
+		                    </div>
+		                    <input type="text" class="form-control float-right" id="dateRangePicker">
+	                    </div>
+                  	</div>
+					<div class="col-md-5">
+						<div class="input-group row">
+							<select class="form-control col-md-4" name="searchType" id="searchType">
+								<option value="all"  ${pageMaker.cri.searchType eq 'all' ? 'selected':'' }>전 체</option>
+								<option value="name" ${pageMaker.cri.searchType eq 'name' ? 'selected':'' }>이 름</option>
+								<option value="email" ${pageMaker.cri.searchType eq 'email' ? 'selected':'' }>이메일</option>
+								<option value="phone" ${pageMaker.cri.searchType eq 'phone' ? 'selected':'' }>전화번호</option>
+							</select>					
+							<input  class="form-control col-md-6" type="text" name="keyword" placeholder="검색어를 입력하세요." value="${param.keyword }"/>
+							<span class="input-group-append">
+								<button class="btn btn-primary" type="button" id="searchBtn" onclick="searchList_go(1,'list','keywordCheck');" data-card-widget="search">검색</button>
+							</span>
+						</div>
+					</div>
+				</div>
+            </div>
+            
+            <table class="table table-head-fixed text-center">
+              <thead>
+                <tr>
+                  <th>번 호</th>
+                  <th>상 태</th>
+                  <th>이 름</th>
+                  <th>이메일</th>
+                  <th>프로필 이미지</th>
+                  <th>전화번호</th>
+                  <th>가입 날짜</th>
+                </tr>
+              </thead>
+              <tbody>
+              <c:if test="${empty memberList }" >
+				<tr>
+					<td colspan="7">
+						<strong>해당 내용이 없습니다.</strong>
+					</td>
+				</tr>
+			</c:if>						
+			<c:forEach items="${memberList }" var="member">
+				<tr style='font-size:0.85em;'>
+					<td>${member.mem_num }</td>
+					<td>${member.code_state }</td>
+					<td><a href="#" onclick="OpenWindow('detail?mem_num=${member.mem_num }','일반 회원 상세 보기','1400','900')">${member.mem_name }</a></td>
+					<td>${member.mem_email }</td>
+					<td><img src="https://source.unsplash.com/category/nature" style="width:100px;height:100px;"></td>
+					<td>${member.mem_phone }</td>
+					<td>
+						<fmt:formatDate value="${member.mem_regdate }" pattern="yyyy-MM-dd"/>
+					</td>
+				</tr>
+			</c:forEach>
+          </tbody>
+         </table>
+       </div>
+      <!-- /.card-body -->
+      <div class="card-footer">
+		<%@ include file="/WEB-INF/views/admin/pagination.jsp" %>				
+	  </div>
+     </div>
+    <!-- /.card -->
+   </div>
+</div>
+
+<script>
+function FunGetFormatDate(date) {
+	var dateYear = new Date(date);
+	var year = dateYear.getFullYear(); //yyyy
+	var month = (1 + date.getMonth()); //M
+	month = month >= 10 ? month : '0' + month; // month 두자리로 저장
+	var day = date.getDate(); //d
+	day = day >= 10 ? day : '0' + day; //day 두자리로 저장
+	return month + '/' + day + '/' + year;
+}
+
+var defTom = FunGetFormatDate('내일날짜');
+var defMon = FunGetFormatDate('한달뒤날짜');
+$("#dateRangePicker").val(defTom + " - " + defMon);
+$("#dateRangePicker").daterangepicker({
+'applyClass': 'btn-sm btn-success',
+'cancelClass': 'btn-sm btn-default',
+startDate: from,
+locale: {
+format: 'yyyy-mm-dd',
+applyLabel: 'Apply',
+cancelLabel: 'Cancel'
+},
+endDate: to
+}).prev().on(ace.click_event, function () {
+$(this).next().focus();
+});
+
+</script>
+
+<div class="daterangepicker ltr show-calendar opensright" style="top: 1438px; left: auto; right: 0px; display: block;"><div class="ranges"></div><div class="drp-calendar left"><div class="calendar-table"><table class="table-condensed"><thead><tr><th class="prev available"><span></span></th><th colspan="5" class="month">Jun 2020</th><th></th></tr><tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr></thead><tbody><tr><td class="weekend off ends available" data-title="r0c0">31</td><td class="available" data-title="r0c1">1</td><td class="available" data-title="r0c2">2</td><td class="available" data-title="r0c3">3</td><td class="available" data-title="r0c4">4</td><td class="available" data-title="r0c5">5</td><td class="weekend available" data-title="r0c6">6</td></tr><tr><td class="weekend available" data-title="r1c0">7</td><td class="active start-date available" data-title="r1c1">8</td><td class="in-range available" data-title="r1c2">9</td><td class="in-range available" data-title="r1c3">10</td><td class="today in-range available" data-title="r1c4">11</td><td class="in-range available" data-title="r1c5">12</td><td class="weekend in-range available" data-title="r1c6">13</td></tr><tr><td class="weekend in-range available" data-title="r2c0">14</td><td class="in-range available" data-title="r2c1">15</td><td class="in-range available" data-title="r2c2">16</td><td class="in-range available" data-title="r2c3">17</td><td class="in-range available" data-title="r2c4">18</td><td class="in-range available" data-title="r2c5">19</td><td class="weekend in-range available" data-title="r2c6">20</td></tr><tr><td class="weekend in-range available" data-title="r3c0">21</td><td class="in-range available" data-title="r3c1">22</td><td class="in-range available" data-title="r3c2">23</td><td class="in-range available" data-title="r3c3">24</td><td class="in-range available" data-title="r3c4">25</td><td class="in-range available" data-title="r3c5">26</td><td class="weekend in-range available" data-title="r3c6">27</td></tr><tr><td class="weekend in-range available" data-title="r4c0">28</td><td class="in-range available" data-title="r4c1">29</td><td class="in-range available" data-title="r4c2">30</td><td class="off ends in-range available" data-title="r4c3">1</td><td class="off ends in-range available" data-title="r4c4">2</td><td class="off ends in-range available" data-title="r4c5">3</td><td class="weekend off ends in-range available" data-title="r4c6">4</td></tr><tr><td class="weekend off ends in-range available" data-title="r5c0">5</td><td class="off ends in-range available" data-title="r5c1">6</td><td class="off ends in-range available" data-title="r5c2">7</td><td class="off ends in-range available" data-title="r5c3">8</td><td class="off ends in-range available" data-title="r5c4">9</td><td class="off ends in-range available" data-title="r5c5">10</td><td class="weekend off ends in-range available" data-title="r5c6">11</td></tr></tbody></table></div><div class="calendar-time" style="display: none;"></div></div><div class="drp-calendar right"><div class="calendar-table"><table class="table-condensed"><thead><tr><th></th><th colspan="5" class="month">Jul 2020</th><th class="next available"><span></span></th></tr><tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr></thead><tbody><tr><td class="weekend off ends in-range available" data-title="r0c0">28</td><td class="off ends in-range available" data-title="r0c1">29</td><td class="off ends in-range available" data-title="r0c2">30</td><td class="in-range available" data-title="r0c3">1</td><td class="in-range available" data-title="r0c4">2</td><td class="in-range available" data-title="r0c5">3</td><td class="weekend in-range available" data-title="r0c6">4</td></tr><tr><td class="weekend in-range available" data-title="r1c0">5</td><td class="in-range available" data-title="r1c1">6</td><td class="in-range available" data-title="r1c2">7</td><td class="in-range available" data-title="r1c3">8</td><td class="in-range available" data-title="r1c4">9</td><td class="in-range available" data-title="r1c5">10</td><td class="weekend in-range available" data-title="r1c6">11</td></tr><tr><td class="weekend in-range available" data-title="r2c0">12</td><td class="in-range available" data-title="r2c1">13</td><td class="in-range available" data-title="r2c2">14</td><td class="in-range available" data-title="r2c3">15</td><td class="active end-date in-range available" data-title="r2c4">16</td><td class="available" data-title="r2c5">17</td><td class="weekend available" data-title="r2c6">18</td></tr><tr><td class="weekend available" data-title="r3c0">19</td><td class="available" data-title="r3c1">20</td><td class="available" data-title="r3c2">21</td><td class="available" data-title="r3c3">22</td><td class="available" data-title="r3c4">23</td><td class="available" data-title="r3c5">24</td><td class="weekend available" data-title="r3c6">25</td></tr><tr><td class="weekend available" data-title="r4c0">26</td><td class="available" data-title="r4c1">27</td><td class="available" data-title="r4c2">28</td><td class="available" data-title="r4c3">29</td><td class="available" data-title="r4c4">30</td><td class="available" data-title="r4c5">31</td><td class="weekend off ends available" data-title="r4c6">1</td></tr><tr><td class="weekend off ends available" data-title="r5c0">2</td><td class="off ends available" data-title="r5c1">3</td><td class="off ends available" data-title="r5c2">4</td><td class="off ends available" data-title="r5c3">5</td><td class="off ends available" data-title="r5c4">6</td><td class="off ends available" data-title="r5c5">7</td><td class="weekend off ends available" data-title="r5c6">8</td></tr></tbody></table></div><div class="calendar-time" style="display: none;"></div></div><div class="drp-buttons"><span class="drp-selected">06/08/2020 - 07/16/2020</span><button class="cancelBtn btn btn-sm btn-default" type="button">Cancel</button><button class="applyBtn btn btn-sm btn-primary" type="button">Apply</button> </div></div>	

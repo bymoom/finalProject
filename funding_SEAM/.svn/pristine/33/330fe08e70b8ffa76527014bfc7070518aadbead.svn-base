@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<!--  onclick="javascript:location.href='/qna/registForm';" -->
+<div class="container">
+<!-- 상단 우측버튼 -->
+<%-- 							<select id="searchType" name="searchType" style="width:120px;" class="form-control">
+								<option value="">검색구분</option>
+								<option value="t" ${pageMaker.cri.searchType eq 't' ? 'selected':'' }>제목</option>								
+								<option value="c" ${pageMaker.cri.searchType eq 'c' ? 'selected':'' }>본문</option>
+								<option value="tc" ${pageMaker.cri.searchType eq 'tc' ? 'selected':'' }>제목+본문</option>
+							
+							</select> --%>
+<br>
+<div>
+	<div class="row justify-content-md-center">
+
+		<a href="<%=request.getContextPath()%>/board/notice/notice_list">
+			<button	style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">공지사항</button>
+		</a> 
+		<a href="<%=request.getContextPath()%>/FAQ/list">
+			<button style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">F A Q</button>
+		</a>
+		 <a href="<%=request.getContextPath()%>/qna/list">
+			<button style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">Q & A</button>
+		</a>
+
+
+
+	</div>
+</div>
+	<br>
+	<br>
+
+	<h2>qna</h2>
+	<br>
+	<div class="form-inline">
+	
+	<div>
+		<button type="button" class="btn btn-sm btn-primary" id="registBtn">질문등록</button>
+	</div>
+
+	<div class="col-sm-3 col-6" style="margin-left: 550px">
+			<div id="keyword" class="pull-right" style="width:400px;" >
+				<div class="input-group row">						
+						<select class="form-control col-md-4" name="searchType" id="searchType">
+						<option value="tcw"  ${pageMaker.cri.searchType eq 'tcw' ? 'selected':'' }>전 체</option>
+						<option value="t" ${pageMaker.cri.searchType eq 't' ? 'selected':'' }>제 목</option>
+						<option value="w" ${pageMaker.cri.searchType eq 'w' ? 'selected':'' }>작성자</option>
+						<option value="c" ${pageMaker.cri.searchType eq 'c' ? 'selected':'' }>내 용</option>
+						<option value="tc" ${pageMaker.cri.searchType eq 'tc' ? 'selected':'' }>제목+내용</option>
+						<option value="cw" ${pageMaker.cri.searchType eq 'cw' ? 'selected':'' }>작성자+내용</option>							
+					</select>							
+					<input  class="form-control" type="text" name="keyword" placeholder="검색어를 입력하세요." value="${pageMaker.cri.keyword }"/>
+					<span class="input-group-append">
+						<button class="btn btn-primary" type="button" onclick="searchList_go(1,'list');" data-card-widget="search">검색</button>
+					</span>
+				</div>
+			</div>	
+	</div>
+	</div>
+		<br>			
+<div class="table-responsive">
+	
+	<table class="table table-striped table-sm text-center">
+		<colgroup>
+
+			<col style="width:5%;" />
+
+			<col style="width:auto;" />
+
+			<col style="width:10%;" />
+
+			<col style="width:12%;" />
+
+			<col style="width:8%;" />
+			<col style="width:10%;" />
+
+		</colgroup>
+	<thead>
+	<tr>
+	 <th>no</th>
+	 <th>제목</th>
+	 <th>작성자</th>
+	 <th>작성일</th>
+	 <th>조회수</th>
+	 <th>비공개여부</th>
+	 </tr>
+	 </thead>
+	<tbody>
+		<c:choose>
+			<c:when test="${empty list }">
+				<tr>
+					<td colspan="5" align="center">no data</td>
+				</tr>
+			</c:when>
+
+			<c:when test="${!empty list }">
+				<c:forEach items="${list }" var="qna">
+					<tr>
+						<td>${qna.qa_num }</td>
+								<c:if test="${qna.qa_secret eq 1 }">
+									<td id="qnatitle"><a
+										href="<%= request.getContextPath() %>/qna/detail?qa_num=${qna.qa_num }">
+											<span>${qna.qa_title }</span>
+									</a></td>
+								</c:if>
+								<c:if test="${qna.qa_secret eq 0 }">
+									<td id="qnatitle">
+									<a href="/qna/pwdChk?qa_num=${qna.qa_num }">
+											<span>${qna.qa_title }</span>
+									</a></td>
+								</c:if>
+								<td>${qna.mem_num }</td>
+						<td><fmt:formatDate value="${qna.qa_regdate }"></fmt:formatDate>
+						</td>
+						<td><span class="badge bg-orange">${qna.qa_view_cnt }</span></td>
+						
+						<c:if test="${qna.qa_secret eq 1 }">
+						<td><img alt="" src="<%=request.getContextPath()%>/resources/images/unlock.png" style="width:30px;height:30px;"></td>
+						</c:if>
+						<c:if test="${qna.qa_secret eq 0 }">
+						<td><img alt="" src="<%=request.getContextPath()%>/resources/images/lock.png" style="width:30px;height:30px;"></td>
+						</c:if>
+						
+					</tr>
+				</c:forEach>
+			</c:when>
+		</c:choose>
+	</tbody>
+</table>
+</div>
+<%@include file="/WEB-INF/views/qna/pagination.jsp" %>
+</div>
+	<script>
+		$("#registBtn").on('click', function(){
+			if("${loginUser}"==""){
+				alert('로그인이 필요한 기능입니다')
+				return;
+			}
+	//		alert('registBtn clicked')
+	//		OpenWindow('regist','질문작성',600,400);
+			location.href='/qna/registForm';
+		});
+	</script>
+	<div class="card-footer" style="display:none"></div>

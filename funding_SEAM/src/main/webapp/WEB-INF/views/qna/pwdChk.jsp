@@ -1,0 +1,48 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!--
+비밀글 조회 시 비밀번호 체크
+//-->
+   	<jsp:include page="/WEB-INF/views/include/open_header.jsp">
+	   	<jsp:param value="비밀글 비번체크" name="subject"/>
+	
+   </jsp:include>
+   <div class="container">
+   <div class="row justify-contents-md-center" >
+<div class="content_title col-12" style="width:500px; margin:10px; margin-top: 40px;">비공개 글입니다 해당 게시물의 비밀번호를 입력해주세요</div>
+
+<div class="content_content col-12" style="margin: 10px;">
+    <input type="password" id="password" class="pw">
+    <button type="button" class="btn btn-sm btn-success" id="chkBtn">확인</button>
+    <span id="alert-success" style="display: none;"></span>
+    <span id="alert-danger" style="display: none; color: #d92742; font-weight: bold; ">비밀번호가 일치하지 않습니다.</span>
+    
+   <input type="hidden" name="qna_num" value="${qna.qna_num }">
+  
+</div>
+</div>
+</div>
+ 
+ 
+  
+<script>
+    $('#chkBtn').on('click',function () {
+        var pwd = $("#password").val();
+        var qna_num = $("input[name='qna_num']").val();
+        var qna_pwd='${qna.qna_pwd}';
+		
+        if (pwd == '') {
+    		alert('비밀번호를 입력하세요');
+        } else if (pwd == qna_pwd) {
+        	$("#alert-success").offset(location.href="/qna/detail?qna_num=${qna.qna_num }");
+        	
+            } else {
+                alert("비밀번호가 일치하지 않습니다. 비밀번호를 재확인해주세요.");
+                
+                $("#alert-danger").css('display', 'inline-block');
+            }
+        });
+</script>

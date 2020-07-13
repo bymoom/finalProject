@@ -1,0 +1,15 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import com.funding.dto.Project_state_codeVO;
+
+public class Project_state_codeDAOImple implements Project_state_codeDAO {
+
+	@Override
+	public Project_state_codeVO selectProjectStateCode() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,144 @@
+package com.funding.request;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class AdminProjectSearchCriteria {
+	private int page; //페이지 번호
+	private int perPageNum; //페이지당 리스트 개수
+	private String searchType;  //검색구분
+	private String keyword;  //검색어
+	private String categoryType; //카테고리
+	private String pjtType; //(기부,대출)
+	private String stateType; //(미승인, 승인, 보류, 승인재요청)
+	private String progressType; //(진행중, 종료)
+	private String calcType; //(정산완료, 정산미완료)
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	private Date calcDate; //정산일
+	private String successOrFailure; //성공여부
+	
+	public AdminProjectSearchCriteria() {
+		super();
+		this.page = 1;
+		this.perPageNum = 10;
+	}
+
+	public AdminProjectSearchCriteria(int page, int perPageNum, String searchType, String keyword, String categoryType,
+			String pjtType, String stateType, String progressType, String calcType, Date calcDate,
+			String successOrFailure) {
+		super();
+		this.page = page;
+		this.perPageNum = perPageNum;
+		this.searchType = searchType;
+		this.keyword = keyword;
+		this.categoryType = categoryType;
+		this.pjtType = pjtType;
+		this.stateType = stateType;
+		this.progressType = progressType;
+		this.calcType = calcType;
+		this.calcDate = calcDate;
+		this.successOrFailure = successOrFailure;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getPerPageNum() {
+		return perPageNum;
+	}
+
+	public void setPerPageNum(int perPageNum) {
+		this.perPageNum = perPageNum;
+	}
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public String getCategoryType() {
+		return categoryType;
+	}
+
+	public void setCategoryType(String categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	public String getPjtType() {
+		return pjtType;
+	}
+
+	public void setPjtType(String pjtType) {
+		this.pjtType = pjtType;
+	}
+
+	public String getStateType() {
+		return stateType;
+	}
+
+	public void setStateType(String stateType) {
+		this.stateType = stateType;
+	}
+
+	public String getProgressType() {
+		return progressType;
+	}
+
+	public void setProgressType(String progressType) {
+		this.progressType = progressType;
+	}
+
+	public String getCalcType() {
+		return calcType;
+	}
+
+	public void setCalcType(String calcType) {
+		this.calcType = calcType;
+	}
+
+	public Date getCalcDate() {
+		return calcDate;
+	}
+
+	public void setCalcDate(Date calcDate) {
+		this.calcDate = calcDate;
+	}
+	
+	public String getSuccessOrFailure() {
+		return successOrFailure;
+	}
+
+	public void setSuccessOrFailure(String successOrFailure) {
+		this.successOrFailure = successOrFailure;
+	}
+
+	public int getPageStartRowNum() {  //각 페이지마다 시작하는 행번호
+		return(this.page-1)*perPageNum;
+	}
+
+	@Override
+	public String toString() {
+		return "AdminProjectSearchCriteria [page=" + page + ", perPageNum=" + perPageNum + ", searchType=" + searchType
+				+ ", keyword=" + keyword + ", categoryType=" + categoryType + ", pjtType=" + pjtType + ", stateType="
+				+ stateType + ", progressType=" + progressType + ", calcType=" + calcType + ", calcDate=" + calcDate
+				+ ", successOrFailure=" + successOrFailure + "]";
+	}
+	
+}

@@ -1,0 +1,38 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+
+import com.funding.dto.MemberVO;
+
+public interface MemberDAO {
+
+	//회원정보 조회
+	MemberVO selectMemberById(String id) throws SQLException;
+
+	MemberVO selectMemberByNum(int mem_num) throws SQLException;
+	
+	MemberVO selectMemberByName(String mem_name)throws SQLException;
+
+	MemberVO selectMemberByNameAndPhone(String mem_name, String mem_pw) throws SQLException;
+	
+	//일반회원 추가
+	void insertMember(MemberVO member) throws SQLException;		
+	
+	//소상공인회원 추가
+	void insertComMember(MemberVO member) throws SQLException;		
+	
+	//회원정보 수정
+	void updateMember(MemberVO member) throws SQLException;
+	
+	//회원정보 삭제
+	void deleteMember(String id) throws SQLException;	
+	
+	//회원정지
+	void disabledMember(String id) throws SQLException;
+	
+	//회원 활성화
+	void enabledMember(String id) throws SQLException;
+	
+	//recentLoginTime 갱신
+	void updateRecentLoginTime(String id)throws SQLException;
+}

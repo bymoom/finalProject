@@ -1,0 +1,9 @@
+package com.funding.controller.project;
+
+import org.springframework.stereotype.Controller;
+
+//프로젝트 컨트롤러
+@Controller
+public class ProjectController {
+
+}

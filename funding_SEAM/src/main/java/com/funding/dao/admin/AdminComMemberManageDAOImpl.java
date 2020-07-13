@@ -1,0 +1,90 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.ComMember_State_CodeVO;
+import com.funding.dto.Mem_state_codeVO;
+import com.funding.dto.MemberVO;
+import com.funding.request.AdminComMemberDetailRequest;
+import com.funding.request.AdminDetailForProjectPageMaker;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminMemberSearchCriteria;
+
+public class AdminComMemberManageDAOImpl implements AdminComMemberManageDAO {
+
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public List<AdminComMemberDetailRequest> selectSearchComMemberList(AdminMemberSearchCriteria cri) throws SQLException {
+		int offset=cri.getPageStartRowNum();
+		int limit=cri.getPerPageNum();
+		RowBounds rowBounds= new RowBounds(offset,limit);
+		List<AdminComMemberDetailRequest> comMemberList = sqlSession.selectList("Admin-Mapper.selectSearchComMemberList", cri, rowBounds);
+		return comMemberList;
+	}
+
+	@Override
+	public List<AdminComMemberDetailRequest> selectSearchComMemberListForDownload(AdminMemberSearchCriteria cri)
+			throws SQLException {
+		List<AdminComMemberDetailRequest> comMemberList = sqlSession.selectList("Admin-Mapper.selectSearchComMemberList", cri);
+		return comMemberList;
+	}
+	
+	@Override
+	public int selectSearchComMemberListTotalCount(AdminMemberSearchCriteria cri) throws SQLException {
+		int count = sqlSession.selectOne("Admin-Mapper.selectSearchComMemberListTotalCount", cri);
+		return count;
+	}
+
+	@Override
+	public int selectRoleComHoldTotalCount() throws SQLException {
+		int count = sqlSession.selectOne("Admin-Mapper.selectRoleComHoldTotalCount");
+		return count;
+	}
+
+	@Override
+	public AdminComMemberDetailRequest selectComMemberByMemNum(int mem_num) throws SQLException {
+		AdminComMemberDetailRequest comMember = sqlSession.selectOne("Admin-Mapper.selectComMemberByMemNum", mem_num);
+		return comMember;
+	}
+
+	@Override
+	public List<AdminComMemberDetailRequest> selectMemberDetailForProject(AdminDetailForProjectPageMaker detailForProjectPageMaker, int mem_num) throws SQLException {
+		int offset=detailForProjectPageMaker.getPageStartRowNum();
+		int limit=detailForProjectPageMaker.getDetail_pjt_perPageNum();
+		RowBounds rowBounds= new RowBounds(offset,limit);
+		List<AdminComMemberDetailRequest> comMemberProjectList = sqlSession.selectList("Admin-Mapper.selectMemberDetailForProject", mem_num, rowBounds);
+		return comMemberProjectList;
+	}
+
+	@Override
+	public int selectMemberDetailForProjectTotalCount(int mem_num) throws Exception {
+		int count = sqlSession.selectOne("Admin-Mapper.selectMemberDetailForProjectTotalCount", mem_num);
+		return count;
+	}
+
+	@Override
+	public List<ComMember_State_CodeVO> selectComStateCode() throws SQLException {
+		List<ComMember_State_CodeVO> comStateCodeList = sqlSession.selectList("Admin-Mapper.selectComStateCode");
+		return comStateCodeList;
+	}
+
+	@Override
+	public void modifyComStateCode(ComMemberVO comMember) throws SQLException {
+		sqlSession.update("Admin-Mapper.modifyComStateCode", comMember);
+	}
+
+	@Override
+	public void modifyMemStateCodeForComMem(MemberVO member) throws SQLException {
+		sqlSession.update("Admin-Mapper.modifyMemStateCodeForComMem", member);
+	}
+
+}

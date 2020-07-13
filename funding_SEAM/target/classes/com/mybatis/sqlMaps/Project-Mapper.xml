@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Project-Mapper">
+
+	<sql id="categorySearch">
+		<if test="categoryType == '음식점'.toString()">
+			and p.pjt_category='음식점'
+		</if>
+		<if test="categoryType == '서비스/문화'.toString()">
+			and p.pjt_category='서비스/문화'
+		</if>
+		<if test="categoryType == '도소매'.toString()">
+			and p.pjt_category='도소매'	
+		</if>
+		<if test="categoryType == '교육'.toString()">
+			and p.pjt_category='교육'		
+		</if>
+		<if test="categoryType == '제조'.toString()">
+			and p.pjt_category='제조'		
+		</if>
+		<if test="categoryType == '기타'.toString()">
+			and p.pjt_category='기타'		
+		</if>
+	</sql>
+	
+<!-- 후원하기 프로젝트 리스트 출력 -->
+<select id="categorySelectDonationProjectList" resultType="project" parameterType="pjtCri">
+	select p.pjt_num,p.pjt_title,p.pjt_contents,p.pjt_cash,p.pjt_int_rate,p.pjt_startdate,
+		   p.pjt_enddate,p.pjt_regdate,p.pjt_moddate,p.pjt_view_cnt,p.pjt_enabled,p.pjt_category,
+		   p.pjt_type_code,p.pjt_state_code,p.mem_num,p.pjt_state_comment,
+		   state.pjt_state_code_val,
+		   type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and p.pjt_type_code=1
+	and p.pjt_state_code=2
+	and p.pjt_enabled=1
+	and pjt_startdate <![CDATA[ < ]]>= sysdate
+	and pjt_enddate <![CDATA[ > ]]>= sysdate
+	<include refid="categorySearch" />
+	and p.pjt_title like '%'||#{keyword}||'%'
+	order by p.pjt_num desc
+</select>
+
+<select id="categorySelectDonationProjectListCount" resultType="int">
+	select count(*)
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and p.pjt_type_code=1
+	and p.pjt_state_code=2
+	and p.pjt_enabled=1
+	and pjt_startdate <![CDATA[ < ]]>= sysdate
+	and pjt_enddate <![CDATA[ > ]]>= sysdate
+	<include refid="categorySearch" />
+	and p.pjt_title like '%'||#{keyword}||'%'
+</select>
+
+<!-- 투자하기 프로젝트 리스트 출력 -->
+<select id="categorySelectLoanProjectList" resultType="project" parameterType="pjtCri">
+	select p.pjt_num,p.pjt_title,p.pjt_contents,p.pjt_cash,p.pjt_int_rate,p.pjt_startdate,
+		   p.pjt_enddate,p.pjt_regdate,p.pjt_moddate,p.pjt_view_cnt,p.pjt_enabled,p.pjt_category,
+		   p.pjt_type_code,p.pjt_state_code,p.mem_num,p.pjt_state_comment,
+		   state.pjt_state_code_val,
+		   type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and p.pjt_type_code=2
+	and p.pjt_state_code=2
+	and p.pjt_enabled=1
+	and pjt_startdate <![CDATA[ < ]]>= sysdate
+	and pjt_enddate <![CDATA[ > ]]>= sysdate
+	<include refid="categorySearch" />
+	and p.pjt_title like '%'||#{keyword}||'%'
+	order by p.pjt_num desc
+</select>
+
+<select id="categorySelectLoanProjectListCount" resultType="int">
+	select count(*)
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and p.pjt_type_code=2
+	and p.pjt_state_code=2
+	and p.pjt_enabled=1
+	and pjt_startdate <![CDATA[ < ]]>= sysdate
+	and pjt_enddate <![CDATA[ > ]]>= sysdate
+	<include refid="categorySearch" />
+	and p.pjt_title like '%'||#{keyword}||'%'
+</select>
+
+<!-- 등록한 프로젝트 리스트 출력-->
+<select id="projectRegistList" resultType="project" parameterType="hashMap">
+select pjt_num,pjt_title,pjt_cash,pjt_startdate,pjt_enddate,pjt_regdate,pjt_moddate,
+        pjt_enabled,pjt_category,pjt_type_code,pjt_state_code,mem_num
+from project
+where mem_num=#{mem_num}
+and pjt_state_code!=2
+and pjt_title like '%'||#{cri.keyword}||'%'
+order by pjt_num desc
+</select>
+
+<select id="projectRegistListCount" resultType="int" parameterType="hashMap">
+select count(*)
+from project
+where mem_num=#{mem_num}
+and pjt_state_code!=2
+and pjt_title like '%'||#{cri.keyword}||'%'
+</select>
+
+
+<!-- 승인된 프로젝트 리스트 출력-->
+<select id="projectProgressList" resultType="project" parameterType="hashMap">
+select *
+from project
+where mem_num=#{mem_num}
+and pjt_state_code=2
+and pjt_title like '%'||#{pjtCri.keyword}||'%'
+order by pjt_num desc
+</select>
+
+<select id="projectProgressListCount" resultType="int" parameterType="hashMap">
+select count(*)
+from project
+where mem_num=#{mem_num}
+and pjt_state_code=2
+and pjt_title like '%'||#{pjtCri.keyword}||'%'
+</select>
+
+
+
+<select id="selectProjectList" resultType="project">
+	select p.pjt_num,p.pjt_title,p.pjt_contents,p.pjt_cash,p.pjt_int_rate,p.pjt_startdate,
+		   p.pjt_enddate,p.pjt_regdate,p.pjt_moddate,p.pjt_view_cnt,p.pjt_enabled,p.pjt_category,
+		   p.pjt_type_code,p.pjt_state_code,p.mem_num,p.pjt_state_comment,
+		   state.pjt_state_code_val,
+		   type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	order by p.pjt_num
+</select>
+
+<select id="searchSelectProjectList" resultType="project" parameterType="str">
+	select p.pjt_num,p.pjt_title,p.pjt_contents,p.pjt_cash,p.pjt_int_rate,p.pjt_startdate,
+		   p.pjt_enddate,p.pjt_regdate,p.pjt_moddate,p.pjt_view_cnt,p.pjt_enabled,p.pjt_category,
+		   p.pjt_type_code,p.pjt_state_code,p.mem_num,
+		   state.pjt_state_code_val,
+		   type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and (p.pjt_title like '%'||#{value}||'%'
+    or p.pjt_contents like '%'||#{value}||'%')
+	
+	order by p.pjt_num
+</select>
+
+<select id="selectProjectCount" resultType="int" parameterType="str">
+	select
+	count(*)
+	from
+	project
+	where pjt_title like '%'||#{value}||'%'
+    or pjt_contents like '%'||#{value}||'%'
+</select>
+
+<select id="selectProjectByNum" parameterType="int" resultType="project">
+	select *
+	from project
+	where pjt_num=#{pjt_num}
+</select>
+
+<!-- 후원 프로젝트 등록 -->
+<update id="insertDonationProject" parameterType="project">
+insert into project (pjt_num,pjt_title,pjt_contents,pjt_cash,
+pjt_startdate,pjt_enddate,pjt_category,pjt_type_code,mem_num) 
+values(#{pjt_num},#{pjt_title},#{pjt_contents},#{pjt_cash},
+#{pjt_startdate},#{pjt_enddate},#{pjt_category},1,#{mem_num})
+</update>
+
+<!-- 프로젝트 등록시 시퀀스 -->
+<select id="insertProjectSeq" resultType="int">
+select seq_pjt_num.nextval
+from dual
+</select>
+
+<!-- 대출 프로젝트 등록 -->
+<update id="insertLoanProject" parameterType="project">
+insert into project (pjt_num,pjt_title,pjt_contents,pjt_cash,
+pjt_startdate,pjt_enddate,pjt_category,pjt_type_code,mem_num,pjt_int_rate)
+values(#{pjt_num},#{pjt_title},#{pjt_contents},#{pjt_cash},
+#{pjt_startdate},#{pjt_enddate},#{pjt_category},2,#{mem_num},2.5)
+</update>
+
+<!-- 프로젝트 조회수 올리기 -->
+<update id="projectViewCount" parameterType="int">
+update project set pjt_view_cnt=pjt_view_cnt+1
+where pjt_num=#{pjt_num}
+</update>
+
+<!-- 보류 프로젝트 재등록 -->
+<update id="updateProject" parameterType="project">
+update project set pjt_title=#{pjt_title},
+pjt_contents=#{pjt_contents},
+pjt_cash=#{pjt_cash},
+pjt_startdate=#{pjt_startdate},
+pjt_enddate=#{pjt_enddate},
+pjt_moddate=sysdate,
+pjt_category=#{pjt_category},
+pjt_state_code=#{pjt_state_code}
+where pjt_num=#{pjt_num}
+</update>
+
+<!-- 메인화면 프로젝트 조회 -->
+<select id="selectProjectListMain" resultType="project">
+select *
+from project
+where pjt_state_code=2
+and pjt_enabled=1
+and pjt_startdate <![CDATA[ < ]]>= sysdate
+and pjt_enddate <![CDATA[ > ]]>= sysdate
+<include refid="whereSearch" />
+</select>
+
+<select id="selectProjectListMainCount" resultType="int">
+select count(*)
+from project
+where pjt_state_code=2
+and pjt_enabled=1
+and pjt_startdate <![CDATA[ < ]]>= sysdate
+and pjt_enddate <![CDATA[ > ]]>= sysdate
+<include refid="whereSearch" />
+</select>
+
+	<sql id="whereSearch">
+		<if test="whereType == 'newproject'.toString()">
+			order by pjt_startdate desc
+		</if>
+		<if test="whereType == 'end'.toString()">
+			order by pjt_enddate
+		</if>
+		<if test="whereType == 'thumbsup'.toString()">
+			order by pjt_thumbsup desc
+		</if>
+		<if test="whereType == 'highcount'.toString()">
+			order by pjt_view_cnt desc
+		</if>
+	</sql>
+
+
+<!-- 관심프로젝트 리스트 -->
+<select id="selectInterestPjtListBymemNum" resultType="interestCancleReq" parameterType="hashMap">
+select 
+p.pjt_num,p.pjt_title,p.pjt_contents,p.pjt_cash,p.pjt_int_rate,p.pjt_startdate,
+p.pjt_enddate,p.pjt_enabled,p.pjt_category,p.pjt_type_code,p.pjt_state_code,p.mem_num, interest_pjt.int_pjt_num
+from interest_pjt,project p
+where interest_pjt.pjt_num=p.pjt_num
+and interest_pjt.mem_num=#{mem_num}
+and p.pjt_state_code=2
+and p.pjt_enabled=1
+</select>
+
+<select id="selectInterestPjtListBymemNumCount" resultType="int" parameterType="hashMap">
+select count(*)
+from interest_pjt,project p
+where interest_pjt.pjt_num=p.pjt_num
+and interest_pjt.mem_num=#{mem_num}
+and p.pjt_state_code=2
+and p.pjt_enabled=1
+</select>
+
+<!-- 후원 중인 리스트 -->
+<select id="selectPjtPayListByMemNum" resultType="project" parameterType="hashMap">
+select 
+*
+from project p,
+(select *
+from pjt_pay_detail
+where mem_num=#{mem_num}
+and pjt_refund=0) a 
+where p.pjt_num=a.pjt_num
+and pjt_title like '%'||#{mainCri.keyword}||'%'
+order by a.pjt_pay_num desc
+</select>
+
+<select id="selectPjtPayListByMemNumCount" resultType="int" parameterType="hashMap">
+select count(*)
+from project p,
+(select *
+from pjt_pay_detail
+where mem_num=#{mem_num}
+and pjt_refund=0) a 
+where p.pjt_num=a.pjt_num
+and pjt_title like '%'||#{mainCri.keyword}||'%'
+order by a.pjt_pay_num desc
+</select>
+
+
+
+</mapper>

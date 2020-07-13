@@ -1,0 +1,293 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ <%--    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- icheck bootstrap -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/dist/css/adminlte.min.css">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> --%>
+
+<style>
+.register-box {
+	display: flex;
+	align-items : center;
+	margin: 0 auto;
+}
+
+.register-card-body {
+	margin: 0 auto;
+	padding: 0 auto;
+}
+
+.col-sm-4 {
+	text-align : center;
+	padding-top:10px;
+}
+
+#card {
+	width: 500px;
+}
+
+div#picturePreView{
+	height:140px;
+	width:110px;
+	margin:0 auto;
+	margin-top : 15px;
+	float: left;
+	border: 1px solid lightgray;  		
+	background-image:url("<%=request.getContextPath()%>/mypage/info/picture/${comMember.mem_num}");
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:cover;
+}
+
+</style>
+
+</head>
+<body>
+	<section class="content-header">
+	<div class="container-fluid">
+		<div class="row md-1">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4">
+				<h1>개인 정보 수정</h1>
+			</div>
+			<div class="col-sm-4"></div>
+		</div>
+	</div>
+	</section>
+
+				<h3>나의 정보</h3>
+			
+			<form role="form" action="modifyCom" method="post" enctype="multipart/form-data">
+				<div class="card-body">
+					<div class="form-group">
+						<label for="id">이메일 : </label>
+						<label for="id">${comMember.mem_email}</label>
+					</div>
+					
+					<div class="form-group">
+						<label for="">이름 : </label>
+						<label for="">${comMember.mem_name }</label>
+					</div>
+					
+<!-- 					<div class="form-group"> -->
+<!-- 						<label for="pw">비밀번호</label> -->
+<!-- 						<input type="password" class="form-control" placeholder="비밀번호를 입력하세요" name="mem_pw" id="pw"> -->
+<!-- 					</div> -->
+					
+<!-- 					<div class="form-group"> -->
+<!-- 						<label for="pw2">비밀번호 확인</label> -->
+<!-- 						<input type="password" class="form-control" placeholder="비밀번호를 입력하세요" name="" id="pw2"> -->
+<!-- 					</div> -->
+					
+					<div class="form-group">
+						<label for="ptel">휴대폰번호 : </label>
+						<input type="text" readonly style="width 250px;" class="form-control" id="ptel" placeholder="휴대폰번호 입력" name="mem_phone" onkeyup="inputPhoneNumber(this)" value="${comMember.mem_phone }">
+					</div>
+					
+					<div class="form-group">
+						<label class="control-label" for="">사업장명:</label>
+						<input type="text" readonly style="width 250px;" class="form-control" id="" placeholder="사업장명 입력" name="com_bsns_name" value=${comMember.com_bsns_name }>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label" for="">대표자명:</label>
+						<input type="text" readonly style="width 250px;" class="form-control" id=""
+							placeholder="대표자명 입력" name="com_bsns_rep_name" value="${comMember.com_bsns_rep_name }">
+					</div>
+
+					<div class="form-group">
+						<label class="control-label" for="">사업자 등록번호:</label>
+						<input type="text" readonly style="width 250px;" class="form-control" id="ptel"
+							placeholder="사업자 등록번호 입력" name="com_bsns_number" value="${comMember.com_bsns_number }">
+					</div>
+
+					<div class="form-group">
+						<label class="control-label" for="">대표전화번호:</label>
+						<input type="text" readonly style="width 250px;" class="form-control" id="ptel"
+							placeholder="대표전화번호 입력" name="com_bsns_phone" value="${comMember.com_bsns_phone }">
+					</div>
+					
+					<div class="col-sm-12 g_value" data-role="attach">
+						<div class="col-sm-6" style="padding:2px 1px;">
+							<label for="inputFile" class="label" style="width:100%;">사업자등록증</label>
+<!-- 							<div class="input-group"> -->
+<%-- 								<input id="RegLicense" class="form-control" type="file" name="com_bsns_reg_license" value="${comMem.com_bsns_reg_license }"/> --%>
+<!-- 								<span class='input-group-btn'> -->
+<!-- 									<button class="btn btn-xs btn-danger" type='button' data-role="com_bsns_reg_license"><b>X</b></button> -->
+<!-- 								</span> -->
+<!-- 							</div> -->
+							<c:if test="${!empty comMember.com_bsns_reg_license }">
+								<button class="col-sm-12 btn btn-outline-success btn-flat" type="button" onclick="self.location='receiveDoc?fileName=${comMember.com_bsns_reg_license}&id=${comMember.mem_email }';"><i class="fas fa-folder-open fa-3x"></i>다운로드</button> 
+							</c:if>
+							<c:if test="${empty comMember.com_bsns_reg_license }">
+									<button class="col-sm-12 btn btn-outline-success btn-flat" type="button" onclick="alert('등록된 문서가 없습니다.');">미등록</button>
+							</c:if>
+						</div>	
+						<div class="col-sm-6" style="padding:2px 1px;">
+							<label for="inputFile" class="label" style="width:100%;">소상공인증명서</label>
+<!-- 							<div class="input-group"> -->
+<%-- 								<input id="RegCert" class="form-control" type="file" name="com_bsns_cert" value="${comMem.com_bsns_cert}" /> --%>
+<!-- 								<span class='input-group-btn'> -->
+<!-- 									<button class="btn btn-xs btn-danger" type='button' data-role="com_bsns_cert"><b>X</b></button> -->
+<!-- 								</span> -->
+<!-- 							</div> -->
+							
+							<c:if test="${!empty comMember.com_bsns_cert }">
+								<button class="col-sm-12 btn btn-outline-success btn-flat" type="button" onclick="self.location='receiveDoc?fileName=${comMember.com_bsns_cert}&id=${comMember.mem_email }';"><i class="fas fa-folder-open fa-3x"></i>다운로드</button> 
+							</c:if>
+							<c:if test="${empty comMember.com_bsns_cert }">
+									<button class="col-sm-12 btn btn-outline-success btn-flat" type="button" onclick="alert('등록된 문서가 없습니다.');">미등록</button>
+							</c:if>
+						</div>	
+					</div>
+					
+					<div class="form-group">
+						<div role="picture">
+							<div id="picturePreView"></div><br/><br/><br/><br/><br/><br/><br/>
+	<!-- 						<label for="picture"  class="btn btn-outline-success btn-flat" style="width:110px;margin-bottom:2px;">사진변경</label> -->
+							<input type="file" id="picture" name="mem_profile_img" style="display:none;"/> 
+							<input type="hidden" id="picture" name="old_picture" value="${comMember.mem_profile_img }" />
+						</div>
+					</div>
+					
+					<div class="col-sm-12">
+						<div class="form-group" >
+							<label class="control-label" for="">주&nbsp;소:</label><br/>
+							<div>
+								<input id="postCode" style="width:200px;float:left;" class="form-control" name="com_zipcode" type="text" readonly placeholder="${comMember.com_zipcode}" />
+								<input id="address[0]" class="form-control" type="text" name="com_addr1" readonly onclick="$('#searchAddr').click();" style="width:100%;both:clear;" value="${comMember.com_addr1}"/>
+								&nbsp;<input id="address[1]" class="form-control" type="text" name="com_addr2" placeholder="나머지주소" style="width:100%; " value="${comMember.com_addr2}"/>
+							</div>
+						</div>
+					</div>
+					
+					<div class="card-footer">
+						<button type="button" class="btn btn-outline-success btn-flat" onclick="modify_go();">수정하기</button>
+					</div>
+				</div>
+			</form>
+
+<!-- jQuery -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/dist/js/adminlte.min.js"></script>
+</body>	
+</body>
+
+<script>
+
+function modify_go(){
+	self.location="modifyCom?mem_email=${comMember.mem_email}";
+}
+
+$("#id").blur(function() {
+	  var email = $(this).val();
+
+	  // if value is empty then exit
+	  if( email == '' || email == 'undefined') return;
+
+	  // valid check
+	  if(! email_check(email) ) {
+// 	  	$("#result-check").text('Not valid email.');
+		alert("올바르지 않은 이메일형식입니다.")
+	    $(this).focus();
+	    return false;
+	  }
+	  else {
+// 	  	$("#result-check").text('Email address test OK.');
+		return true;
+	  }
+	
+})
+
+// email check function
+function email_check( email ) {    
+    var regex=/([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    return (email != '' && email != 'undefined' && regex.test(email)); 
+}
+
+function inputPhoneNumber(obj) {
+    var number = obj.value.replace(/[^0-9]/g, "");
+    var phone = "";
+
+    if(number.length < 4) {
+        return number;
+    } else if(number.length < 7) {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3);
+    } else if(number.length < 11) {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3, 3);
+        phone += "-";
+        phone += number.substr(6);
+    } else {
+        phone += number.substr(0, 3);
+        phone += "-";
+        phone += number.substr(3, 4);
+        phone += "-";
+        phone += number.substr(7);
+    }
+    obj.value = phone;
+}
+
+/* 사진업로드 */
+$('input[name="mem_profile_img"]').on('change',function(){
+	
+	//이미지 확장자 jpg 확인
+	var fileFormat=
+		this.value.substr(this.value.lastIndexOf(".")+1).toUpperCase();
+	if(fileFormat!="JPG" && fileFormat!="JPEG"){
+		alert("이미지는 jpg 형식만 가능합니다.");			
+		return false;
+	}
+	
+	//이미지 파일 용량 체크
+	if(this.files[0].size>1024*1024*1){
+		alert("사진 용량은 1MB 이하만 가능합니다.");
+		return false;
+	};	
+	
+	if (this.files && this.files[0]) {
+		
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+        	//이미지 미리보기	        	
+        	$('div#picturePreView')
+        	.css({'background-image':'url('+e.target.result+')',
+				  'background-position':'center',
+				  'background-size':'cover',
+				  'background-repeat':'no-repeat'
+        		});
+        }
+        
+        reader.readAsDataURL(this.files[0]);
+	}
+});	
+
+</script>
+<!-- 
+
+</html> -->

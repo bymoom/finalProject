@@ -1,0 +1,157 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<br>
+<div style="width:100%; text-align:center;">
+	<h3>프로젝트 제안 상세보기</h3>
+</div>
+<div class="container">
+<div style="width:100%; text-align:right; margin-right:10px;">
+	<c:if test="${propose.mem_name eq loginUser.mem_name }">
+		<button id="proposeUpdate" type="button" class="btn btn-primary">수정</button>
+		<button id="proposeDelete" type="button" class="btn btn-danger">삭제</button>
+	</c:if>
+	<a href="javascript:thumbUp();" id="like" class="link-black text-sm col-sm-2" for="0" style="color:black;"><i class="fas fa-thumbs-up mr-1"></i>응원하기</a>
+	<button type="button" class="btn btn-warning" onclick="goList();">목록</button>
+	
+</div>
+<hr style="border:1px solid blue;">
+
+<div class="container">
+	<h4>조회수 : ${propose.pjtprp_view_cnt }</h4>
+</div>
+<form>
+	<br>
+	<label class="label">작성자</label><input name="mem_name" type="text" readonly value="${propose.mem_name}"><br>
+	<label class="label">제목</label><input name="pjtprp_title" type="text" style="width:37%;"readonly value="${propose.pjtprp_title }"><br>
+	<label class="label">내용</label><br>
+	<textarea name="pjtprp_contents" rows="20" cols="90" style="margin-left:20px;"readonly>${propose.pjtprp_contents}</textarea>
+
+</form>
+
+	<div id="commentArea">
+	
+	<!-- 의견 쓰기 -->
+	<form id="bbsCommentWebForm" class="form-horizontal" action="/bbs/read.htm?docId=2018042316273647&amp;bbsId=bbs00000000000004&amp;workType=1&amp;moduleId=00000000000000&amp;categoryId=&amp;searchRange=0&amp;listType=L&amp;searchKey=subject&amp;searchValue=" method="post">
+		<div class="panel panel-info" style="margin:5px 0px;">
+	      <div class="panel-heading">
+<%-- 	        <h4 class="panel-title" style="font-size:14px; font-family: inherit;" id="panel-title">
+	        	<i class="ace-icon fa fa-quote-left smaller-80"></i>
+	        	댓글	- <span id="cmtnum" style="color:#FF6600;">${board.replycnt }</span> 개의 의견이 있습니다.
+			 
+	        </h4> --%>
+	      </div>
+	      <div class="panel-body" style="padding: 5px;">			
+			<div class="col-xs-12  col-sm-10 g_value" style="border: 0px; padding-top: 8px;">
+			<textArea style="width:100%; height:60px; line-height:120%;" id="pjtprp_cmts_contents" name="pjtprp_cmts_contents" onkeyup="javascript:TextCount(this);"></textarea>
+			<button type="button" class="btn btn-danger" onclick="reply_regist_go();" title="save">
+					댓글등록
+				</button>
+			<br>
+			<a id="editButton" style="display:none;" href="javascript:goCommentSubmit('edit','')">편집</a>		
+			<font color="#656565">현재 <span id="tmptext">0</span>/최대 1000byte(한글 500자, 영문 1000자)</font>
+			</div>
+			<c:if test="${loginUser.mem_name eq '관리자' }">
+				<div id="commentSave" style="margin:8px; text-align:left;">
+					
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-success" onclick="proposeCmtEnabled();" title="enabled">
+						선택댓글 활성화
+					</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-danger" onclick="proposeCmtDisabled();" title="disabled">
+						선택댓글 비활성화
+					</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-success" onclick="allEnabled();" title="allEnabled">
+						전체댓글 활성화
+					</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn btn-danger" onclick="allDisabled();" title="allDisabled">
+						전체댓글 비활성화
+					</button>
+				</div>
+			</c:if>			
+	      </div>
+	      <br>
+	      
+		<!-- 	게시판 이미지 max-width 설정 2018-01-15 -->
+		<style>
+			img{max-width: 820px;}
+		</style>
+		
+		<div id="comment-tab___" class="tab-pane___ active___" style="margin: 5px 10px;">
+			<div class="comments___ ace-scroll___" style="position: relative;">
+			<div class="scroll-track___ scroll-active___" style="display: block; sheight: 300px;">
+			<div class="scroll-bar___" style="sheight: 232px; top: 0px;"></div>
+			</div>
+			<div id="repliesDiv" class="scroll-content___" style="smax-height: 300px;">				
+			</div>
+<!-- 			<div class='text-center'>
+				<ul id="pagination" class="pagination pagination-sm no-margin ">
+	
+				</ul>
+			</div> -->									
+		</div>		
+	</div>		      
+</div>
+     
+</form>
+
+</div>
+<!-- 간단한 의견 목록 끝 -->
+</div>
+
+<!-- 댓글 Modal -->
+<div id="modifyModal" class="modal fade in" >
+  <div class="modal-dialog">
+    Modal content
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>        
+      </div>
+      <div class="modal-body" data-pjtprp_cmts_num>
+        <p><input type="text" id="modal_pjtprp_cmts_contents" class="form-control"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" id="replyModBtn">수정완료</button>
+        <button type="button" class="btn btn-danger" id="replyDelBtn">삭제</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>            
+<!-- 
+<form>
+	<textarea cols="70" rows="3"></textarea>
+	<button id="replyBtn">댓글등록</button>
+</form> -->
+<%@ include file="reply.jsp" %>
+<%@include file="detail_js.jsp" %>
+<%-- <%@ include file="reply.jsp" %> --%>
+<script>
+	/* 수정 버튼 클릭 */
+	$('#proposeUpdate').on('click',function(){
+		location.href="/menu/modify?pjtprp_num=${propose.pjtprp_num}";
+	});
+	
+	/* 삭제버튼 클릭 */
+	$('#proposeDelete').on('click',function(){
+		var answer = confirm("정말 삭제하시겠습니까?");
+		
+		if(answer){
+			location.href="/menu/delete?pjtprp_num=${propose.pjtprp_num}";
+		}
+	});
+	
+	function goList(){
+		location.href="<%=request.getContextPath()%>/menu/propose";
+	}
+	
+	
+	
+	
+	
+</script>

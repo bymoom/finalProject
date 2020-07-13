@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Calendar-Mapper">
+
+	<select id="selectCalendarByNum" resultType="calendar">
+		SELECT *
+		FROM calendar
+		WHERE mem_num = #{mem_num}
+	</select>
+
+	<select id="selectAllAttendanceDateByNum" resultType="String">
+		SELECT DISTINCT(TO_CHAR(startdate,'yyyy-MM-dd'))
+		FROM calendar
+		WHERE mem_num = #{mem_num}
+		GROUP BY startdate
+	</select>
+	
+	<select id="selectTodayCheck" resultType="int">
+		SELECT COUNT(*)
+		FROM calendar
+		WHERE mem_num = #{mem_num}
+		AND startdate >= (TO_CHAR(sysdate,'yyyy-MM-dd'))
+	</select>
+
+	<update id="insertDailyCheck" parameterType="calendar">
+		INSERT INTO
+		calendar(calendar_num, mem_num, title, startdate, enddate)
+		VALUES(seq_cal_num.nextval,#{mem_num},#{title}, sysdate, sysdate)
+	</update>
+
+</mapper>

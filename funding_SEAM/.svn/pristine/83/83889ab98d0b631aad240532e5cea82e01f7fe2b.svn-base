@@ -1,0 +1,18 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.ProjectVO;
+
+public interface ProjectDAO {
+	
+	public List<ProjectVO> selectProjectList() throws SQLException;
+	
+	public ProjectVO selectProjectByNum(int pjt_num)throws SQLException;
+	
+	List<ProjectVO> searchSelectProjectList(String val)throws SQLException;
+	
+	int selectProjectCount(String val)throws SQLException;
+	
+}

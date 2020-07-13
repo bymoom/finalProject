@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QA-Mapper">
+
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and view_qna.qna_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and view_qna.mem_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and view_qna.qna_contents like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and (
+			view_qna.qna_title like '%'||#{keyword}||'%'
+			or
+			view_qna.qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'cw'.toString()">
+			and (
+			view_qna.mem_name like '%'||#{keyword}||'%'
+			or
+			view_qna.qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'tcw'.toString()">
+			and (
+			view_qna.qna_title like '%'||#{keyword}||'%'
+			or
+			view_qna.mem_name like '%'||#{keyword}||'%'
+			or
+			view_qna.qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+	</sql>
+
+	<select id="selectQnAList" parameterType="cri" resultType="qna">
+		select * 
+		from view_qna 
+		start with qna_cmts_num = 0
+		<include refid="search" />
+		connect by prior qna_num = qna_cmts_num
+		order siblings by qna_num desc 	
+	</select>
+	
+	<select id="selectQnAListExptDisabled" parameterType="cri" resultType="qna">
+		select * 
+		from view_qna 
+		start with qna_cmts_num = 0
+		and qna_enabled = 1
+		<include refid="search" />
+		connect by prior qna_num = qna_cmts_num
+		order siblings by qna_num desc 	
+	</select>
+<!-- 	 and qna_cmts_num asc -->
+	
+	<select id="selectSearchQnAListTotalCount" resultType="int">
+		select count(*)
+		from view_qna
+		where qna_num is not null
+		<include refid="search" />
+	</select>
+
+	<select id="selectSearchQnAListTotalCountExptDisabled" resultType="int">
+		select count(*)
+		from view_qna
+		where qna_num is not null
+		and qna_enabled = 1
+		<include refid="search" />
+	</select>
+	
+	<select id="selectQnAByqna_Num"  resultType="qna">
+		select * 
+		from view_qna
+		where qna_num = #{qna_num}
+	</select>
+
+	<select id="selectQnACmtsList"  resultType="qna">
+		select * 
+		from view_qna
+		where qna_cmts_num = #{qna_cmts_num}
+	</select>
+	
+	<update id="registQnA" parameterType="qna">
+		insert into qna(qna_num, qna_title, qna_contents, qna_regdate, mem_num, mem_name, qna_pwd, qna_secret)
+		values (#{qna_num}, #{qna_title}, #{qna_contents}, sysdate,#{mem_num}, #{mem_name}, #{qna_pwd}, #{qna_secret})
+	</update>
+
+	<update id="registQnAnone" parameterType="qna">
+		insert into qna(qna_num, qna_title, qna_contents, qna_regdate, mem_num, mem_name, qna_secret)
+		values (#{qna_num}, #{qna_title}, #{qna_contents}, sysdate, #{mem_num}, #{mem_name}, #{qna_secret})
+	</update>
+
+	<update id="registCmts" parameterType="qna">
+		insert into qna(qna_num, qna_title, qna_contents, qna_regdate, mem_num, mem_name, qna_secret, qna_cmts_num <if test="qna_pwd != null">, qna_pwd</if> )
+		values (#{qna_num}, #{qna_title}, #{qna_contents}, sysdate, #{mem_num}, #{mem_name}, #{qna_secret}, #{qna_cmts_num} <if test="qna_pwd != null">, #{qna_pwd}</if>)
+	</update>
+
+	<update id="modifyQnA" parameterType="qna">
+		update qna 
+		set qna_title = #{qna_title}, qna_contents = #{qna_contents}, qna_moddate = sysdate 
+		where qna_num = #{qna_num}
+	</update>
+
+	<update id="modifyCmts" parameterType="qna">
+		update qna 
+		set qna_title = #{qna_title}, qna_contents = #{qna_contents}, qna_moddate = sysdate 
+		where qna_cmts_num = #{qna_cmts_num}
+	</update>
+	
+	<update id="removeQnA" parameterType="int">
+		delete 
+		from qna 
+		where qna_num = #{qna_num}
+	</update>
+
+	<update id="removeCmts" parameterType="int">
+		delete 
+		from qna 
+		where qna_cmts_num = #{qna_cmts_num}
+	</update>
+
+		<update id="increaseQnAViewCnt" parameterType="int">
+		update qna 
+		set qna_view_cnt = qna_view_cnt + 1 
+		where qna_num = #{qna_num}
+	</update>
+	
+	<select id="selectQnASeqNext" resultType="int">
+		select seq_qna_num.nextval as qna_num from dual
+	</select>
+	
+	<select id="selectSecretQnA" resultType="qna">
+		select *
+		from view_qna
+		where qna_num = #{qna_num}
+		and qna_pwd = #{qna_pwd}
+	</select>
+	
+	<update id="updateSecretQnA" parameterType="qna">
+		update qna 
+		set qna_title = #{qna_title}, qna_contents = #{qna_contents}, qna_moddate = sysdate, qna_pwd=#{qna_pwd} 
+		where qna_num = #{qna_num}
+		and qna_pwd = #{qna_pwd}
+	</update>
+	
+	<update id="checkQnAEnabled" parameterType="int">
+		update qna
+		set qna_enabled = 1
+		where qna_num = #{qna_num}
+	</update>	
+	
+	<update id="checkQnADisabled" parameterType="int">
+		update qna
+		set qna_enabled = 0
+		where qna_num = #{qna_num}
+	</update>	
+	
+	
+	
+</mapper>
+
+
+<!-- 
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and qna_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and mem_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and qna_contents like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and (
+			qna_title like '%'||#{keyword}||'%'
+			or
+			qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'cw'.toString()">
+			and (
+			mem_name like '%'||#{keyword}||'%'
+			or
+			qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'tcw'.toString()">
+			and (
+			qna_title like '%'||#{keyword}||'%'
+			or
+			mem_name like '%'||#{keyword}||'%'
+			or
+			qna_contents like '%'||#{keyword}||'%'						
+			)			
+		</if>
+	</sql>
+	
+	<select id="selectSearchQnAList" parameterType="cri" resultType="qna">
+		select b.qna_num,b.qna_title,b.qna_contents,b.mem_name,b.qna_regdate
+		from(select rownum rn, a.*
+		from(select qna_num,qna_title,qna_contents,mem_name,to_char(qna_regdate, 'YYYY-MM-DD HH24:mi:ss')as qna_regdate
+		from view_qna
+		where qna_num is not null
+		<include refid="search" />
+		order by qna_num desc)a)b
+	</select>
+	
+	<select id="selectSearchQnAListTotalCount" resultType="int">
+		select count(*)
+		from view_qna
+		where qna_num is not null  			  	
+			<include refid="search" />
+			
+	</select>
+	
+	<select id="selectQnAList" resultType="qna">
+		select * 
+		from view_qna 
+		order by qna_num desc		
+	</select>
+	
+	<select id="selectQnAByqna_Num"  resultType="qna">
+		select * 
+		from view_qna
+		where qna_num = #{qna_num}
+	</select>
+
+	<update id="registQnA" parameterType="qna">
+		insert into qna(qna_num, qna_title, qna_contents, qna_regdate, qna_view_cnt, qna_enabled, mem_num, qna_pwd)
+		values (#{qna_num}, #{qna_title}, #{qna_contents}, sysdate, 0, 1, #{mem_num}, #{qna_pwd})
+	</update>
+
+	<update id="modifyQnA" parameterType="qna">
+		update qna 
+		set qna_title = #{qna_title}, qna_contents = #{qna_contents}, qna_moddate = sysdate, qna_pwd=#{qna_pwd} 
+		where qna_num = #{qna_num}
+	</update>
+
+
+	
+	<update id="removeQnA" parameterType="int">
+		delete 
+		from qna 
+		where qna_num = #{qna_num}
+	</update>
+	
+	<update id="increaseQnAViewCnt" parameterType="int">
+		update qna 
+		set qna_view_cnt = qna_view_cnt + 1 
+		where qna_num = #{qna_num}
+	</update>
+	
+	<select id="selectQnASeqNext" resultType="int">
+		select seq_qna_num.nextval as qna_num from dual
+	</select>
+	
+	<select id="selectSecretQnA" resultType="qna">
+		select *
+		from view_qna
+		where qna_num = #{qna_num}
+		and qna_pwd = #{qna_pwd}
+	</select>
+	
+	<update id="updateSecretQnA" parameterType="qna">
+		update qna 
+		set qna_title = #{qna_title}, qna_contents = #{qna_contents}, qna_moddate = sysdate, qna_pwd=#{qna_pwd} 
+		where qna_num = #{qna_num}
+		and qna_pwd = #{qna_pwd}
+	</update>
+	
+	
+</mapper> -->

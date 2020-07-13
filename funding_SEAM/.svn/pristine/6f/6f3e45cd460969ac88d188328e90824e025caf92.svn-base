@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="projectUploadPath" class="java.lang.String">
+		<constructor-arg value="${filePath.project.attach}"/>
+	</bean>	
+
+	<!-- DAO -->
+	<bean id="pjt_pay_detailDAO"
+		class="com.funding.dao.project.Pjt_pay_detailDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+		
+		<bean id="projectDAO"
+		class="com.funding.dao.project.ProjectDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+		
+		<bean id="comMemberDAO"
+			class="com.funding.dao.member.ComMemberDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+		<bean id="interest_pjtDAO"
+			class="com.funding.dao.project.Interest_pjtDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+		<bean id="project_cmtsDAO" 
+			class="com.funding.dao.project.Project_cmtsDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+			
+		<bean id="pointDAO" 
+			class="com.funding.dao.member.PointDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+		<bean id="pjt_bank_sum_attachDAO"
+			class="com.funding.dao.project.Pjt_bank_sum_attachDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+		<bean id="project_state_codeDAO"
+			class="com.funding.dao.project.Project_state_codeDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+		<bean id="project_type_codeDAO"
+			class="com.funding.dao.project.Project_type_codeDAOImpl"
+			p:sqlSession-ref="sqlSession"
+			/>
+			
+	<!-- Service -->
+		<bean id="pjt_pay_detailService"
+		class="com.funding.service.project.Pjt_pay_detailServiceImpl"
+		p:pjt_pay_detailDAO-ref="pjt_pay_detailDAO"
+		/>
+		
+		<bean id="projectService"
+			class="com.funding.service.project.ProjectServiceImpl"
+			p:projectDAO-ref="projectDAO"
+			p:pjt_pay_detailDAO-ref="pjt_pay_detailDAO"
+			p:comMemberDAO-ref="comMemberDAO"
+			p:pjt_bank_sum_attachDAO-ref="pjt_bank_sum_attachDAO"
+			p:project_state_codeDAO-ref="project_state_codeDAO"
+			p:project_type_codeDAO-ref="project_type_codeDAO"
+		/>
+		
+		<bean id="interest_pjtService"
+			class="com.funding.service.project.Interest_pjtServiceImpl"
+			p:interest_pjtDAO-ref="interest_pjtDAO"
+		/>
+		<bean id="project_cmtsService"
+			class="com.funding.service.project.Project_cmtsServiceImpl"
+			p:project_cmtsDAO-ref="project_cmtsDAO"
+			p:memberDAO-ref="memberDAO"
+			/>
+		<bean id="pointService"
+			class="com.funding.service.member.PointServiceImpl"
+			p:pointDAO-ref="pointDAO"
+			/>
+		<bean id="comMemberService"
+		class="com.funding.service.member.ComMemberServiceImpl"
+		p:comMemberDAO-ref="comMemberDAO"
+		/>
+		<bean id="pjt_bank_sum_attachService"
+		class="com.funding.service.project.Pjt_bank_sum_attachServiceImpl"
+		p:pjt_bank_sum_attachDAO-ref="pjt_bank_sum_attachDAO"
+		/>
+		<bean id="project_state_codeService"
+		class="com.funding.service.project.Project_state_codeServiceImpl"
+		p:project_state_codeDAO-ref="project_state_codeDAO"
+		/>
+		<bean id="project_type_codeService"
+		class="com.funding.service.project.Project_type_codeServiceImpl"
+		p:project_type_codeDAO-ref="project_type_codeDAO"
+		/>
+		
+		
+</beans>

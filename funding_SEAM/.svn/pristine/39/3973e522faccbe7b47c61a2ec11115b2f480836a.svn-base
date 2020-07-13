@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<definition name="base" template="/WEB-INF/tiles/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/include/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/views/include/footer.jsp"/>		
+	</definition>
+
+	<!-- 헤더 서브메뉴 표시 -->	
+	<definition name="*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>
+	</definition>
+	
+	<definition name="*/*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	
+	<definition name="*/*/*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	
+	<definition name="mypage" template="/WEB-INF/tiles/mypage_template.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/include/header.jsp"/>
+		<put-attribute name="mypageLeft" value="/WEB-INF/views/include/mypageLeft.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/views/include/footer.jsp"/>		
+	</definition>
+
+	<!-- 헤더 서브메뉴 표시 -->	
+	<definition name="*.mypage" extends="mypage">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>
+	</definition>
+	
+	<definition name="*/*.mypage" extends="mypage">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	
+	<definition name="*/*/*.mypage" extends="mypage">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp"/>
+	</definition>
+
+	
+	
+	<definition name="open" template="/WEB-INF/tiles/open_template.jsp">
+		<put-attribute name="open_header" value="/WEB-INF/views/include/open_header.jsp" />
+		<put-attribute name="open_footer" value="/WEB-INF/views/include/open_footer.jsp" />
+	</definition>
+	<!-- 헤더메뉴 표시안함 -->
+	<definition name="*.open" extends="open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	
+	<definition name="*/*.open" extends="open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="*/*/*.open" extends="open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	
+	<!-- 관리자 페이지 -->
+	<definition name="admin_base" template="/WEB-INF/tiles/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/include/admin_header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/views/include/admin_footer.jsp"/>		
+	</definition>
+
+	<!-- 헤더 서브메뉴 표시 -->	
+	<definition name="*.admin_page" extends="admin_base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>
+	</definition>
+	
+	<definition name="*/*.admin_page" extends="admin_base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	
+	<definition name="*/*/*.admin_page" extends="admin_base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="admin_open" template="/WEB-INF/tiles/open_template.jsp">
+		<put-attribute name="open_header" value="/WEB-INF/views/include/admin_open_header.jsp" />
+		<put-attribute name="open_footer" value="/WEB-INF/views/include/admin_open_footer.jsp" />
+	</definition>
+	
+	<!-- 헤더메뉴 표시안함 -->
+	<definition name="*.admin_open" extends="admin_open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	
+	<definition name="*/*.admin_open" extends="admin_open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="*/*/*.admin_open" extends="admin_open">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+</tiles-definitions> 

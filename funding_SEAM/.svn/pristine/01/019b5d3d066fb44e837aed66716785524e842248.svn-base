@@ -1,0 +1,21 @@
+package com.funding.service.myinfo;
+
+import java.sql.SQLException;
+
+import com.funding.dao.myinfo.CalendarDAO;
+import com.funding.dto.CalendarVO;
+
+public class CalendarServiceImpl implements CalendarService {
+
+	//CalendarDAO
+	private CalendarDAO calendarDAO;
+	public void setCalendarDAO(CalendarDAO calendarDAO) {
+		this.calendarDAO = calendarDAO;
+	}
+	
+	@Override
+	public void insertDailyCheck(CalendarVO cal) throws SQLException {
+		calendarDAO.insertDailyCheck(cal);
+	}
+
+}

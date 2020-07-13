@@ -1,0 +1,32 @@
+package com.funding.service.admin;
+
+import java.sql.SQLException;
+import java.util.Map;
+
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminProjectRequest;
+import com.funding.request.AdminProjectSearchCriteria;
+
+public interface AdminProjectManageService {
+
+	//프로젝트 리스트 조회 + 검색
+	Map<String, Object> getSearchProjectList(AdminProjectSearchCriteria cri) throws SQLException;
+
+	//프로젝트 상세보기
+	Map<String, Object> getProject(AdminDetailPageMaker pageMaker, int pjt_num) throws SQLException;
+
+	//프로젝트 승인/보류 하기
+	void modifyProjectState(ProjectVO project) throws SQLException;
+
+	//프로젝트 정산 처리 하기
+	void modifyProjectCalc(int pjt_num) throws SQLException;
+	
+	//프로젝트 추천하기
+	void modifyProjectThumbsUp(ProjectVO project) throws SQLException;
+	
+	//프로젝트 활성화 여부
+	void modifyProjectEnabled(ProjectVO project) throws SQLException;
+
+}

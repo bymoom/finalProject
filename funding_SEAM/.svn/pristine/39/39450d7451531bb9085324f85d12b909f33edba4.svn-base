@@ -1,0 +1,21 @@
+package com.funding.dao.myinfo;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.CalendarVO;
+
+public class CalendarDAOImpl implements CalendarDAO {
+	
+	private SqlSession session;
+	public void setSqlSession(SqlSession session) {
+		this.session = session;
+	}
+	
+	@Override
+	public void insertDailyCheck(CalendarVO cal) throws SQLException {
+		session.update("Calendar-Mapper.insertDailyCheck", cal);
+	}
+
+}

@@ -1,0 +1,27 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.PjtSearchCriteria;
+
+public interface ProjectDAO {
+	
+	public List<ProjectVO> categorySelectProjectList(PjtSearchCriteria pjtCri)throws SQLException;
+	
+	public int categorySelectProjectListCount(PjtSearchCriteria pjtCri)throws SQLException;
+	
+	public List<ProjectVO> selectProjectList() throws SQLException;
+	
+	public ProjectVO selectProjectByNum(int pjt_num)throws SQLException;
+	
+	List<ProjectVO> searchSelectProjectList(String val)throws SQLException;
+	
+	int selectProjectCount(String val)throws SQLException;
+	
+	
+	public int insertDonationProjectSeq()throws SQLException;
+	public void insertDonationProject(ProjectVO project)throws SQLException;
+	
+}

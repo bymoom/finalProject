@@ -1,0 +1,165 @@
+package com.funding.service.admin;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.admin.AdminProjectManageDAO;
+import com.funding.dao.project.Pjt_pay_detailDAO;
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.dto.Project_state_codeVO;
+import com.funding.dto.Project_type_codeVO;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminMemberDetailRequest;
+import com.funding.request.AdminProjectPageMaker;
+import com.funding.request.AdminProjectRequest;
+import com.funding.request.AdminProjectSearchCriteria;
+
+public class AdminProjectManageServiceImpl implements AdminProjectManageService {
+
+	@Autowired
+	private AdminProjectManageDAO adminProjectManageDAO;
+	public void setAdminProjectManageDAO(AdminProjectManageDAO adminProjectManageDAO) {
+		this.adminProjectManageDAO = adminProjectManageDAO;
+	}
+	
+	@Autowired
+	private Pjt_pay_detailDAO pjt_pay_detailDAO;
+	public void setPjt_pay_detailDAO(Pjt_pay_detailDAO pjt_pay_detailDAO) {
+		this.pjt_pay_detailDAO = pjt_pay_detailDAO;
+	}
+	
+	@Override
+	public List<ProjectVO> getFinishProjectList() throws SQLException {
+		List<ProjectVO> finishProjectList = adminProjectManageDAO.selectFinishProjectList();
+		return finishProjectList;
+	}
+	
+	@Override
+	public Map<String, Object> getSearchProjectList(AdminProjectSearchCriteria cri) throws SQLException {
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		
+		/**
+		 * 프로젝트 관련 코드 리스트
+		 */
+		List<Project_type_codeVO> pjtTypeCodeList = adminProjectManageDAO.selectPjtTypeCode();
+		List<Project_state_codeVO> pjtStateCodeList = adminProjectManageDAO.selectPjtStateCode();
+		
+		/**
+		 * 대기자 수
+		 */
+		int stateStandByTotalCount = adminProjectManageDAO.selectStateToStandByTotalCount();
+		int calcStandByTotalCount = adminProjectManageDAO.selectCalcToStandByTotalCount();
+		
+		/**
+		 * 프로젝트 리스트
+		 */
+		List<AdminProjectRequest> projectList = adminProjectManageDAO.selectSearchProjectList(cri);
+		int totalCount = adminProjectManageDAO.selectSearchProjectListTotalCount(cri);
+		
+		AdminProjectPageMaker pageMaker = new AdminProjectPageMaker();
+		pageMaker.setCri(cri);
+		pageMaker.setTotalCount(totalCount);
+		
+		/**
+		 * 진행중인 프로젝트 진척도 막대그래프 보여줄 용도
+		 */
+		for(AdminProjectRequest projectReq : projectList) {
+			int sum = pjt_pay_detailDAO.selectPjtPaySum(projectReq.getPjt_num());
+			projectReq.setPjtPaySum(sum);
+		}
+		
+		/**
+		 * 다운로드 용 프로젝트 리스트
+		 */
+		List<AdminProjectRequest> projectListForDownload = adminProjectManageDAO.selectSearchProjectListForDownload(cri);
+		
+		dataMap.put("pjtTypeCodeList", pjtTypeCodeList);
+		dataMap.put("pjtStateCodeList", pjtStateCodeList);
+		dataMap.put("stateStandByTotalCount", stateStandByTotalCount);
+		dataMap.put("calcStandByTotalCount", calcStandByTotalCount);
+		dataMap.put("projectList", projectList);
+		dataMap.put("pageMaker", pageMaker);
+		dataMap.put("projectListForDownload", projectListForDownload);
+				
+		return dataMap;
+	}
+
+	@Override
+	public Map<String, Object> getProject(AdminDetailPageMaker pageMaker, int pjt_num) throws SQLException {
+		Map<String, Object> dataMap = new HashMap<>();
+		
+		AdminProjectRequest project = adminProjectManageDAO.selectProjectByPjtNum(pjt_num);
+		
+		//프로젝트 참여자 리스트
+		List<AdminMemberDetailRequest> listOfParticipationInProject = adminProjectManageDAO.selectProjectPayByPjtNum(pageMaker, pjt_num);
+		
+		//프로젝트 참여 회원 목록 전용 페이지네이션
+		int projectPayTotalCount = adminProjectManageDAO.selectProjectPayByPjtNumTotalCount(pjt_num);
+		pageMaker.setTotalCount(projectPayTotalCount);
+		
+		//프로젝트 참여 회원 목록 다운로드 용도
+		List<AdminMemberDetailRequest> listOfParticipationInProjectForDownload = adminProjectManageDAO.selectProjectPayByPjtNumForDownload(pjt_num);
+		
+		//정산 대기자 확인할 용도
+		List<AdminProjectRequest> calcToStandByList = adminProjectManageDAO.selectCalcToStandByList();
+		
+		//진행중인 프로젝트 확인할 용도
+		List<ProjectVO> projectInProgressList = adminProjectManageDAO.selectProjectListInProgress();
+		
+		//대출 상환 대기자 리스트
+		List<AdminProjectRequest> standByToCalcList = adminProjectManageDAO.selectStandByToCalcList();
+		
+		dataMap.put("project", project);
+		dataMap.put("listOfParticipationInProject", listOfParticipationInProject);
+		dataMap.put("pageMaker", pageMaker);
+		dataMap.put("listOfParticipationInProjectForDownload", listOfParticipationInProjectForDownload);
+		dataMap.put("calcToStandByList", calcToStandByList);
+		dataMap.put("projectInProgressList", projectInProgressList);
+		dataMap.put("standByToCalcList", standByToCalcList);
+		
+		return dataMap;
+	}
+
+	@Override
+	public void modifyProjectState(ProjectVO project) throws SQLException {
+		adminProjectManageDAO.modifyProjectState(project);
+	}
+
+	@Override
+	public void modifyProjectCalcDate(int pjt_num) throws SQLException {
+		adminProjectManageDAO.modifyProjectCalcDate(pjt_num);
+	}
+	
+	@Override
+	public void modifyProjectRepayDate(int pjt_num) throws SQLException {
+		adminProjectManageDAO.modifyProjectRepayDate(pjt_num);
+	}
+
+	@Override
+	public void modifyProjectCalculateCode(ProjectVO project) throws SQLException {
+		adminProjectManageDAO.modifyProjectCalculateCode(project);
+	}
+
+	@Override
+	public void modifyProjectThumbsUp(ProjectVO project) throws SQLException {
+		adminProjectManageDAO.modifyProjectThumbsUp(project);
+	}
+
+	@Override
+	public void modifyProjectEnabled(ProjectVO project) throws SQLException {
+		adminProjectManageDAO.modifyProjectEnabled(project);
+	}
+
+	@Override
+	public void updateRepayment(int pjt_pay_num) throws SQLException {
+		adminProjectManageDAO.updateRepayment(pjt_pay_num);
+	}
+
+}

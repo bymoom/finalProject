@@ -1,0 +1,27 @@
+package com.funding.controller.mypage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.funding.service.member.PointService;
+
+@Controller
+@RequestMapping("/mypage")
+public class MypageController {
+	
+	@Autowired
+	private PointService pointService;
+
+	
+	@RequestMapping("/main")
+	public String mypageMain(int mem_num,Model model)throws Exception{
+		String url="mypage/mypageMain.mypage";
+		int point = pointService.getPointByMemNum(mem_num);
+		
+		model.addAttribute("point",point);
+		
+		return url;
+	}
+}

@@ -1,0 +1,13 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.Project_ProposeVO;
+import com.funding.request.SearchCriteria;
+
+public interface ProjectProposeDAO {
+	
+	List<Project_ProposeVO> proposeList(SearchCriteria cri)throws SQLException;
+	
+}

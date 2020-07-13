@@ -1,0 +1,33 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.Pjt_pay_detailVO;
+
+public class Pjt_pay_detailDAOImpl implements Pjt_pay_detailDAO {
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public int selectPjtPaySum(int pjt_num) throws SQLException {
+		int sum=sqlSession.selectOne("Pjt_pay_detail.selectPjtPaySum",pjt_num);
+		return sum;
+	}
+
+	@Override
+	public int selectBoardSeqNext() throws SQLException {
+		int num=sqlSession.selectOne("Pjt_pay_detail.selectPjsPaySeqNext");
+		return num;
+	}
+
+	@Override
+	public void insertPjtPay(Pjt_pay_detailVO pjt_pay_detail) throws SQLException {
+		sqlSession.update("Pjt_pay_detail.insertPjtPay",pjt_pay_detail);
+		
+	}
+
+}

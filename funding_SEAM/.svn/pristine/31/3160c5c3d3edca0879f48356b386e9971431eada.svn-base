@@ -1,0 +1,25 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dao.ProjectProposeDAO;
+import com.funding.dto.Project_ProposeVO;
+import com.funding.request.SearchCriteria;
+
+public class ProjectProposeServiceImpl implements ProjectProposeService{
+
+	private ProjectProposeDAO prpDAO;
+	
+	public void setPrpDAO(ProjectProposeDAO prpDAO) {
+		this.prpDAO = prpDAO;
+	}
+	
+	@Override
+	public List<Project_ProposeVO> getProposeList(SearchCriteria cri) throws SQLException {
+		List<Project_ProposeVO> dataMap = prpDAO.proposeList(cri);
+		return dataMap;
+	}
+
+}

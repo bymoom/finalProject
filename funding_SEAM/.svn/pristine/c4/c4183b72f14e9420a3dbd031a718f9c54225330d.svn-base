@@ -1,0 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+
+<footer style="background:lightgray; height:130px; text-align:center;">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.3
+    </div>
+    <strong>Copyright © 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+
+<!-- Bootstrap 4 --><!-- Bootstrap 4 -->
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<%=request.getContextPath()%>/resources/bootstrap/dist/js/adminlte.min.js"></script>
+
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+
+
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+<script src="<%=request.getContextPath() %>/resources/js/common.js"></script>
+</body>
+
+
+
+</html>
+
+
+
+
+
+
+

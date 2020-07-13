@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member-Mapper">
+	
+	<sql id="search">	
+		<if test="searchType == 'i'.toString()">
+			and mem_email like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'p'.toString()">
+			and phone like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'e'.toString()">
+			and email like '%'||#{keyword}||'%'			
+		</if>		
+	</sql>	
+
+	<select id="selectSearchMemberList" resultType="member">
+		SELECT
+		* 
+		FROM member
+		WHERE mem_email IS NOT NULL
+		<include refid="search" />
+		ORDER BY mem_regdate DESC
+	</select>
+	
+	<select id="selectSearchMemberListCount" resultType="int">
+		SELECT
+		COUNT(*) 
+		FROM member
+		WHERE mem_email IS NOT NULL
+		<include refid="search" />
+		ORDER BY mem_regdate DESC
+	</select>
+		
+	<select id="selectMemberListCount" resultType="int">
+		SELECT count(*) 
+		FROM member
+	</select>
+
+	<select id="selectMemberList" resultType="member">
+		SELECT * 
+		FROM member
+	</select>
+
+	<select id="selectMemberById" resultType="member">
+		select 
+		* 
+		from member 
+		where mem_email=#{mem_email}
+	</select>
+
+	<select id="selectMemberByNum" resultType="member">
+		select 
+		* 
+		from member 
+		where mem_num=#{mem_num}
+	</select>
+	
+	<select id="selectMemberByName" resultType="member" parameterType="str">
+		select 
+		* 
+		from member 
+		where mem_name=#{mem_name}
+	</select>
+	
+	<select id="findIdByEmailAndPhone" resultType="member" parameterType="member">
+		SELECT
+		* 
+		FROM member 
+		WHERE mem_name=#{mem_name} AND mem_phone=#{mem_phone}
+	</select>
+	
+	<update id="insertMember" parameterType="member">
+		insert into 
+		member(mem_num, mem_email, mem_pw, mem_name, mem_phone, mem_profile_img, mem_profile_ori, mem_regdate, mem_lastdate, code_num, code_state)
+		values(seq_mem_num.nextval, #{mem_email}, #{mem_pw}, #{mem_name}, #{mem_phone}, '', '', sysdate, sysdate, 1, 1)
+	</update>
+	
+	<update id="insertComMember" parameterType="member">
+		INSERT ALL
+		INTO member(mem_num, mem_email, mem_pw, mem_name, mem_phone, mem_regdate, mem_lastdate, code_num, code_state)
+		VALUES(seq_mem_num.nextval, #{mem_email}, #{mem_pw}, #{mem_name}, #{mem_phone}, sysdate, sysdate, 1, 1)
+		INTO commember(com_num, com_bsns_name, com_bsns_rep_name, com_bsns_number, com_bsns_phone, com_bsns_reg_license, com_bsns_cert, mem_num)
+		VALUES(seq_com_num.nextval, #{com_bsns_name}, #{com_bsns_rep_name}, #{com_bsns_number}, #{com_bsns_phone}, #{com_bsns_reg_license}, #{com_bsns_cert}, seq_mem_num.nextval)
+		
+		SELECT m.mem_num, m.mem_email, m.mem_pw, m.mem_name, m.mem_phone, m.mem_profile_img, m.mem_profile_ori, m.mem_regdate, m.mem_lastdate, m.code_num, m.code_state,
+        cm.com_num, cm.com_bsns_name, cm.com_bsns_rep_name, cm.com_bsns_number, cm.com_bsns_phone, cm.com_bsns_reg_license, cm.com_bsns_cert, cm.mem_num
+		FROM member m, commember cm
+		WHERE m.mem_num = cm.mem_num
+	</update>
+	
+	<!-- 	작성중... -->
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		#{mem_pw}, #{mem_name}, #{mem_phone}, #{mem_profile_img}, #{mem_profile_ori}, sysdate
+		where mem_email = #{mem_email}
+	</update>
+	<update id="updateComMember" parameterType="member">
+		update member
+		set
+		#{mem_pw}, #{mem_name}, #{mem_phone}, #{mem_profile_img}, #{mem_profile_ori}, sysdate
+		where mem_email = #{mem_email}
+	</update>
+	<!-- 	Temp -->
+	
+	<update id="deleteMember" parameterType="str" >
+		delete 
+		from member 
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="disableMember" >
+		update 
+		member
+		set
+		code_state=0
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="enableMember" >
+		update 
+		member
+		set
+		code_state=1
+		where mem_email=#{mem_email}
+	</update>
+	
+	
+	<update id="updateRecentLoginTime" >
+		update member 
+		set
+		lastdate = sysdate
+		where mem_email=#{mem_email}	
+	</update>
+	
+	
+	
+	
+</mapper>
+
+
+
+

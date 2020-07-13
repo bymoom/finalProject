@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- member attach -->
+	<bean id="memberAtcPath" class="java.lang.String">
+		<constructor-arg value="${filePath.member.document}" />
+	</bean>
+	
+	<!-- Service -->
+<!-- 	<bean id="myinfoService" -->
+<!-- 	class="com.funding.service.project.ProjectServiceImpl" -->
+<!-- 	p:projectDAO-ref="projectDAO" -->
+<!-- 	p:pjt_pay_detailDAO-ref="pjt_pay_detailDAO" -->
+<!-- 	p:comMemberDAO-ref="comMemberDAO" -->
+<!-- 	p:pjt_bank_sum_attachDAO-ref="pjt_bank_sum_attachDAO" -->
+<!-- 	/> -->
+
+	<bean id="myinfoDAO"
+		class="com.funding.dao.myinfo.MyinfoDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+		
+	<bean id="calendarDAO"
+		class="com.funding.dao.myinfo.CalendarDAOImpl"
+		p:sqlSession-ref="sqlSession"
+		/>
+
+	<bean id="myinfoService"
+		  class="com.funding.service.myinfo.MyinfoServiceImpl"
+		  p:myinfoDAO-ref="myinfoDAO"
+		/>
+	
+	<bean id="calendarService"
+			class="com.funding.service.myinfo.CalendarServiceImpl"
+			p:calendarDAO-ref="calendarDAO"
+			/>
+		
+</beans>

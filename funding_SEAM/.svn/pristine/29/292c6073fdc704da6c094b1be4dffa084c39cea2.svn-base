@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+            <div class="gnbFullBanner gnbFullBannerOpen" id="GNB_FullBanner" style="width:auto;height:auto;">
+                        <div class="gnbFullBannerDimmed" obj="P_BANNER" opt="{&quot;Name&quot;:&quot;mainpopup_video_dim&quot;,&quot;Value&quot;:&quot;1867&quot;,&quot;PageCode&quot;:&quot;65533&quot;}"></div>
+                        <div class="gnbFullBannerSec">
+                            <div class="gnbFullBannerCnts">
+                                <iframe id="publicbanner-player" frameborder="0" allowfullscreen="1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" title="YouTube video player" width="990" height="557" src="https://www.youtube.com/embed/OqKcPryymoI?origin=https%3A%2F%2Fwww.nexon.com&amp;enablejsapi=1&amp;widgetid=3" data-gtm-yt-inspected-11184324_280="true"></iframe>
+                            </div>
+                            <div class="gnbFullBannerBt">
+                                
+                            <a href="https://fifamobile.nexon.com/events/200610/Index?channel=1070225211111" target="_blank" class="gnbFullBannerBtDetail" id="GNB_BannerBtDetail" obj="P_BANNER" opt="{&quot;Name&quot;:&quot;mainpopup_video_more&quot;,&quot;Value&quot;:&quot;1867&quot;,&quot;PageCode&quot;:&quot;65533&quot;}" data-gtm-vis-recent-on-screen-11184324_308="602" data-gtm-vis-first-on-screen-11184324_308="602" data-gtm-vis-total-visible-time-11184324_308="100" data-gtm-vis-has-fired-11184324_308="1">
+                                <span>자세히 보기</span>
+                            </a>
+                                
+                            <a href="#today" class="gnbFullBannerBtToday" id="GNB_BannerBtToday" obj="P_BANNER" opt="{&quot;Name&quot;:&quot;mainpopup_video_today&quot;,&quot;Value&quot;:&quot;1867&quot;,&quot;PageCode&quot;:&quot;65533&quot;}">
+                                <span>오늘 하루 보지 않기</span>
+                            </a>
+                                
+                            <a href="#close" class="gnbFullBannerBtClose" id="GNB_BannerBtClose" obj="P_BANNER" opt="{&quot;Name&quot;:&quot;mainpopup_video_close&quot;,&quot;Value&quot;:&quot;1867&quot;,&quot;PageCode&quot;:&quot;65533&quot;}">
+                                <span>레이어 닫기</span>
+                            </a>
+                            <div>
+                        </div>
+                    </div></div></div>
+
+<script>
+	$('#closePopup').on('click',function(){
+		window.close();
+	});
+</script>

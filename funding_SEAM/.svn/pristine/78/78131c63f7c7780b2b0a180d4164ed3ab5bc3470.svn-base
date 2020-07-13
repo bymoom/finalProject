@@ -1,0 +1,96 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dao.MemberDAO;
+import com.funding.dto.MemberVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.SearchCriteria;
+
+public class MemberServiceImpl implements MemberService {
+
+	//MemberDAO
+	private MemberDAO memberDAO;
+	public void setMemberDAO(MemberDAO memberDAO) {
+		this.memberDAO = memberDAO;
+	}
+	
+	@Override
+	public void login(String id, String pwd) throws SQLException, NotFoundIDException, InvalidPasswordException {
+		MemberVO member = memberDAO.selectMemberById(id);
+		if (member == null)
+			throw new NotFoundIDException();
+		if (!pwd.equals(member.getMem_pw()))
+			throw new InvalidPasswordException();
+	}
+
+	@Override
+	public List<MemberVO> getMemberList() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> getMemberList(SearchCriteria cri) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MemberVO getMember(String id) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void regist(MemberVO member) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void registComMember(MemberVO member) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void modify(MemberVO member) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void modifyComMember(MemberVO member) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void remove(String id) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disabled(String id) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void enabled(String id) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public MemberVO getMember(int mem_num) throws SQLException {
+		MemberVO member = memberDAO.selectMemberByNum(mem_num);
+		return member;
+	}
+
+}

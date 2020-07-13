@@ -1,0 +1,83 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.dto.Project_state_codeVO;
+import com.funding.dto.Project_type_codeVO;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminMemberDetailRequest;
+import com.funding.request.AdminProjectRequest;
+import com.funding.request.AdminProjectSearchCriteria;
+
+public interface AdminProjectManageDAO {
+
+	//문자 알림용(종료된 프로젝트 리스트)
+	List<ProjectVO> selectFinishProjectList() throws SQLException;
+	
+	//프로젝트 분류 코드 리스트(기부, 대출)
+	List<Project_type_codeVO> selectPjtTypeCode() throws SQLException;
+	
+	//프로젝트 진행 상태 코드 리스트(미승인, 승인, 보류, 승인재요청)
+	List<Project_state_codeVO> selectPjtStateCode() throws SQLException;
+	
+	//프로젝트 목록 조회 + 검색
+	List<AdminProjectRequest> selectSearchProjectList(AdminProjectSearchCriteria cri) throws SQLException;
+
+	//프로젝트 목록 조회 + 검색 + 다운로드
+	List<AdminProjectRequest> selectSearchProjectListForDownload(AdminProjectSearchCriteria cri) throws SQLException;
+	
+	//프로젝트 목록 조회 + 검색 총 개수
+	int selectSearchProjectListTotalCount(AdminProjectSearchCriteria cri) throws SQLException;
+	
+	//프로젝트 등록 승인 대기자 수
+	int selectStateToStandByTotalCount() throws SQLException;
+	
+	//프로젝트 정산 대기자 수
+	int selectCalcToStandByTotalCount() throws SQLException;
+	
+	//프로젝트 조회
+	AdminProjectRequest selectProjectByPjtNum(int pjt_num) throws SQLException;
+	
+	//프로젝트 참여 회원 목록 조회
+	List<AdminMemberDetailRequest> selectProjectPayByPjtNum(AdminDetailPageMaker pageMaker, int pjt_num) throws SQLException;
+
+	//프로젝트 참여 회원 목록 조회 + 다운로드
+	List<AdminMemberDetailRequest> selectProjectPayByPjtNumForDownload(int pjt_num) throws SQLException;
+	
+	//프로젝트 참여 회원 총 수
+	int selectProjectPayByPjtNumTotalCount(int pjt_num) throws SQLException;
+	
+	//정산 대기중인 프로젝트 리스트
+	List<AdminProjectRequest> selectCalcToStandByList() throws SQLException;
+	
+	//진행중인 프로젝트 리스트
+	List<ProjectVO> selectProjectListInProgress() throws SQLException;
+	
+	//대출 상환 대기자 리스트
+	List<AdminProjectRequest> selectStandByToCalcList() throws SQLException;
+	
+	//프로젝트 승인/보류 하기
+	void modifyProjectState(ProjectVO project) throws SQLException;
+	
+	//프로젝트 정산 완료 처리 하기
+	void modifyProjectCalcDate(int pjt_num) throws SQLException;
+
+	//프로젝트 대출 상환 완료 처리 하기
+	void modifyProjectRepayDate(int pjt_num) throws SQLException;
+	
+	//프로젝트 정산/상환 여부 코드 변경 하기
+	void modifyProjectCalculateCode(ProjectVO project) throws SQLException;
+	
+	//프로젝트 추천하기
+	void modifyProjectThumbsUp(ProjectVO project) throws SQLException;
+	
+	//프로젝트 활성화 여부
+	void modifyProjectEnabled(ProjectVO project) throws SQLException;
+	
+	//프로젝트 상세 페이지 내에 있는 결제 내역 대출 상환 완료 처리
+	void updateRepayment(int pjt_pay_num) throws SQLException;
+	
+}

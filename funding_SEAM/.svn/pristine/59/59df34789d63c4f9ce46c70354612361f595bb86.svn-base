@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<button type="button" id="back" onclick="back()">목록보기</button>
+
+
+<br>
+제목 ${project.pjt_title }<br>
+
+${project.pjt_title }<br>
+${project.pjt_contents }<br>
+${project.pjt_cash }<br>
+${project.pjt_int_rate }<br>
+${project.pjt_startdate }<br>
+${project.pjt_enddate }<br>
+${project.pjt_view_cnt }<br>
+${project.pjt_thumbsup }<br>
+${project.pjt_category }<br>
+
+<button type="button" id="payBtn" onclick="goPayForm()">참여하기</button>
+<button type="button" id="shareBtn" onclick="share()">공유하기</button>
+<div id="share" style="display:none;">
+	<button type="button" id="faceBookBtn" onclick="getURL()"><i class="fab fa-facebook fa-2x"></i></button>
+	<button type="button" id="twitterBtn" onclick="location.href ='https://twitter.com/intent/tweet?text=TEXT&url=PAGE_URL'"><i class="fab fa-twitter fa-2x"></i></button>
+	<button type="button" id="linkBtn" onclick="Copy();"><i class="fas fa-link fa-2x"></i></button>
+</div>
+<button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+  Tooltip on top
+</button>
+<div class="bd-clipboard"><button class="btn-clipboard" title="" data-original-title="Copy to clipboard">Copy</button></div>
+
+
+    <br />
+<script>
+var path = location.pathname;
+var url = location.search;
+var page ='192.168.205.27'+path+url;
+
+$("meta[property='og\\:title']").attr("content", '${project.pjt_title }' );
+$("meta[property='og\\:url']").attr("content", page);                    
+$("meta[property='og\\:description']").attr("content", '페이지설명넣기' );
+$("meta[property='og\\:image']").attr("content", '이미지주소넣기' );
+
+// 동적으로 페이지 타이틀 수정하기
+$(document).ready(function() {
+    document.title = 'FunSEAMding - ${project.pjt_title }';
+});
+	function back(){
+		location.href="list";
+	}
+	function goPayForm(){
+		location.href="payForm?pjt_num=${project.pjt_num }";
+	}
+	function share(){
+		$('#share').css('display','block');
+	}
+	function getURL(){
+		window.open('http://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(page));
+	}
+	
+    function Copy() 
+    {
+        var t = document.createElement("textarea");
+        document.body.appendChild(t);
+        t.value = page;
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+    }
+    $(function () {
+    	  $('[data-toggle="tooltip"]').tooltip()
+    	})
+    	
+
+</script>

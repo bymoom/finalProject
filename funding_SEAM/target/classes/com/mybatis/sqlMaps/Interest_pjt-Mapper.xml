@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Interest_pjt-Mapper">
+	
+	<update id="insertInterestPjt" parameterType="interest_pjt">
+		insert into interest_pjt
+		(int_pjt_num,pjt_num,mem_num)
+		values(seq_int_pjt_num.nextval,#{pjt_num},#{mem_num})
+	</update>
+	
+	<update id="deleteInterestPjt" parameterType="interest_pjt">
+		delete from interest_pjt
+		where mem_num=#{mem_num} 
+		and pjt_num=#{pjt_num}
+	</update>
+	
+	<update id="deleteInterestPjtByIntPjtNum">
+		delete from interest_pjt
+		where int_pjt_num=#{int_pjt_num} 
+	</update>
+	
+	<select id="getInterestPjt" resultType="interest_pjt" parameterType="interest_pjt">
+		select *
+		from interest_pjt
+		where mem_num=#{mem_num}
+		and pjt_num=#{pjt_num}
+	</select>
+	
+	
+</mapper>

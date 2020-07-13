@@ -1,0 +1,51 @@
+package com.funding.service.myinfo;
+
+import java.sql.SQLException;
+
+import com.funding.dao.MemberDAO;
+import com.funding.dao.myinfo.MyinfoDAO;
+import com.funding.dto.MemberVO;
+import com.funding.request.ComMemberModifyRequest;
+import com.funding.request.MemberModifyRequest;
+
+public class MyinfoServiceImpl implements MyinfoService {
+
+//	//MemberDAO
+//	private MemberDAO memberDAO;
+//	public void setMemberDAO(MemberDAO memberDAO) {
+//		this.memberDAO = memberDAO;
+//	}
+	
+	//MyinfoDAO
+	private MyinfoDAO myinfoDAO;
+	public void setMyinfoDAO(MyinfoDAO myinfoDAO) {
+		this.myinfoDAO = myinfoDAO;
+	}
+	
+	@Override
+	public MemberVO getMember(String id) throws SQLException {
+		MemberVO member = myinfoDAO.selectMemberById(id);
+		return member;
+	}
+
+	@Override
+	public void updateMember(MemberVO member) throws SQLException {
+		
+	}
+
+	@Override
+	public void updateMemberPassword(String mem_pw, String mem_email) throws SQLException {
+		
+	}
+
+	@Override
+	public void modify(MemberVO member) throws SQLException {
+		myinfoDAO.modifyMember(member);
+	}
+
+	@Override
+	public void modifyCom(ComMemberModifyRequest comMemModReq) throws SQLException {
+		myinfoDAO.modifyComMember(comMemModReq);
+	}
+
+}

@@ -1,0 +1,153 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.Project_ProposeVO;
+import com.funding.dto.Thumb_upVO;
+import com.funding.request.PreOrNextForBoardRequest;
+import com.funding.request.SearchCriteria;
+
+public class ProjectProposeDAOImpl implements ProjectProposeDAO{
+
+	private SqlSession sqlSession;
+	
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	@Override
+	public List<Project_ProposeVO> proposeList(SearchCriteria cri) throws SQLException {
+		
+		int offset=cri.getPageStartRowNum();
+		int limit=cri.getPerPageNum();
+		RowBounds rowBounds= new RowBounds(offset,limit);
+		
+		List<Project_ProposeVO> list = sqlSession.selectList("Propose-Mapper.proposeList",cri,rowBounds);
+		
+		return list;
+	}
+
+	@Override
+	public int selectProposeSeqNext() throws SQLException {
+		int seq = sqlSession.selectOne("Propose-Mapper.selectProposeSeqNext");
+		return seq;
+	}
+
+	
+	//mem_name으로 회원번호 찾기
+	@Override
+	public int selectMemberNum(String mem_name) throws SQLException {
+		int num = sqlSession.selectOne("Propose-Mapper.selectMemberNum",mem_name);
+		return num;
+	}
+
+	@Override
+	public void insertPropose(Project_ProposeVO propose) throws SQLException {
+		sqlSession.update("Propose-Mapper.insertPropose",propose);
+		
+	}
+
+	@Override
+	public Project_ProposeVO selectProposeBy_num(int pjtprp_num) throws SQLException {
+		Project_ProposeVO propose = sqlSession.selectOne("Propose-Mapper.selectProposeBy_num",pjtprp_num);
+		return propose;
+	}
+
+	@Override
+	public void updatePropose(Project_ProposeVO propose) throws SQLException {
+		sqlSession.update("Propose-Mapper.updatePropose",propose);
+		
+	}
+
+	@Override
+	public void deletePropose(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.deletePropose",pjtprp_num);
+		
+	}
+
+	@Override
+	public int proposeListCount(SearchCriteria cri) throws SQLException {
+		int count = sqlSession.selectOne("Propose-Mapper.proposeListCount",cri);
+		return count;
+	}
+
+	@Override
+	public void disabledPropose(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.disabledPropose",pjtprp_num);
+	}
+
+	@Override
+	public void enabledPropose(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.enabledPropose",pjtprp_num);
+		
+	}
+
+	@Override
+	public int selectEnabled(int pjtprp_num) throws SQLException {
+		int num = sqlSession.selectOne("Propose-Mapper.selectEnabled",pjtprp_num);
+		return num;
+	}
+
+	@Override
+	public void listDisabledPropose(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.disabledPropose",pjtprp_num);
+		
+	}
+
+	@Override
+	public void increaseViewCnt(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.increaseViewCnt",pjtprp_num);		
+	}
+
+	@Override
+	public List<Thumb_upVO> selectLikeClick(int mem_num) throws SQLException {
+		List<Thumb_upVO> list = sqlSession.selectList("Propose-Mapper.selectLikeClick",mem_num);
+		return list;
+	}
+
+	@Override
+	public void proposeLikePlusCnt(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.proposeLikePlusCnt",pjtprp_num);
+		
+	}
+
+	@Override
+	public void proposeLikeMinusCnt(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.proposeLikeMinusCnt",pjtprp_num);
+		
+	}
+
+	@Override
+	public Project_ProposeVO checkTodayRegist(int mem_num) throws SQLException {
+		Project_ProposeVO propose = sqlSession.selectOne("Propose-Mapper.checkTodayRegist",mem_num);
+		return propose;
+	}
+
+	@Override
+	public List<Project_ProposeVO> selectLikeDesc() throws SQLException {
+		List<Project_ProposeVO> list = sqlSession.selectList("Propose-Mapper.selectLikeDesc");
+		return list;
+	}
+
+	@Override
+	public void successPropose(int pjtprp_num) throws SQLException {
+		sqlSession.update("Propose-Mapper.successPropose",pjtprp_num);
+	}
+
+	@Override
+	public Project_ProposeVO proposeByNum(int pjtprp_num) throws SQLException {
+		Project_ProposeVO propose = sqlSession.selectOne("Propose-Mapper.proposeByNum",pjtprp_num);
+		return propose;
+	}
+
+	@Override
+	public PreOrNextForBoardRequest preOrNext(int pjtprp_num) throws SQLException {
+		PreOrNextForBoardRequest preOrNext = sqlSession.selectOne("Propose-Mapper.selectPreOrNext",pjtprp_num);
+		return preOrNext;
+	}
+
+}

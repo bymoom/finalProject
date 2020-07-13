@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Banner-Mapper">
+
+	<select id="selectBannerList" resultType="banner">
+		select *
+		from banner
+		order by b_num desc
+	</select>
+	
+	<select id="selectBannerListByNum" resultType="banner">
+		select *
+		from banner
+		where b_num=#{b_num}
+	</select>
+	
+	<select id="selectBannerListCount" resultType="int">
+		select count(*)
+		from banner
+		
+	</select>
+
+	<select id="selectBannerSeqNext" resultType="int">
+		select seq_b_num.nextval from dual
+	</select>
+	
+	<select id="selectActiveBanner" resultType="banner">
+		select *
+		from banner
+		where b_enable='게시중'
+		and b_type='메인'
+	</select>
+	
+	<select id="selectActivePartnerBanner" resultType="banner">
+		select *
+		from banner
+		where b_enable='게시중'
+		and b_type='파트너'
+	</select>
+	
+	<update id="registBanner" parameterType="banner">
+		insert into
+		banner(b_num,b_name,b_url,b_uploadpath,b_filename,b_filetype,b_type)
+		values(#{b_num},#{b_name},#{b_url},#{b_uploadpath},#{b_filename},#{b_filetype},#{b_type})
+	</update>
+	
+	<update id="modifyBanner" parameterType="banner">
+		update
+		banner
+		set b_name=#{b_name},
+		b_url=#{b_url},
+		b_uploadpath=#{b_uploadpath},
+		b_filename=#{b_filename},
+		b_filetype=#{b_filetype},
+		b_type=#{b_type}
+		
+		where b_num=#{b_num}
+		
+	</update>
+	
+	<update id="deleteBanner">
+		delete banner
+		where b_num=#{b_num}
+	</update>
+	
+	<update id="bannerDisabled">
+		update banner set b_enable='중단됨'
+		where b_num=#{b_num}
+	</update>
+	
+	<update id="bannerEnabled">
+		update banner set b_enable='게시중'
+		where b_num=#{b_num}
+	</update>
+	
+	
+	
+</mapper>

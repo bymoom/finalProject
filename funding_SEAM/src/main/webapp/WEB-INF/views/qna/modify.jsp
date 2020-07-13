@@ -1,0 +1,72 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
+<head>
+<title>Q&A수정 페이지</title>
+<style type="text/css" id="fontFamilyStyleSheet">
+body { 
+	font-family: 'Malgun Gothic', sans-serif !important; 
+}
+</style>
+</head>
+<body>
+<!-- Content Wrapper. Contains page content -->
+ 
+    <!-- Main content -->
+		<div class="row justify-content-center">
+			<div class="col-md-9" style="max-width:960px;">
+				<h3 style="padding:10px;">글수정</h3>
+						<div class ="card-tools col-sm-12 col-3" style="width:100%;text-align:right;">
+							<button type="button" class="btn btn-outline-success btn-flat" id="modifyBtn">업데이트</button>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn btn-outline-success btn-flat" id="cancelBtn">취 소</button>
+						</div>
+					<div class="card-body pad">
+						<form role="form" method="post" action="modify" name="modify">
+						
+						  	<input type='hidden' name="qna_num" value ="${qna.qna_num}">
+						
+							<div class="form-group">
+								<label for="title">제 목</label> 
+								<input type="text" id="title" value="${qna.qna_title} " readonly name="qna_title" class="form-control">
+							</div>							
+							<div class="form-group">
+								<label for="writer">작성자</label> 
+								<input type="text" id="writer" value="${qna.mem_num} " readonly name="mem_num" class="form-control" >
+							</div>
+							<div class="form-group">
+								<label for="content">내 용</label>
+								<textarea class="textarea" name="qna_contents" id="contents" >${qna.qna_contents}</textarea>
+							</div>
+						</form>
+					</div><!--end card-body  -->
+					<div class="card-footer" style="display:none">
+					
+					</div><!--end card-footer  -->
+				</div><!-- end card -->				
+		</div><!-- end row -->
+
+  
+ <%@ include file="../commons/summernote_js.jsp" %>
+  
+  
+<script>
+	$('#modifyBtn').on('click',function(e){
+		//alert('modify clicked');
+		
+		var form=document.modify;
+		form.submit();
+	});
+	
+	$('#cancelBtn').on('click',function(e){
+		history.go(-1);
+	});
+</script>
+
+</body>
+
+

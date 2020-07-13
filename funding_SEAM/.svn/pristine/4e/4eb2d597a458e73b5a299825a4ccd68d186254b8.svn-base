@@ -1,0 +1,10 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import com.funding.dto.Project_state_codeVO;
+
+public interface Project_state_codeDAO {
+
+	public Project_state_codeVO selectProjectStateCode()throws SQLException;
+}

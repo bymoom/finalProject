@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<body>
+<div class="text-center">
+	<div class="row justify-content-md-center">
+	
+	
+		<div class="col-4 name user-block mt-5 mb-5">
+			<h4>
+			<c:if test="${loginUser.code_num eq 0 }">
+			관리자
+			</c:if>
+			<c:if test="${loginUser.code_num eq 1 }">
+			일반회원
+			</c:if>
+			<c:if test="${loginUser.code_num eq 2 }">
+			소상공인
+			</c:if>
+			</h4>
+			<img class="img-circle img-bordered-md" src="https://source.unsplash.com/category/nature/200/200" alt="user image">
+			<h8>${loginUser.mem_name }님</h8>
+			보유 포인트 : <fmt:formatNumber value="${point }" pattern="#,###" />포인트
+			${loginUser.mem_email }
+			
+			
+			
+		</div>
+		<div class="col-12">	
+		<h4>${loginUser.mem_name }님이 참여중인 프로젝트 현황</h4><br>
+		
+		</div>
+		  <div class="container">
+		      <div class="row contents1 text-center">
+		
+		      </div>
+		  </div>
+	</div>
+</div>
+
+<%@ include file="./projectList_js.jsp" %>  
+</body>

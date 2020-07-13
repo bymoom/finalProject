@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Pjt_pay_detail">
+
+	<select id="selectPjtPaySum" resultType="int">
+		select NVL(sum(pjt_pay_amount),0) sum
+		from pjt_pay_detail
+		where pjt_num=#{pjt_num}
+	</select>
+	
+	<update id="insertPjtPay" parameterType="pjt_pay_detail">
+		insert into pjt_pay_detail
+		(pjt_pay_num,pjt_pay_amount,pjt_pay_type,pjt_pay_usepoint,mem_num,pjt_num) 
+		values
+		(#{pjt_pay_num},#{pjt_pay_amount},#{pjt_pay_type},#{pjt_pay_usepoint},#{mem_num},#{pjt_num})
+	</update>
+
+	<select id="selectPjsPaySeqNext" resultType="int">
+	select seq_pjt_pay_num.nextval as pjt_pay_num
+	from dual
+	</select>
+</mapper>

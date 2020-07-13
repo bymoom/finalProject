@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>아이디 찾기 - FUN&#36;&#123;SEAM&#125;DING</title>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/commons/css/util.css" />
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/commons/css/main.css" />
+</head>
+<body  class="login-layout light-login">
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+
+				
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

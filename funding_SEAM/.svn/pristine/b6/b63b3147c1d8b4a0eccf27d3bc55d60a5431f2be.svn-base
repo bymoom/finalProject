@@ -1,0 +1,186 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<!-- Page Path Begins -->
+<div class="container" style="min-height:800px;">
+	<div class="justify-content-md-center" style="padding:40px;">
+		<h2 class="text-center" style="color:#4f4f4f">자유게시판</h2>
+	</div>
+<!-- Page Path Ends -->
+<!-- Main content -->
+	  <div class="row" style="padding:20px;">
+		<div class="col-sm-3">
+			<c:if test="${loginUser.mem_num eq 1}">
+				<button type="button" class="btn btn-outline-success btn-flat float-left" id="checkBtn" onclick="enabled();" style="margin-right:15px;">블라인드</button>
+			</c:if>	
+			<button type="button" class="btn btn-outline-success btn-flat float-left" id="registBtn">글 등록</button>
+		</div>
+	  	<div class="col-sm-9">
+			<div id="keyword" class="input-group" style="width:400px;float:right;">
+				<select class="form-control" name="searchType" id="searchType" style="border:none;">
+					<option value="tcw"  ${pageMaker.cri.searchType eq 'tcw' ? 'selected':'' }>전 체</option>
+					<option value="t" ${pageMaker.cri.searchType eq 't' ? 'selected':'' }>제 목</option>
+					<option value="w" ${pageMaker.cri.searchType eq 'w' ? 'selected':'' }>작성자</option>
+					<option value="c" ${pageMaker.cri.searchType eq 'c' ? 'selected':'' }>내 용</option>
+					<option value="tc" ${pageMaker.cri.searchType eq 'tc' ? 'selected':'' }>제목+내용</option>
+					<option value="cw" ${pageMaker.cri.searchType eq 'cw' ? 'selected':'' }>작성자+내용</option>							
+				</select>
+				<input class="form-control" type="text" name="keyword" style="width:150px;outline: 0;border-width: 0 0 2px;" placeholder="검색어를 입력하세요." value="${param.keyword }"/>
+				<div class="input-group-append">
+					<button class="btn" type="button" onclick="searchList_go(1,'list');" data-card-widget="search"><i class="fas fa-search"></i></button>
+				</div>
+			</div>	
+		</div>
+	  </div>		
+		<div class="card-body table-responsive p-0">
+			<table class="table table-head-fixed text-center border-bottom">					
+				<tr style="font-size:0.95em;">
+					<c:if test="${loginUser.mem_num eq 1}">
+						<th style="width:5%;"><input type='checkbox' id='checkAll' name='checkAll'></th>
+					</c:if>	
+					<th style="width:10%;">번 호</th>
+					<th style="width:50%;">제 목</th>
+					<th style="width:15%;">작성자</th>
+					<th>등록일</th>
+					<th style="width:10%;">조회수</th>
+				</tr>				
+				<c:if test="${empty freeBoardList }" >
+					<tr>
+						<td colspan="6">
+							<strong>해당 내용이 없습니다.</strong>
+						</td>
+					</tr>
+				</c:if>						
+				<c:forEach items="${freeBoardList }" var="freeBoard">
+					<c:if test="${loginUser.mem_num ne 1}">
+						<c:if test="${freeBoard.free_enabled eq 1}">
+							<tr style='font-size:0.85em;'>
+								<td>${freeBoard.free_num }</td>
+								<td id="boardTitle" style="text-align:left;max-width:100px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+									<a href="<%= request.getContextPath() %>/board/free/detail?free_num=${freeBoard.free_num }" style="color:black;">
+										${freeBoard.free_title }
+											<%-- <c:if test="${freeBoard.replycnt ne 0 }">		
+												<span class="nav-item">															
+												&nbsp;&nbsp;<i class="fa fa-comment"></i>
+												<span class="badge badge-warning navbar-badge">${board.replycnt}</span>
+												</span>
+											</c:if> --%>
+										
+									</a>
+									<c:if test="${freeBoard.free_cmts_cnt != 0}">
+										<span style="color:grey;font-size:9px;">[${freeBoard.free_cmts_cnt }]</span>
+									</c:if>
+								</td>
+								<td>${freeBoard.mem_name }</td>
+								<td>
+									<fmt:formatDate value="${freeBoard.free_regdate }" pattern="yyyy-MM-dd"/>
+								</td>
+								<td>${freeBoard.free_view_cnt }</td>
+							</tr>
+						</c:if>
+					</c:if>
+					<c:if test="${loginUser.mem_num eq 1}">
+						<tr style='font-size:0.85em;'>
+							<c:choose>
+								<c:when test="${freeBoard.free_enabled eq 1 }">
+									<td><input type='checkbox' name='check' value='${freeBoard.free_num }'></td>
+								</c:when>
+								<c:when test="${freeBoard.free_enabled eq 0 }">
+									<td><input type='checkbox' name='check' value='${freeBoard.free_num }' checked></td>
+								</c:when>
+							</c:choose>
+							<td>${freeBoard.free_num }</td>
+							<td id="boardTitle" style="text-align:left;max-width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+							<a href="<%= request.getContextPath() %>/board/free/detail?free_num=${freeBoard.free_num }" style="color:black;">
+								${freeBoard.free_title }
+									<%-- <c:if test="${freeBoard.replycnt ne 0 }">		
+										<span class="nav-item">															
+										&nbsp;&nbsp;<i class="fa fa-comment"></i>
+										<span class="badge badge-warning navbar-badge">${board.replycnt}</span>
+										</span>
+									</c:if> --%>
+								</a>
+								<c:if test="${freeBoard.free_cmts_cnt != 0}">
+									<span style="color:red;font-size:9px;">[${freeBoard.free_cmts_cnt }]</span>
+								</c:if>
+							</td>
+							<td>${freeBoard.mem_name }</td>
+							<td>
+								<fmt:formatDate value="${freeBoard.free_regdate }" pattern="yyyy-MM-dd"/>
+							</td>
+							<td>${freeBoard.free_view_cnt }</td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</table>				
+		</div>
+		<br/>
+		<%@ include file="/WEB-INF/views/board/free/pagination.jsp" %>				
+<!-- Page Content Ends -->
+</div>	   	
+<script>
+	$("#registBtn").on('click', function(){
+		if("${loginUser}" == ""){
+			alert("로그인이 필요합니다.");
+			location.href="<%= request.getContextPath() %>/commons/loginForm";
+			return;
+		}
+		
+		location.href="<%= request.getContextPath() %>/board/free/registForm";
+		
+	});
+	
+	$("#checkAll").on('click', function(){
+        if($("#checkAll").prop("checked")){
+            $("input[name='check']").prop("checked", true);
+        }else{
+            $("input[name='check']").prop("checked", false);
+        }
+    });
+
+	function enabled(){
+		if($("input:checkbox[name='check']").is(":checked") == false){
+			alert("비활성화할 글을 선택해주세요!");
+			return;
+		}
+		
+		var checkedTrueList = new Array();
+		var checkedFalseList = new Array();
+		
+		if($("input:checkbox[name='check']").is(":checked") == true){
+			$(":checkbox[name='check']:checked").each(function(i,e){
+				//alert("check된거 : " + e.value);
+				checkedTrueList.push(e.value);
+			});
+        }
+		if($("input:checkbox[name='check']").not(":checked")){
+			$(":checkbox[name='check']:not(:checked)").each(function(i,e){
+				//alert("check안된거 : " + e.value);
+				checkedFalseList.push(e.value);
+			});
+        }
+
+		var json = { 'checkedTrueList' : checkedTrueList,
+					 'checkedFalseList' : checkedFalseList		
+					};
+		
+		$.ajax({
+			url : '<%= request.getContextPath() %>/board/free/enabled',
+			type : 'post',
+			data: JSON.stringify(json),
+	        //dataType:'json',
+	        contentType:'application/json',
+			success : function(result){
+				alert("글 숨기기에 성공했습니다!");
+			},
+			error : function(error){
+				alert("서버 오류로 실패했습니다. 다시 시도해주세요!");
+			}
+		})	
+
+	}
+
+</script>

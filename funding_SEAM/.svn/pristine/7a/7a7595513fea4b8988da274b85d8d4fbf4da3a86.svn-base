@@ -1,0 +1,77 @@
+package com.funding.controller;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.funding.dto.MemberVO;
+import com.funding.request.MemberRegistRequest;
+import com.funding.service.MemberService;
+
+@Controller
+@RequestMapping("/member/*")
+public class MemberController {
+
+	@Autowired
+	private MemberService memberService;
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	//일반회원가입
+	@RequestMapping("registForm")
+	public String registForm() throws Exception {
+		String url = "member/regist";
+		return url;
+	}
+	
+	//소상공인 회원가입
+	@RequestMapping("registComForm")
+	public String registComForm() throws Exception {
+		String url = "member/registCom";
+		return url;
+	}
+	
+	@RequestMapping(value = "regist.do", method = RequestMethod.POST)
+	public String regist(	MemberRegistRequest registReq,
+							HttpServletResponse response,
+							Model model) throws Exception {
+		String url = "member/regist_success";
+		MemberVO member = registReq.toMemberVO();
+		model.addAttribute("member", member);		
+		try {
+			memberService.regist(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "member/regist_fail";
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping("/joinIntro")
+	public String join() throws Exception {
+		String url = "member/joinIntro";
+		
+		return url;
+	}
+	
+	@RequestMapping("/find/id")
+	public String findId() throws Exception {
+		String url = "member/findId";
+		
+		return url;
+	}
+
+	@RequestMapping("/find/pw")
+	public String findPassword() throws Exception {
+		String url = "member/findPw";
+		
+		return url;
+	}
+	
+}

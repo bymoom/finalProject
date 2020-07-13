@@ -1,0 +1,44 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.MemberVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.SearchCriteria;
+
+public interface MemberService {
+	//로그인
+	void login(String id, String pwd)throws SQLException, NotFoundIDException, InvalidPasswordException;
+	
+	//회원리스트조회
+	List<MemberVO> getMemberList()throws SQLException;	
+	Map<String,Object> getMemberList(SearchCriteria cri)throws SQLException;
+	
+	//회원정보조회
+	MemberVO getMember(String id)throws SQLException;
+	MemberVO getMember(int mem_num)throws SQLException;
+	
+	//일반회원등록
+	void regist(MemberVO member)throws SQLException;
+	
+	//업체회원등록
+	void registComMember(MemberVO member)throws SQLException;
+	
+	//일반회원수정
+	void modify(MemberVO member)throws SQLException;
+
+	//일반회원수정
+	void modifyComMember(MemberVO member)throws SQLException;
+
+	//회원삭제
+	void remove(String id)throws SQLException;
+	
+	//회원정지
+	void disabled(String id)throws SQLException;
+	
+	//회원활성
+	void enabled(String id)throws SQLException;
+}

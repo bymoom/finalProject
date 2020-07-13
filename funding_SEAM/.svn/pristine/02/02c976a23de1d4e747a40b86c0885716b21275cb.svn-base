@@ -1,0 +1,39 @@
+package com.funding.dao.freeboard;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.FreeBoardCmtsVO;
+import com.funding.dto.FreeBoardVO;
+import com.funding.request.SearchCriteria;
+
+public interface FreeBoardCmtsDAO {
+	
+	//해당 게시 글의 댓글 전체 조회
+	List<FreeBoardCmtsVO> selectFreeBoardCmtsList(int free_num)	throws SQLException;
+	
+	//댓글 조회
+	FreeBoardCmtsVO selectFreeBoardCmts(int free_cmts_num)	throws SQLException;
+	
+	//해당 게시 글의 댓글 개수
+	int countFreeBoardCmts(int free_num) throws SQLException;
+	
+	//댓글 등록
+	void registFreeBoardCmts(FreeBoardCmtsVO freeBoardCmts) throws SQLException;
+	
+	//댓글 수정
+	void modifyFreeBoardCmts(FreeBoardCmtsVO freeBoardCmts)throws SQLException;
+	
+	//댓글 권한 수정
+	void modifyFreeBoardCmtsEnabled(FreeBoardCmtsVO freeBoardCmts) throws SQLException;
+	
+	//댓글 삭제
+	void removeFreeBoardCmts(int free_cmts_num) throws SQLException;
+
+	//좋아요 증가
+	void increaseFreeCmtsLike(int free_cmts_num) throws SQLException;
+	
+	//좋아요 감소
+	void decreaseFreeCmtsLike(int free_cmts_num) throws SQLException;
+	
+}

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Propose-Mapper">
+	
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and pjt_prp_board.pjtprp_title like '%'||#{keyword}||'%'			
+		</if>	
+		<if test="searchType == 'c'.toString()">
+			and pjt_prp_board.pjtprp_contents like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and member.mem_name like '%'||#{keyword}||'%'			
+		</if>
+		
+	
+	</sql>
+	
+	<select id="proposeList" 
+			resultType="propose">
+		select pjt_prp_board.*,member.mem_name
+		from
+		pjt_prp_board,member
+		where pjt_prp_board.pjtprp_num is not null		
+        and pjt_prp_board.mem_num = member.mem_num		  	
+		<include refid="search" />
+		order by pjt_prp_board.pjtprp_num desc
+	</select>
+	
+	<select id="proposeByNum" resultType="propose">
+		select *
+		from pjt_prp_board
+		where pjtprp_num=#{pjtprp_num}
+	</select>
+	
+	<select id="proposeListCount" 
+			resultType="int">
+		select
+		count(*)
+		from
+		pjt_prp_board,member
+		where pjt_prp_board.pjtprp_num is not null
+		and pjt_prp_board.mem_num = member.mem_num
+		<include refid="search" />
+		order by pjt_prp_board.pjtprp_regdate desc
+	</select>
+	
+	<select id="selectLikeDesc" resultType="propose">
+		select pjt_prp_board.*,member.mem_name
+		from pjt_prp_board,member
+		where pjt_prp_board.mem_num = member.mem_num
+		and pjt_prp_board.pjtprp_enabled=1
+		order by pjt_prp_board.pjtprp_like desc
+	</select>
+	
+
+	
+	<select id="selectProposeBy_num"  resultType="propose">
+		select pjt_prp_board.*,member.mem_name
+		from
+		pjt_prp_board, member
+		where pjtprp_num is not null 
+        and pjt_prp_board.mem_num = member.mem_num
+        and pjtprp_num = #{pjtprp_num}
+	</select>
+	
+	<!-- 회원번호 찾기 -->
+	<select id="selectMemberNum" parameterType="str" resultType="int">
+		select *
+		from view_pjt_prp_board
+		where mem_name=#{mem_name}
+	</select>
+	
+	<select id="selectEnabled" resultType="int">
+		select pjtprp_enabled
+		from pjt_prp_board
+		where pjtprp_num=#{pjtprp_num}
+	</select>
+	
+	<select id="selectLikeClick" resultType="thumbUp">
+		select thumb_up.pjtprp_num,member.mem_name
+		from thumb_up,member
+		where thumb_up.mem_num = member.mem_num
+		and thumb_up.mem_num = #{mem_num}
+		and pjtprp_num > 0
+	</select>
+	
+	<select id="checkTodayRegist" resultType="propose">
+		select *
+		from pjt_prp_board
+		where mem_num=#{mem_num}
+		and to_char(pjtprp_regdate,'yyyy/mm/dd')=to_char(sysdate,'yyyy/mm/dd')
+	</select>
+	
+	<update id="insertPropose" parameterType="propose">
+		insert 
+		into 
+		pjt_prp_board(pjtprp_num,pjtprp_title,pjtprp_contents,mem_num)
+		values
+		(#{pjtprp_num},#{pjtprp_title},#{pjtprp_contents},#{mem_num})
+	</update>
+	
+	<update id="updatePropose" parameterType="propose">
+		update 
+		pjt_prp_board
+		set 
+		pjtprp_title=#{pjtprp_title}, pjtprp_contents=#{pjtprp_contents}, pjtprp_moddate=sysdate 
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+	<update id="deletePropose" parameterType="int">
+		delete
+		pjt_prp_board		
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+	<update id="proposeLikePlusCnt" parameterType="int">
+		update 
+		pjt_prp_board 
+		set 
+		pjtprp_like=pjtprp_like+1 
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+	<update id="proposeLikeMinusCnt" parameterType="int">
+		update 
+		pjt_prp_board 
+		set 
+		pjtprp_like=pjtprp_like-1 
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+	<update id="increaseViewCnt" parameterType="int">
+		update 
+		pjt_prp_board 
+		set 
+		pjtprp_view_cnt=pjtprp_view_cnt+1 
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+	<update id="disabledPropose" parameterType="int">
+		update pjt_prp_board set pjtprp_enabled = 0
+		where pjtprp_num = #{pjtprp_num}
+	</update>
+	
+	<update id="enabledPropose" parameterType="int">
+		update pjt_prp_board set pjtprp_enabled = 1
+		where pjtprp_num = #{pjtprp_num}
+	</update>
+	
+	<update id="successPropose" parameterType="int">
+		update pjt_prp_board set pjtprp_like=0
+		where pjtprp_num=#{pjtprp_num}
+	</update>
+	
+ 	<select id="selectProposeSeqNext" resultType="int">
+		select seq_pjtprp_num.nextval as pjtprp_num from dual
+	</select>
+	
+	<select id="selectReplyList" resultType="proposeCmt">
+		select pjt_prp_cmts.*,member.mem_name
+		from pjt_prp_cmts,member
+		where pjtprp_cmts_num is not null
+		and pjt_prp_cmts.mem_num = member.mem_num
+		and pjtprp_num=#{pjtprp_num}
+		order by pjtprp_cmts_num desc
+		
+	</select>
+	
+	<select id="selectCmtCount" resultType="int">
+		select count(pjtprp_num)
+		from pjt_prp_cmts
+		where pjtprp_num=#{pjtprp_num}
+	</select>
+	
+	<update id="insertReply" parameterType="proposeCmt">
+		insert into pjt_prp_cmts(pjtprp_cmts_num, pjtprp_cmts_contents,pjtprp_num,mem_num)
+		values(#{pjtprp_cmts_num},#{pjtprp_cmts_contents},#{pjtprp_num},#{mem_num})
+	</update>
+	
+	<update id="disabledProposeCmt" parameterType="int">
+		update pjt_prp_cmts set pjtprp_cmts_enabled = 0
+		where pjtprp_cmts_num = #{pjtprp_cmts_num}
+	</update>
+	
+	<update id="enabledProposeCmt" parameterType="int">
+		update pjt_prp_cmts set pjtprp_cmts_enabled = 1
+		where pjtprp_cmts_num = #{pjtprp_cmts_num}
+	</update>
+	
+	<update id="modifyCmt" parameterType="proposeCmt">
+		update pjt_prp_cmts set pjtprp_cmts_contents=#{pjtprp_cmts_contents}
+		where pjtprp_cmts_num=#{pjtprp_cmts_num}
+	</update>
+	
+	<update id="deleteCmt" parameterType="int">
+		delete pjt_prp_cmts where pjtprp_cmts_num = #{pjtprp_cmts_num}
+	</update>
+	
+	<select id="selectReplySeqNext" resultType="int">
+		select seq_pjtprp_cmts_num.nextval from dual
+	</select>
+	
+		<select id="selectPreOrNext" resultType="preOrNextForBoardRequest">
+		select a.*
+		from (
+		    select
+		        pjtprp_num,
+		        pjtprp_title,
+		        pjtprp_enabled,
+		        lead(pjtprp_num, 1) over (order by pjtprp_num desc) as pre_no,
+		        lead(pjtprp_title, 1, '이전글이 없습니다') over (order by pjtprp_num desc) as pre_title,
+		        lag(pjtprp_num, 1) over (order by pjtprp_num desc) as next_no,
+		        lag(pjtprp_title, 1, '다음글이 없습니다') over (order by pjtprp_num desc) as next_title
+		    from pjt_prp_board
+		) a
+		where pjtprp_enabled = 1
+		and pjtprp_num = #{pjtprp_num}
+	</select>
+	
+</mapper>
+
+
+
+

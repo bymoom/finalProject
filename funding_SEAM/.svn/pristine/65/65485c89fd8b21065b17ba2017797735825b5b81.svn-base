@@ -1,0 +1,93 @@
+package com.funding.request;
+
+import java.util.Arrays;
+import java.util.Date;
+
+public class AdminSearchCriteria {
+
+	private int page; //페이지 번호
+	private int perPageNum; //페이지당 리스트 개수
+	private String code_state; //회원 상태 str
+	private Date first_mem_regdate; //첫번째로 입력한 가입 날짜
+	private Date last_mem_regdate; //마지막으로 입력한 가입 날짜
+	private String searchType;  //검색구분
+	private String keyword;  //검색어
+	
+	public AdminSearchCriteria() {}
+
+	public AdminSearchCriteria(int page, int perPageNum, String code_state, Date first_mem_regdate,
+			Date last_mem_regdate, String searchType, String keyword) {
+		super();
+		this.page = 1;
+		this.perPageNum = 10;
+		this.code_state = code_state;
+		this.first_mem_regdate = first_mem_regdate;
+		this.last_mem_regdate = last_mem_regdate;
+		this.searchType = searchType;
+		this.keyword = keyword;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getPerPageNum() {
+		return perPageNum;
+	}
+
+	public void setPerPageNum(int perPageNum) {
+		this.perPageNum = perPageNum;
+	}
+
+	public String getCode_state() {
+		return code_state;
+	}
+
+	public void setCode_state(String code_state) {
+		this.code_state = code_state;
+	}
+
+	public Date getFirst_mem_regdate() {
+		return first_mem_regdate;
+	}
+
+	public void setFirst_mem_regdate(Date first_mem_regdate) {
+		this.first_mem_regdate = first_mem_regdate;
+	}
+
+	public Date getLast_mem_regdate() {
+		return last_mem_regdate;
+	}
+
+	public void setLast_mem_regdate(Date last_mem_regdate) {
+		this.last_mem_regdate = last_mem_regdate;
+	}
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	@Override
+	public String toString() {
+		return "AdminSearchCriteria [page=" + page + ", perPageNum=" + perPageNum + ", code_state=" + code_state
+				+ ", first_mem_regdate=" + first_mem_regdate + ", last_mem_regdate=" + last_mem_regdate
+				+ ", searchType=" + searchType + ", keyword=" + keyword + "]";
+	}
+	
+}

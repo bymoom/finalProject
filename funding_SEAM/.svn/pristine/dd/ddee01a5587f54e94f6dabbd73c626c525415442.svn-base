@@ -1,0 +1,82 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<section class="new-section">
+
+   <div class="container">
+   	<p style="text-align:right;">ㅇㅇ</p>
+       <div class="row">
+           <div class="col-md-12">
+               <div class="titie-section wow fadeInDown animated  animated animated animated" style="visibility: visible;">
+                   <h1>프로젝트 제안</h1>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-3 col-sm-6 wow fadeInLeft animated animated animated animated" data-wow-delay="0.2s" style="visibility: visible;-webkit-animation-delay: 0.2s; -moz-animation-delay: 0.2s; animation-delay: 0.2s;">
+               <div class="product-item">
+                   <img src="/resources/mart/images/1.png" class="img-responsive" width="255" height="322" alt="">
+                   <div class="product-hover">
+                       <div class="product-meta">
+                       	<a href="#"><i class="pe-7s-shuffle"></i>프로젝트 보기</a>
+                       </div>
+                   </div>
+                   <div class="product-title">
+                       <a href="#">
+                           <h3>프로젝트 보기</h3>
+                           <span>클릭</span>
+                       </a>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-3 col-sm-6 wow fadeInLeft animated animated animated animated" data-wow-delay="0.4s" style="visibility: visible;-webkit-animation-delay: 0.4s; -moz-animation-delay: 0.4s; animation-delay: 0.4s;">
+               <div class="product-item">
+                   <img src="/resources/mart/images/2.png" class="img-responsive" width="255" height="322" alt="">
+                   <div class="product-hover">
+                       <div class="product-meta">
+                           <a href="#"><i class="pe-7s-shuffle"></i>프로젝트 보기</a>
+                       </div>
+                   </div>
+                   <div class="product-title">
+                       <a href="#">
+                      		 <h3>프로젝트 보기</h3>
+                           <span>클릭</span>
+                       </a>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-3 col-sm-6 wow fadeInLeft animated animated animated animated" data-wow-delay="0.6s" style="visibility: visible;-webkit-animation-delay: 0.6s; -moz-animation-delay: 0.6s; animation-delay: 0.6s;">
+               <div class="product-item">
+                   <img src="/resources/mart/images/3.png" class="img-responsive" width="255" height="322" alt="">
+                   <div class="product-hover">
+                       <div class="product-meta">
+                           <a href="#"><i class="pe-7s-shuffle"></i>프로젝트 보기</a>
+                       </div>
+                   </div>
+                   <div class="product-title">
+                       <a href="#">
+                           <h3>프로젝트 보기</h3>
+                           <span>클릭</span>
+                       </a>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-3 col-sm-6 wow fadeInLeft animated animated animated animated" data-wow-delay="0.8s" style="visibility: visible;-webkit-animation-delay: 0.8s; -moz-animation-delay: 0.8s; animation-delay: 0.8s;">
+               <div class="product-item">
+                   <img src="/resources/mart/images/4.png" class="img-responsive" width="255" height="322" alt="">
+                   <div class="product-hover">
+                       <div class="product-meta">
+                           <a href="#"><i class="pe-7s-shuffle"></i>프로젝트 보기</a>
+                       </div>
+                   </div>
+                   <div class="product-title">
+                       <a href="#">
+                           <h3>프로젝트 보기</h3>
+                           <span>클릭</span>
+                       </a>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</section>

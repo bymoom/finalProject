@@ -1,0 +1,165 @@
+package com.funding.controller.admin;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.controller.EmailSender;
+import com.funding.dto.EmailVO;
+import com.funding.dto.Mem_state_codeVO;
+import com.funding.dto.MemberVO;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminMemberDetailRequest;
+import com.funding.request.AdminMemberSearchCriteria;
+import com.funding.service.admin.AdminMemberManageService;
+import com.funding.service.member.PointService;
+import com.funding.util.JavaSendSms;
+import com.funding.util.MediaUtils;
+
+/**
+ * 일반 회원 관리
+ *
+ */
+@Controller
+@RequestMapping("admin/member/*")
+public class AdminMemberManageController {
+
+	@Autowired
+	private AdminMemberManageService adminMemberManageService;
+	
+	@Autowired
+	private PointService pointService;
+
+	/**
+	 * 일반 회원 관리 메인 페이지
+	 */
+	@RequestMapping(value="list")
+	public ModelAndView memberList(AdminMemberSearchCriteria cri, ModelAndView mnv) throws Exception{
+		String url="admin/member/list.admin_page";
+		
+		try {
+			Map<String, Object> dataMap = adminMemberManageService.getMemberList(cri);
+			List<Mem_state_codeVO> memStateCodeList = adminMemberManageService.getMemStateCode();
+			dataMap.put("memStateCodeList", memStateCodeList);
+			
+			List<MemberVO> memberListForDownload = adminMemberManageService.selectSearchMemberListForDownload(cri);
+			dataMap.put("memberListForDownload", memberListForDownload);
+			
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	/**
+	 * 일반 회원 관리 - 회원 상태 타입 조회
+	 */
+	/*@RequestMapping(value="stateList")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> memberStateList(SearchCriteria cri, ModelAndView mnv) throws Exception{
+		
+		ResponseEntity<Map<String, Object>> result = null;
+		
+		System.out.println(cri.getSearchType() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//String url="admin/member/list.admin_page";
+		
+		try {
+			Map<String, Object> dataMap = adminMemberManageService.getMemberStateList(cri);
+			List<Mem_state_codeVO> memStateCodeList = adminMemberManageService.getMemStateCode();
+			dataMap.put("memStateCodeList", memStateCodeList);
+			dataMap.put("where", "stateList");
+			
+			result = new ResponseEntity<>(dataMap, HttpStatus.OK);
+			//mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//mnv.setViewName(url);
+		
+		return result;
+	}*/
+	
+	/**
+	 * 일반 회원 상세 보기
+	 */
+	@RequestMapping(value="detail", method=RequestMethod.GET)
+	public ModelAndView memberDetail(AdminDetailPageMaker projectPayPageMaker, int mem_num, ModelAndView mnv) throws Exception {
+		String url = "admin/member/detail.admin_open";
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		
+		try {
+			MemberVO member = adminMemberManageService.getMemberByMemNum(mem_num);
+			int point = pointService.getPointByMemNum(mem_num);
+			List<AdminMemberDetailRequest> memberDetailList = adminMemberManageService.getMemberDetailForProjectPay(projectPayPageMaker, mem_num);
+			List<Mem_state_codeVO> memStateCodeList = adminMemberManageService.getMemStateCode();
+			
+			dataMap.put("member", member);
+			dataMap.put("point", point);
+			
+			/*for(AdminMemberDetailRequest test : memberDetailList) {
+				System.out.println(test.toString());
+			}*/
+			
+			dataMap.put("memberDetailList", memberDetailList);
+			dataMap.put("memStateCodeList", memStateCodeList);
+			
+			int projectPayTotalCount = adminMemberManageService.selectMemberDetailForProjectPayTotalCount(mem_num);
+			projectPayPageMaker.setTotalCount(projectPayTotalCount);
+			
+			dataMap.put("projectPayPageMaker", projectPayPageMaker);
+			
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	/**
+	 * 회원 상태 코드 수정
+	 */
+	@RequestMapping(value="modifyStateCode", method=RequestMethod.POST)
+	public ResponseEntity<String> modifyStateCode(MemberVO member) throws SQLException {
+		ResponseEntity<String> result = null;
+		
+		try {
+			adminMemberManageService.modifyMemStateCode(member);
+			result = new ResponseEntity<>(HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+}

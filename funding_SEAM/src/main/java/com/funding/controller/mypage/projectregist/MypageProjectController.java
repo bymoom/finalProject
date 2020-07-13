@@ -1,0 +1,351 @@
+package com.funding.controller.mypage.projectregist;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.Pjt_bank_sum_attachVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.PjtModifyRequest;
+import com.funding.request.PjtRegistRequest;
+import com.funding.request.PjtSearchCriteria;
+import com.funding.request.SearchCriteria;
+import com.funding.service.member.ComMemberService;
+import com.funding.service.project.Pjt_bank_sum_attachService;
+import com.funding.service.project.Pjt_pay_detailService;
+import com.funding.service.project.ProjectService;
+import com.funding.service.project.Project_type_codeService;
+import com.funding.util.Summernote;
+
+@Controller
+@RequestMapping("/mypage/project")
+public class MypageProjectController {
+	
+	@Autowired
+	private ProjectService projectService;
+	
+	@Autowired
+	private ComMemberService ComMemberService;
+	
+	@Autowired
+	public Pjt_bank_sum_attachService pjt_bank_sum_attachService;
+	
+	@Autowired
+	public Project_type_codeService project_type_codeService;
+	
+	@Autowired
+	public Pjt_pay_detailService pjt_pay_detailService;
+	
+	@Autowired
+	private String summernoteImgPath;
+	
+	@RequestMapping("/registList")
+	public ModelAndView projectRegistList(SearchCriteria cri, ModelAndView mav,int mem_num)throws Exception{
+		String url="mypage/project/projectRegistList.mypage";
+		
+		mav.addAllObjects(projectService.getRegistProjectList(cri, mem_num));
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/progressList")
+	public ModelAndView projectProgressList(PjtSearchCriteria pjtCri, ModelAndView mav,int mem_num)throws Exception{
+		String url="mypage/project/projectProgressList.mypage";
+		
+		mav.addAllObjects(projectService.getProgressProjectList(pjtCri, mem_num));
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/getlist")
+	@ResponseBody
+	public ResponseEntity<Map<String,Object>> projectList(PjtSearchCriteria pjtCri, int mem_num)throws Exception{
+		
+		ResponseEntity<Map<String,Object>> entity =null;
+		try {
+			Map<String,Object> dataMap = projectService.getProgressProjectList(pjtCri, mem_num);
+			
+			entity = new ResponseEntity<Map<String,Object>>(dataMap,HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity=new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/projectTypeChoice")
+	public String projectType()throws Exception{
+		String url="mypage/project/projectTypeChoice.mypage";
+		return url;
+	}
+	
+	@RequestMapping("/projectRegistForm_donation")
+	public ModelAndView donationProjectRegistForm(ModelAndView mnv,int mem_num)throws Exception{
+		String url="mypage/project/projectRegistForm_donation.page";
+		
+		String where = "mypage/project";
+		mnv.addObject("where", where);
+		
+		ComMemberVO comMember = ComMemberService.getComMember(mem_num);
+		mnv.addObject("comMember",comMember);
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	@RequestMapping("/projectRegistForm_loan")
+	public ModelAndView loanProjectRegistForm(ModelAndView mnv,int mem_num)throws Exception{
+		String url="mypage/project/projectRegistForm_loan.page";
+		
+		String where = "mypage/project";
+		mnv.addObject("where", where);
+		
+		ComMemberVO comMember = ComMemberService.getComMember(mem_num);
+		mnv.addObject("comMember",comMember);
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	@Resource(name="projectUploadPath")
+	private String projectUploadPath;
+	
+	@RequestMapping(value="pjtRegist_donation",method=RequestMethod.POST)
+	public String pjtRegist(PjtRegistRequest pjtRegistReq)throws Exception{
+				String url = "mypage/project/projectRegist_success.mypage";
+				ProjectVO project = pjtRegistReq.toProjectVO();
+		
+		// 첨부파일 저장 : picture, licenseDoc, graduDoc, scoreDoc
+				MultipartFile[] files = { pjtRegistReq.getPjt_atc_bankbook_name(), pjtRegistReq.getPjt_atc_sum_name() };
+				List<String> saveFileName = new ArrayList<String>();
+				
+				for (MultipartFile file : files) {
+					if (file==null) continue;
+					String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+					File savePath = new File(projectUploadPath + File.separator );
+					if (!savePath.exists()) {
+						savePath.mkdirs();
+					}
+
+					file.transferTo(new File(savePath, fileName));
+					saveFileName.add(fileName);
+				}
+				
+				Pjt_bank_sum_attachVO  pjtBankSumAttach=new Pjt_bank_sum_attachVO();
+
+				pjtBankSumAttach.setPjt_atc_bankbook_name(saveFileName.get(0));
+				pjtBankSumAttach.setPjt_atc_sum_name(saveFileName.get(1));
+				pjtBankSumAttach.setPjt_atc_bankbook_path(projectUploadPath);
+				pjtBankSumAttach.setPjt_atc_sum_path(projectUploadPath);
+
+				 
+				projectService.donationProjectRegist(project, pjtBankSumAttach);
+				
+				return url;
+	}
+	
+	@RequestMapping(value="pjtRegist_loan",method=RequestMethod.POST)
+	public String loanPjtRegist(PjtRegistRequest pjtRegistReq)throws Exception{
+		String url = "mypage/project/projectRegist_success.mypage";
+		ProjectVO project = pjtRegistReq.toProjectVO();
+		
+		// 첨부파일 저장 : picture, licenseDoc, graduDoc, scoreDoc
+		MultipartFile[] files = { pjtRegistReq.getPjt_atc_bankbook_name(), pjtRegistReq.getPjt_atc_sum_name() };
+		List<String> saveFileName = new ArrayList<String>();
+		
+		for (MultipartFile file : files) {
+			if (file==null) continue;
+			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+			File savePath = new File(projectUploadPath + File.separator );
+			if (!savePath.exists()) {
+				savePath.mkdirs();
+			}
+			
+			file.transferTo(new File(savePath, fileName));
+			saveFileName.add(fileName);
+		}
+		
+		Pjt_bank_sum_attachVO  pjtBankSumAttach=new Pjt_bank_sum_attachVO();
+		
+		pjtBankSumAttach.setPjt_atc_bankbook_name(saveFileName.get(0));
+		pjtBankSumAttach.setPjt_atc_sum_name(saveFileName.get(1));
+		pjtBankSumAttach.setPjt_atc_bankbook_path(projectUploadPath);
+		pjtBankSumAttach.setPjt_atc_sum_path(projectUploadPath);
+		
+		
+		projectService.loanProjectRegist(project, pjtBankSumAttach);
+		
+		return url;
+	}
+	
+	@RequestMapping("/projectModifyForm_donation")
+	public ModelAndView donationProjectModifyForm(ModelAndView mav, int pjt_num, int mem_num)throws Exception{
+		String url="mypage/project/projectModifyForm_donation.mypage";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		
+		Pjt_bank_sum_attachVO pjtBankSumAttach=pjt_bank_sum_attachService.getPjtBankSumAttach(pjt_num);
+		mav.addObject("pjtBankSumAttach",pjtBankSumAttach);
+		
+		ComMemberVO comMember = ComMemberService.getComMember(mem_num);
+		mav.addObject("comMember",comMember);
+		
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/projectModifyForm_loan")
+	public ModelAndView loanProjectModifyForm(ModelAndView mav, int pjt_num, int mem_num)throws Exception{
+		String url="mypage/project/projectModifyForm_loan.mypage";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		
+		Pjt_bank_sum_attachVO pjtBankSumAttach=pjt_bank_sum_attachService.getPjtBankSumAttach(pjt_num);
+		mav.addObject("pjtBankSumAttach",pjtBankSumAttach);
+		
+		ComMemberVO comMember = ComMemberService.getComMember(mem_num);
+		mav.addObject("comMember",comMember);
+		
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="pjtModify_donation",method=RequestMethod.POST)
+	public String pjtModify(PjtModifyRequest pjtModifyReq)throws Exception{
+				String url = "mypage/project/projectRegist_success.mypage";
+				
+				ProjectVO project = pjtModifyReq.toProjectVO();
+				
+				Pjt_bank_sum_attachVO  pjt_bank_sum_attach=new Pjt_bank_sum_attachVO();
+				// 첨부파일 저장
+				
+				pjt_bank_sum_attach.setPjt_atc_bankbook_name(saveFile(pjtModifyReq.getPjt_atc_bankbook_name(),pjtModifyReq.getOld_pjt_atc_bankbook_name()));
+				pjt_bank_sum_attach.setPjt_atc_sum_name(saveFile(pjtModifyReq.getPjt_atc_sum_name(),pjtModifyReq.getOld_pjt_atc_sum_name()));
+				pjt_bank_sum_attach.setPjt_atc_bankbook_path(projectUploadPath);
+				pjt_bank_sum_attach.setPjt_atc_sum_path(projectUploadPath);
+				pjt_bank_sum_attach.setPjt_num(project.getPjt_num());
+				
+				projectService.modifyProject(project, pjt_bank_sum_attach);
+				return url;	
+	}
+	
+	private String saveFile(MultipartFile file,String old_fileName) throws Exception{
+		if (file==null || file.isEmpty()) { 
+			if(old_fileName==null || old_fileName.isEmpty()) {
+				File oldFile = new File(projectUploadPath + File.separator,old_fileName);
+				if(oldFile.exists()) oldFile.delete();
+				return "";
+			}
+			return old_fileName;
+		}		
+			
+		//기존 파일 삭제
+		File oldFile = new File(projectUploadPath + File.separator,old_fileName);
+		if(oldFile.exists()) oldFile.delete();
+		
+		//신규 파일 저장
+		String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+		File savePath = new File(projectUploadPath + File.separator);
+		
+		if (!savePath.exists()) {
+			savePath.mkdirs();
+		}
+
+		file.transferTo(new File(savePath, fileName));
+		
+		return fileName;
+	}
+	
+	@RequestMapping("/projectDetail")
+	public ModelAndView projectDetail(ModelAndView mav, int pjt_num, int mem_num)throws Exception{
+		String url="mypage/project/projectDetail.mypage";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		
+		Pjt_bank_sum_attachVO pjtBankSumAttach=pjt_bank_sum_attachService.getPjtBankSumAttach(pjt_num);
+		mav.addObject("pjtBankSumAttach",pjtBankSumAttach);
+		
+		ComMemberVO comMember = ComMemberService.getComMember(mem_num);
+		mav.addObject("comMember",comMember);
+		
+		String typeVal = project_type_codeService.getPjtTypeVal(project.getPjt_type_code());
+		mav.addObject("project_type_code_val",typeVal);
+		
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/paylist")
+	public ModelAndView paylist(SearchCriteria cri, ModelAndView mav, int mem_num)throws Exception{
+		String url = "mypage/project/paylist.mypage";
+		Map<String, Object> dataMap = null;
+		
+		dataMap=pjt_pay_detailService.getPjtPayTableList(cri, mem_num);
+		
+		mav.addAllObjects(dataMap);
+		mav.setViewName(url);
+		return mav;
+	}
+	
+	
+	@RequestMapping(value="uploadImg", produces="text/plain;charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<String> uploadImg(MultipartFile file, HttpServletRequest request) throws Exception {
+		
+		ResponseEntity<String> result = null;
+
+		//System.out.println("upload.getOriginalFilename() : " + file.getOriginalFilename());
+		
+		/**
+		 * summernote 이미지 업로드 용도
+		 */
+		String savePath = this.summernoteImgPath;
+		String where = "projectdetail"; //새로 생성될 폴더명
+		Summernote summernote = new Summernote();
+		result = summernote.uploadImg(file, request, savePath, where);
+		//
+		
+		return result;
+	}
+
+	@RequestMapping(value="deleteImg", produces="text/plain;charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<String> deleteImg(String fileName, HttpServletRequest request) throws Exception {
+		ResponseEntity<String> result = null;
+		String savePath = this.summernoteImgPath;
+		String where = "projectdetail"; //이미지가 저장되어있는 폴더명
+		
+		Summernote summernote = new Summernote();
+		result = summernote.deleteImg(request, fileName, savePath, where);
+		
+		return result;
+	}
+
+}

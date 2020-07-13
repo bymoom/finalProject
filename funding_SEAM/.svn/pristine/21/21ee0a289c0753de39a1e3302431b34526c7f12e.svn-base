@@ -1,0 +1,55 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+        <link rel="icon" href="<%=request.getContextPath()%>/resources/mart/images/favicon.png">
+
+        <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/mart/css/style.css">
+        <style>
+        p{
+        color:white;
+        }
+        </style>
+</head>
+<body>
+
+            <div class="container">
+                <div class="row">
+                
+                <c:forEach var="project" items="${projectList }" varStatus="status">
+                
+                 	<div style="display:none;">
+                 		<jsp:useBean id="now" class="java.util.Date" />
+						<fmt:parseNumber value="${now.time /(1000*60*60*23) }" integerOnly="true" var="startD" scope="request"/>
+                        <fmt:formatDate value="${project.pjt_enddate }" pattern="yyyyMMdd" />
+						<fmt:parseNumber value="${project.pjt_enddate.time /(1000*60*60*23) }" integerOnly="true" var="endD" scope="request"/>
+					</div>
+					
+
+                		<div class="col-md-3 info-box">
+                        <img src="<%=request.getContextPath()%>/resources/mart/images/1.png" class="img-responsive" width="255" height="322" alt="">
+                            
+                        ${project.pjt_title } &nbsp;&nbsp;&nbsp; 
+                        ${project.pjt_category } &nbsp;&nbsp;&nbsp; <br>
+						${endD-startD }일 남음
+                     </div>           
+                           
+                          
+                    </c:forEach>
+                    
+
+                </div>
+            </div>
+
+
+
+<br>
+
+</body>
+</html>

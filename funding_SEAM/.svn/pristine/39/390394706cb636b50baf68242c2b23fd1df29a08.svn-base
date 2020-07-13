@@ -1,0 +1,42 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<section class="new-section">
+
+
+  <h2 style="text-align:center;">프로젝트 제안</h2><br><br>
+  		
+			<div class="wrap-table100" style="margin-left:275px;">
+				<div class="table100" style="text-align:right;">
+					<button type="button" style="background:gray; width:100px; height:35px; border-radius:30px; border:1px solid black; font-weight:bold; font-size:1.5em">글 등록</button>
+					<table border="1" >
+						<thead>
+							<tr class="table100-head">
+								<th class="column1" style="width:100px;">No</th>
+								<th class="column2" style="text-align:center;">작성자</th>
+								<th class="column3" style="width:500px; text-align:center;">제목</th>
+								<th class="column4" style="text-align:center;">조회수</th>
+								<th class="column5" style="text-align:center;">등록일자</th>
+							</tr>
+						</thead>
+						<thead style="color:white;">
+							<c:forEach items="${propose}" var="pps">
+								<tr>
+									<td style="text-align:center;">${pps.pjtprp_num }</td>
+									<td style="text-align:center;">${writer.mem_name }</td>
+									<td style="text-align:center;"><a href="#" style="color:white;">${pps.pjtprp_title }</a></td>
+									<td style="text-align:center;">0</td>
+									<td style="text-align:center;"><fmt:formatDate value="${pps.pjtprp_regdate}" pattern="yyyy-MM-dd"/> </td>
+								</tr>
+								
+							</c:forEach>
+								
+						</thead>
+					</table>
+						<%@include file="../pagination/pagination.jsp" %>
+				</div>
+			</div>
+		
+</section>

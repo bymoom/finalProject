@@ -1,0 +1,24 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.project.ProjectDAO;
+import com.funding.dto.ProjectVO;
+
+public class ProjectServiceImpl implements ProjectService {
+	
+	@Autowired
+	public ProjectDAO projectDAO;
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
+
+	@Override
+	public List<ProjectVO> getProjectList() throws SQLException {
+		return null;
+	}
+
+}

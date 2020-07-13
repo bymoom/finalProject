@@ -1,0 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<br>
+<div style="width:100%; text-align:center;">
+	<h3>프로젝트 제안 상세보기</h3>
+</div>
+
+<div style="width:100%; text-align:right; margin-right:10px;">
+	<c:if test="${propose.mem_name eq loginUser.mem_name }">
+	<button id="proposeUpdate" type="button" class="btn btn-primary">수정</button>
+	<button id="proposeDelete" type="button" class="btn btn-danger">삭제</button>
+	</c:if>
+	<button type="button" class="btn btn-primary" onclick="CloseWindow();">닫기</button>
+	
+</div>
+<hr style="border:1px solid blue;">
+<form>
+	<br>
+	<label class="label">작성자</label><input name="mem_name" type="text" readonly value="${propose.mem_name}"><br>
+	<label class="label">목표금액</label><input placeholder="1000원 단위" name="pjtprp_cash" type="text" readonly value="${propose.pjtprp_cash}">원<br>
+	<label class="label">제목</label><input name="pjtprp_title" type="text" style="width:37%;"readonly value="${propose.pjtprp_title }"><br>
+	<label class="label">내용</label><br>
+	<textarea name="pjtprp_contents" rows="20" cols="90" style="margin-left:20px;"readonly>${propose.pjtprp_contents}</textarea>
+
+</form>
+<script>
+	$('#proposeUpdate').on('click',function(){
+		location.href="/menu/modify?pjtprp_num=${propose.pjtprp_num}";
+	});
+	
+	$('#proposeDelete').on('click',function(){
+		var answer = confirm("정말 삭제하시겠습니까?");
+		
+		if(answer){
+			location.href="/menu/delete?pjtprp_num=${propose.pjtprp_num}";
+		}
+	});
+</script>

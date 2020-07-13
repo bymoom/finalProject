@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Admin-Mapper">
+	
+	<!-- 
+		셀렉트박스 메뉴 조회
+	 -->
+	<select id="selectMemStateCode" resultType="memStateCode">
+		select *
+		from mem_state_code
+	</select>
+	
+	<select id="selectComStateCode" resultType="comMemberStateCode">
+		select *
+		from commember_state_code
+	</select>
+
+	<select id="selectPjtTypeCode" resultType="projectTypeCode">
+		select *
+		from project_type_code
+	</select>
+
+	<select id="selectPjtStateCode" resultType="projectStateCode">
+		select *
+		from project_state_code
+	</select>
+	
+	
+	<!-- 
+		일반 회원 관련
+	 -->
+	<sql id="searchMember">
+		<if test="code_state != null and code_state != '회원 상태'.toString()">
+			and mem_state_code.code_state = #{code_state}
+		</if>
+		<if test="first_mem_regdate != null and last_mem_regdate != null">
+			<![CDATA[
+			and member.mem_regdate >= #{first_mem_regdate}
+			and member.mem_regdate <= #{last_mem_regdate}
+			]]>
+		</if>
+		<if test="searchType != null and !keyword.equals('')">
+			<if test="searchType == 'all'.toString()">
+				and (member.mem_name like '%'||#{keyword}||'%'
+					 or member.mem_email like '%'||#{keyword}||'%'
+					 or member.mem_phone like '%'||#{keyword}||'%')			
+			</if>	
+			<if test="searchType == 'name'.toString()">
+				and member.mem_name like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'email'.toString()">
+				and member.mem_email like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'phone'.toString()">
+				and member.mem_phone like '%'||#{keyword}||'%'			
+			</if>
+		</if>
+	</sql>
+	
+	<select id="selectSearchMemberList" parameterType="cri" resultType="member">
+		select member.*, mem_state_code.code_state
+		from member, mem_state_code
+		where member.mem_num is not null
+		and member.code_state_num = mem_state_code.code_state_num
+		and member.code_num = 1
+		<include refid="searchMember" />
+		order by member.mem_num desc
+	</select>
+	
+	<select id="selectSearchMemberListTotalCount" parameterType="cri" resultType="int">
+		select count(*)
+		from
+			(select member.*, mem_state_code.code_state
+			from member, mem_state_code
+			where member.mem_num is not null
+			and member.code_state_num = mem_state_code.code_state_num
+			and member.code_num = 1 			  	
+			<include refid="searchMember" />)
+	</select>
+
+	<select id="selectMemberStateList" parameterType="cri" resultType="member">
+		select member.*, mem_state_code.code_state
+		from member, mem_state_code
+		where member.code_state_num = mem_state_code.code_state_num
+		and member.code_num = 1
+		and mem_state_code.code_state = #{searchType}
+	</select>
+
+	<select id="selectMemberStateListTotalCount" parameterType="cri" resultType="int">
+		select count(*)
+		from
+			(select member.*, mem_state_code.code_state
+			from member, mem_state_code
+			where member.code_state_num = mem_state_code.code_state_num
+			and member.code_num = 1
+			and mem_state_code.code_state = #{searchType})
+	</select>
+	
+	<select id="selectSearchMemberListByRegDate" parameterType="date[]" resultType="member">
+		select member.*, mem_state_code.code_state
+		from member, mem_state_code
+		<![CDATA[
+		where member.code_state_num = mem_state_code.code_state_num
+		and member.code_num = 1
+		and member.mem_regdate >= #{mem_regdate}
+		and member.mem_regdate <= #{mem_regdate}
+		]]>
+	</select>
+	
+	<select id="selectMemberByMemNum" resultType="member">
+		select * 
+		from member, mem_state_code 
+		where member.mem_num = #{mem_num}
+		and member.code_state_num = mem_state_code.code_state_num
+	</select>
+	
+	<select id="selectProjectPayDetailByMemNum" resultType="pjt_pay_detail">
+		select *
+		from pjt_pay_detail
+		where mem_num = #{mem_num}
+		order by pjt_pay_num desc
+	</select>
+	
+	<update id="modifyMemStateCode" parameterType="member">
+		update member
+		set code_state_num = #{code_state_num}, code_num = 2
+		where mem_num = #{mem_num}
+	</update>
+	
+	<!-- 
+		결제 내역 관련
+	 -->
+	<select id="selectMemberDetailForProjectPay" resultType="adminMemberDetailRequest">
+		select *
+		from pjt_pay_detail a, project b, project_type_code c, pjt_bank_sum_attach d
+		where a.pjt_num = b.pjt_num
+		and b.pjt_type_code = c.pjt_type_code
+		and b.pjt_num = d.pjt_num
+		and a.mem_num = #{mem_num}
+	</select>
+	
+	<select id="selectMemberDetailForProjectPayTotalCount" resultType="int">
+		select count(*)
+		from pjt_pay_detail a, project b, project_type_code c, pjt_bank_sum_attach d
+		where a.pjt_num = b.pjt_num
+		and b.pjt_type_code = c.pjt_type_code
+		and b.pjt_num = d.pjt_num
+		and a.mem_num = #{mem_num}
+	</select>
+	
+	<!-- 
+		소상공인 회원 관련
+	 -->
+	<sql id="searchComMember">
+		<if test="com_state_code_val != null and !com_state_code_val.equals('가입 상태')">
+			and commember_state_code.com_state_code_val = #{com_state_code_val}
+		</if>
+		<if test="code_state != null and !code_state.equals('') and !code_state.equals('회원 상태')">
+			and mem_state_code.code_state = #{code_state}
+		</if>
+		<if test="first_mem_regdate != null and last_mem_regdate != null">
+			<![CDATA[
+			and member.mem_regdate >= #{first_mem_regdate}
+			and member.mem_regdate <= #{last_mem_regdate}
+			]]>
+		</if>
+		<if test="searchType != null">
+			<if test="searchType == 'all'.toString()">
+				and (member.mem_name like '%'||#{keyword}||'%'
+					 or member.mem_email like '%'||#{keyword}||'%'
+					 or member.mem_phone like '%'||#{keyword}||'%')			
+			</if>	
+			<if test="searchType == 'name'.toString()">
+				and member.mem_name like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'email'.toString()">
+				and member.mem_email like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'phone'.toString()">
+				and member.mem_phone like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'com_bsns_name'.toString()">
+				and commember.com_bsns_name like '%'||#{keyword}||'%'
+			</if>
+		</if>
+	</sql>
+	
+	<select id="selectSearchComMemberList" parameterType="cri" resultType="adminComMemberDetailRequest">
+		select member.*, mem_state_code.code_state, commember.*, commember_state_code.com_state_code_val
+		from member, mem_state_code, commember, commember_state_code
+		where member.mem_num is not null
+		and member.code_state_num = mem_state_code.code_state_num
+        and member.mem_num = commember.mem_num
+        and commember.com_state_code = commember_state_code.com_state_code
+		<include refid="searchComMember" />
+		order by member.mem_num desc
+	</select>
+	
+	<select id="selectSearchComMemberListTotalCount" parameterType="cri" resultType="int">
+		select count(*)
+		from
+			(select member.*, mem_state_code.code_state, commember.*, commember_state_code.com_state_code_val
+			from member, mem_state_code, commember, commember_state_code
+			where member.mem_num is not null
+			and member.code_state_num = mem_state_code.code_state_num
+	        and member.mem_num = commember.mem_num
+	        and commember.com_state_code = commember_state_code.com_state_code
+			<include refid="searchComMember" />
+			order by member.mem_num desc)
+	</select>
+	
+	<select id="selectRoleComHoldTotalCount" resultType="int">
+		select count(*)
+		from commember
+		where com_state_code = 2	
+	</select>
+	
+	<select id="selectComMemberByMemNum" parameterType="int" resultType="adminComMemberDetailRequest">
+		select * 
+		from member, commember, mem_state_code
+		where commember.mem_num = #{mem_num}
+		and member.code_state_num = mem_state_code.code_state_num
+		and member.mem_num = commember.mem_num
+	</select>
+	
+	<select id="selectMemberDetailForProject" parameterType="int" resultType="adminMemberDetailRequest">
+		select *
+		from project, project_state_code, project_type_code, pjt_bank_sum_attach
+		where project.pjt_num = pjt_bank_sum_attach.pjt_num
+		and project.pjt_state_code = project_state_code.pjt_state_code
+		and project.pjt_type_code = project_type_code.pjt_type_code
+		and project.mem_num = #{mem_num}
+	</select>
+	
+	<select id="selectMemberDetailForProjectTotalCount" resultType="int">
+		select count(*)
+		from project, project_state_code, project_type_code, pjt_bank_sum_attach
+		where project.pjt_num = pjt_bank_sum_attach.pjt_num
+		and project.pjt_state_code = project_state_code.pjt_state_code
+		and project.pjt_type_code = project_type_code.pjt_type_code
+		and project.mem_num = #{mem_num}
+	</select>
+	
+	<update id="modifyComStateCode" parameterType="commember">
+		update commember
+		set com_state_code = #{com_state_code}
+		<if test="com_state_comment != null">
+			, com_state_comment = #{com_state_comment}
+		</if>
+		where mem_num = #{mem_num}
+	</update>
+	
+	
+	<!-- 
+		프로젝트 관리
+	 -->
+	 <sql id="searchProject">
+		<if test="categoryType != null and !categoryType.equals('카테고리')">
+			<if test="categoryType == '음식점'.toString()">
+				and project.pjt_category='음식점'
+			</if>
+			<if test="categoryType == '서비스/문화'.toString()">
+				and project.pjt_category='서비스/문화'
+			</if>
+			<if test="categoryType == '도소매'.toString()">
+				and project.pjt_category='도소매'	
+			</if>
+			<if test="categoryType == '교육'.toString()">
+				and project.pjt_category='교육'		
+			</if>
+			<if test="categoryType == '제조'.toString()">
+				and project.pjt_category='제조'		
+			</if>
+			<if test="categoryType == '기타'.toString()">
+				and project.pjt_category='기타'		
+			</if>
+		</if>
+		<if test="searchType != null">
+			<if test="searchType == 'all'.toString()">
+				and (project.pjt_title like '%'||#{keyword}||'%'
+					 or project.pjt_contents like '%'||#{keyword}||'%'
+					 or commember.com_bsns_name like '%'||#{keyword}||'%')			
+			</if>	
+			<if test="searchType == 'title'.toString()">
+				and project.pjt_title like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'contents'.toString()">
+				and project.pjt_contents like '%'||#{keyword}||'%'			
+			</if>
+			<if test="searchType == 'comName'.toString()">
+				and commember.com_bsns_name like '%'||#{keyword}||'%'			
+			</if>
+		</if>
+		<if test="pjtType != null and !pjtType.equals('유형') and !pjtType.equals('')">
+			and project_type_code.pjt_type_code_val = #{pjtType}
+		</if>
+		<if test="stateType != null and !stateType.equals('승인 여부') and !stateType.equals('')">
+			and project_state_code.pjt_state_code_val = #{stateType}
+		</if>
+		<if test="progressType != null and !progressType.equals('진행 상태')">
+			<if test="progressType == '진행중'.toString()">
+				and project_state_code.pjt_state_code = 2
+				<![CDATA[
+				and project.pjt_enddate >= sysdate
+				]]>				
+			</if>
+			<if test="progressType == '종료'.toString()">
+				and project_state_code.pjt_state_code = 2
+				<![CDATA[
+				and project.pjt_enddate < sysdate
+				]]>				
+			</if>
+		</if>
+		<if test="calcType != null and !calcType.equals('정산 상태')">
+			<if test="calcType == '정산 완료'.toString()">
+				and project.pjt_calcdate IS NOT NULL
+			</if>
+			<if test="calcType == '정산 미완료'.toString()">
+				and project.pjt_state_code = 2
+				<![CDATA[
+				and project.pjt_enddate < sysdate
+				]]>
+				and project.pjt_calcdate is null
+			</if>
+		</if>
+		<if test="calcDate != null">
+			and project.pjt_calcdate = #{calcDate}
+		</if>
+	</sql>
+	
+	<select id="selectSearchProjectList" resultType="adminProjectRequest">
+		select *
+		from project, project_state_code, project_type_code, pjt_bank_sum_attach, commember
+		where  project.pjt_num is not null
+		and project.pjt_state_code = project_state_code.pjt_state_code
+		and project.pjt_type_code = project_type_code.pjt_type_code
+		and pjt_bank_sum_attach.pjt_num = project.pjt_num
+		and project.mem_num = commember.mem_num
+		<include refid="searchProject" />
+		order by project.pjt_num desc
+	</select>
+	
+	<select id="selectSearchProjectListTotalCount" resultType="int">
+		select count(*)
+		from project, project_state_code, project_type_code, pjt_bank_sum_attach, commember
+		where  project.pjt_num is not null
+		and project.pjt_state_code = project_state_code.pjt_state_code
+		and project.pjt_type_code = project_type_code.pjt_type_code
+		and pjt_bank_sum_attach.pjt_num = project.pjt_num
+		and project.mem_num = commember.mem_num
+		<include refid="searchProject" />
+		order by project.pjt_num desc
+	</select>
+	
+	<select id="selectStateToStandByTotalCount" resultType="int">
+		select count(*)
+		from project
+		where pjt_state_code = 1
+		or pjt_state_code = 4
+	</select>
+
+	<select id="selectCalcToStandByList" resultType="adminProjectRequest">
+		select *
+		from project
+		where pjt_state_code = 2
+		<![CDATA[
+		and pjt_enddate < sysdate
+		]]>
+		and pjt_calcdate is null
+	</select>
+	
+	<select id="selectCalcToStandByTotalCount" resultType="int">
+		select count(*)
+		from project
+		where pjt_state_code = 2
+		<![CDATA[
+		and pjt_enddate < sysdate
+		]]>
+		and pjt_calcdate is null
+	</select>
+	
+	<select id="selectProjectByPjtNum" resultType="adminProjectRequest">
+		select *
+		from project, project_type_code, pjt_bank_sum_attach
+		where project.pjt_type_code = project_type_code.pjt_type_code
+        and project.pjt_num = pjt_bank_sum_attach.pjt_num
+		and project.pjt_num = #{pjt_num}
+	</select>
+	
+	<select id="selectProjectPayByPjtNum" resultType="adminMemberDetailRequest">
+		select *
+		from pjt_pay_detail, member
+		where pjt_pay_detail.mem_num = member.mem_num
+		and pjt_pay_detail.pjt_num = #{pjt_num}
+		order by pjt_pay_detail.pjt_pay_num desc
+	</select> 
+	
+	<select id="selectProjectPayByPjtNumTotalCount" resultType="int">
+		select count(*)
+		from pjt_pay_detail, member
+		where pjt_pay_detail.mem_num = member.mem_num
+		and pjt_pay_detail.pjt_num = #{pjt_num}
+	</select>
+	
+	<update id="modifyProjectState" parameterType="project">
+		update project
+		set pjt_state_code = #{pjt_state_code}
+		<if test="pjt_state_comment != null">
+			, pjt_state_comment = #{pjt_state_comment}
+		</if>
+		where pjt_num = #{pjt_num}
+	</update>
+	
+</mapper>

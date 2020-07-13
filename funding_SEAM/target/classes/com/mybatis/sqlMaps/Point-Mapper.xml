@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Point-Mapper">
+	<select id="getPoint" resultType="int">
+		select NVL(sum(point),0) point
+		from point 
+		where mem_num=#{mem_num}
+	</select>
+	
+	<update id="usePoint" parameterType="point">
+		insert into point
+		(point_num,mem_num,point,point_type)
+		values(seq_point_num.nextval,#{mem_num},#{point},'사용')
+	</update>
+	
+	<update id="savePoint" parameterType="point">
+		insert into point
+		(point_num,mem_num,point,point_type)
+		values(seq_point_num.nextval,#{mem_num},#{point},'적립')
+	</update>
+	
+	<update id="deletePoint" parameterType="int">
+		DELETE
+		FROM point
+		WHERE mem_num = #{mem_num}
+	</update>
+
+</mapper>

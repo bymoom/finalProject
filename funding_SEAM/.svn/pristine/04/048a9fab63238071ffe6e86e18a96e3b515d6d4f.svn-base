@@ -1,0 +1,57 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.MemberVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.SearchCriteria;
+
+public class AdminMemberManageDAOImpl implements AdminMemberManageDAO {
+
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	@Override
+	public List<MemberVO> selectSearchMemberList(SearchCriteria cri) throws SQLException {
+		List<MemberVO> memberList = sqlSession.selectList("Admin-Mapper.selectSearchMemberList", cri);
+		return memberList;
+	}
+
+	@Override
+	public int selectSearchMemberListTotalCount(SearchCriteria cri) throws SQLException {
+		int count = sqlSession.selectOne("Admin-Mapper.selectSearchMemberListTotalCount", cri);
+		return count;
+	}
+
+	@Override
+	public List<MemberVO> selectSearchMemberListByRegDate(Date[] mem_regdate) throws SQLException {
+		List<MemberVO> memberList = sqlSession.selectList("Admin-Mapper.selectSearchMemberListByRegDate", mem_regdate);
+		return memberList;
+	}
+
+	@Override
+	public MemberVO selectMemberByMemNum(int mem_num) throws SQLException {
+		MemberVO member = sqlSession.selectOne("Admin-Mapper.selectMemberByMemNum", mem_num);
+		return member;
+	}
+
+	@Override
+	public List<Pjt_pay_detailVO> selectProjectPayDetailByMemNum(int mem_num) throws SQLException {
+		List<Pjt_pay_detailVO> pjtPayDetail = sqlSession.selectList("Admin-Mapper.selectProjectPayDetailByMemNum", mem_num);
+		return pjtPayDetail;
+	}
+
+	@Override
+	public ProjectVO selectProjectByPjtNum(int pjt_num) throws SQLException {
+		ProjectVO project = sqlSession.selectOne("Admin-Mapper.selectProjectByPjtNum", pjt_num);
+		return project;
+	}
+
+}

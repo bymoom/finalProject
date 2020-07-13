@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<script>
+
+	
+
+	$(':input[name="checkUse"]').on('click',function(){
+		if($(this).val()=="사용"){
+			$('#point').css('background-color','');
+			$('#point').attr('readonly',false);
+			
+		}else if($(this).val()=="미사용"){
+			$('#point').css('background-color','lightgray');
+			$('#point').attr('readonly',true);
+			$('#point').val("");
+			
+		}
+	});
+	
+	$(':input[name="checkUseAttend"]').on('click',function(){
+		if($(this).val()=="사용"){
+			$('#pointAttend').css('background-color','');
+			$('#pointAttend').attr('readonly',false);
+			
+		}else if($(this).val()=="미사용"){
+			$('#pointAttend').css('background-color','lightgray');
+			$('#pointAttend').attr('readonly',true);
+			$('#pointAttend').val("");
+			
+		}
+	});
+</script>

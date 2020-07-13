@@ -1,0 +1,108 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.funding.dto.QnAVO;
+import com.funding.dto.Qnavo2;
+import com.funding.request.SearchCriteria;
+
+public class QnADAOImpl2 implements QnADAO2{
+	
+	@Autowired
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
+
+	@Override
+	public List<Qnavo2> selectQnAList(SearchCriteria cri) throws SQLException {
+		int offset = cri.getPageStartRowNum();
+		int limit = cri.getPerPageNum();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<Qnavo2> qnaList = sqlSession.selectList("QA-Mapper.selectQnAList",cri, rowBounds);
+		return qnaList;
+	}
+
+
+	@Override
+	public Qnavo2 selectQnAByqa_Num(int qa_num) throws SQLException {
+		Qnavo2 qna = sqlSession.selectOne("QA-Mapper.selectQnAByqa_Num",qa_num);
+		return qna;
+	}
+
+
+	@Override
+	public void registQnA(Qnavo2 qna) throws SQLException {
+		sqlSession.update("QA-Mapper.registQnA",qna);
+		
+	}
+
+	@Override
+	public void registQnAnone(Qnavo2 qna) throws SQLException {
+		sqlSession.update("QA-Mapper.registQnAnone",qna);
+		
+	}
+
+	@Override
+	public void modifyQnA(Qnavo2 qna) throws SQLException {
+		sqlSession.update("QA-Mapper.modifyQnA",qna);
+		
+	}
+
+
+	@Override
+	public void removeQnA(int qa_num) throws SQLException {
+		sqlSession.update("QA-Mapper.removeQnA",qa_num);
+		
+	}
+
+
+	@Override
+	public void increaseQnAViewCnt(int qa_num) throws SQLException {
+		sqlSession.update("QA-Mapper.increaseQnAViewCnt",qa_num);
+		
+	}
+
+
+	@Override
+	public int selectQnASeqNext() throws SQLException {
+		int seq_num = sqlSession.selectOne("QA-Mapper.selectQnASeqNext");
+		return seq_num;
+	}
+
+
+	@Override
+	public boolean selectSecretQnA(String qa_pwd) throws SQLException {
+		int result = sqlSession.selectOne("QA-Mapper.selectSecretQnA",qa_pwd);
+		if(result>0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean updateSecretQnA(Qnavo2 qna) throws SQLException {
+		int result=sqlSession.update("QA-Mapper.updateSecretQnA",qna);
+		
+		if(result>0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+
+	
+
+}

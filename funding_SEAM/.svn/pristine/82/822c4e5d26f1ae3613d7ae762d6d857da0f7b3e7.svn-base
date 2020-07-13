@@ -1,0 +1,37 @@
+package com.funding.controller.mypage.info;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.funding.dto.MemberVO;
+
+@Controller
+@RequestMapping("/mypage/info")
+public class MypageInfoController {
+
+//	@Autowired
+//	private MyinfoService myinfoService;
+	
+//	@RequestMapping(value = "/index.htm", method = RequestMethod.GET)
+	@RequestMapping(value = "/calmain")
+	public String test() throws Exception {
+		String url = "mypage/info/calmain";
+
+		return url;
+	}
+	
+	@RequestMapping(value="dailycheck", method=RequestMethod.POST)
+	public ResponseEntity<String> dailyCheck(HttpSession session) {
+//		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+//		String mem_email = member.getMem_email();
+		
+		ResponseEntity<String> entity = null;
+		
+		return entity;
+	}
+}

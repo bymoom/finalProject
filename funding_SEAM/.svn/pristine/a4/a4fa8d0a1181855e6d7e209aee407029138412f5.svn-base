@@ -1,0 +1,79 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.js"></script>
+<script type="text/x-handlebars-template" id="pjt_reply-list-template">
+{{#each .}}
+<div class="replyLi" data-rno={{rno}}>
+	<i class="fas fa-comments bg-yellow"></i>
+ 	<div class="timeline-item" >
+  		<span class="time">
+    		<i class="fa fa-clock"></i>{{prettifyDate regdate}}
+	 		<a class="btn btn-primary btn-xs" id="modifyReplyBtn"
+	    		data-replyer={{replyer}} data-toggle="modal" data-target="#modifyModal">Modify</a>
+  		</span>
+	
+  		<h3 class="timeline-header"><strong style="display:none;">{{rno}}</strong>{{replyer}}</h3>
+  		<div class="timeline-body">{{replytext}} </div>
+	</div>
+</div>
+{{/each}}
+</script>
+
+<script>
+//reply list
+function getPage(pageInfo){	 
+	$.ajax({
+		url:pageInfo,
+		type:"get",
+		success:function(dataMap){
+			printData(dataMap.replyList,$('#repliesDiv'),$('#reply-list-template'));
+		},
+		error:function(error){
+			alert("서버 장애로 댓글 목록이 생략됩니다.");
+		}
+	});
+}
+
+
+
+$('#replyAddBtn').on('click',function(e){
+	//alert('add reply btn');
+	
+	var replyer=$('#newReplyWriter').val();
+	var replytext=$('#newReplyText').val();
+	
+	if(replytext==""){
+		alert('댓글 내용은 필수입니다.');
+		$('#newReplyText').focus().css("border-color","red").attr("placeholder","내용은 필수입니다.");
+	}
+	
+	var data={
+			"bno":"${board.bno}",
+			"replyer":replyer,
+			"replytext":replytext
+	}
+	
+	$.ajax({
+		url:"<%=request.getContextPath()%>/replies/regist.do",
+		type:"post",
+		data:JSON.stringify(data),
+		contentType:"application/json",//보내는 data 형식 지정
+		dataType:"text", //받는 data 형식 지정
+		
+		success:function(data){
+			
+			alert('댓글이 등록되었습니다.');
+			getPage("<%=request.getContextPath()%>/replies/list.do?bno=${board.bno}&page="+data);
+			$('#newReplyText').val("");
+			
+		},
+		error:function(error){
+			alert('댓글 등록이 취소되었습니다.');
+			window.location.reload(true);
+		}
+	});
+});
+
+</script>

@@ -1,0 +1,26 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.Project_ProposeVO;
+import com.funding.request.SearchCriteria;
+
+public interface ProjectProposeService {
+	
+	Map<String, Object> getProposeList(SearchCriteria cri) throws SQLException;
+	
+	int nextSeq()throws SQLException;
+	
+	int selectMemberNum(String mem_name)throws SQLException;
+	
+	void insertPropose(Project_ProposeVO propose)throws SQLException;
+	
+	void updatePropose(Project_ProposeVO propose)throws SQLException;
+	
+	void deletePropose(int pjtprp_num)throws SQLException;
+	
+	Project_ProposeVO selectProposeBy_num(int pjtprp_num)throws SQLException;
+	
+}

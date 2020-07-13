@@ -1,0 +1,72 @@
+package com.funding.dto;
+
+import java.util.Date;
+
+public class QnA_CmtsVO {
+	private int qa_cmts_num;
+	private String qa_cmts_contents;
+	private Date qa_cmts_regdate;
+	private int qa_cmts_parent_num;
+	private int qa_cmts_enabled;
+	private int qa_num;
+	private int mem_num;
+	private Date qa_cmts_moddate;
+	private int qa_cmts_like;
+	public int getQa_cmts_num() {
+		return qa_cmts_num;
+	}
+	public void setQa_cmts_num(int qa_cmts_num) {
+		this.qa_cmts_num = qa_cmts_num;
+	}
+	public String getQa_cmts_contents() {
+		return qa_cmts_contents;
+	}
+	public void setQa_cmts_contents(String qa_cmts_contents) {
+		this.qa_cmts_contents = qa_cmts_contents;
+	}
+	public Date getQa_cmts_regdate() {
+		return qa_cmts_regdate;
+	}
+	public void setQa_cmts_regdate(Date qa_cmts_regdate) {
+		this.qa_cmts_regdate = qa_cmts_regdate;
+	}
+	public int getQa_cmts_parent_num() {
+		return qa_cmts_parent_num;
+	}
+	public void setQa_cmts_parent_num(int qa_cmts_parent_num) {
+		this.qa_cmts_parent_num = qa_cmts_parent_num;
+	}
+	public int getQa_cmts_enabled() {
+		return qa_cmts_enabled;
+	}
+	public void setQa_cmts_enabled(int qa_cmts_enabled) {
+		this.qa_cmts_enabled = qa_cmts_enabled;
+	}
+	public int getQa_num() {
+		return qa_num;
+	}
+	public void setQa_num(int qa_num) {
+		this.qa_num = qa_num;
+	}
+	public int getMem_num() {
+		return mem_num;
+	}
+	public void setMem_num(int mem_num) {
+		this.mem_num = mem_num;
+	}
+	public Date getQa_cmts_moddate() {
+		return qa_cmts_moddate;
+	}
+	public void setQa_cmts_moddate(Date qa_cmts_moddate) {
+		this.qa_cmts_moddate = qa_cmts_moddate;
+	}
+	public int getQa_cmts_like() {
+		return qa_cmts_like;
+	}
+	public void setQa_cmts_like(int qa_cmts_like) {
+		this.qa_cmts_like = qa_cmts_like;
+	}
+	
+	
+	
+}

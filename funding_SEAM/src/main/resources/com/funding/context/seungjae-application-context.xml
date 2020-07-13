@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="popupPath" class="java.lang.String">
+		<constructor-arg value="${filePath.popup.attach}" />
+	</bean>
+	<bean id="bannerPath" class="java.lang.String">
+		<constructor-arg value="${filePath.banner.attach}" />
+	</bean>
+	
+	<bean id="proposeCmtDAO"
+		  class="com.funding.dao.ProposeCmtDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="proposeDAO"
+		  class="com.funding.dao.ProjectProposeDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	  />	  
+	
+	<bean id="popupDAO"
+		  class="com.funding.dao.admin.PopupDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="bannerDAO"
+		  class="com.funding.dao.admin.BannerDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="faqDAO"
+		  class="com.funding.dao.FaqDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="adminPointDAO"
+		  class="com.funding.dao.admin.AdminPointManageDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+
+	<bean id="adminPointService"
+		  class="com.funding.service.admin.AdminPointManageServiceImpl"
+		  p:adminPointDAO-ref="adminPointDAO"
+		  />
+
+	<bean id="faqSerivce"
+		  class="com.funding.service.FaqServiceImpl"
+		  p:faqDAO-ref="faqDAO"
+		  />		  
+		  
+	<bean id="bannerService"
+		  class="com.funding.service.admin.BannerServiceImpl"
+		  p:bannerDAO-ref="bannerDAO"
+		  />
+		  
+	<bean id="popService"
+		  class="com.funding.service.admin.PopupServiceImpl"
+		  p:popupDAO-ref="popupDAO"
+		  />
+		  
+	<bean id="proposeCmtService"
+		  class="com.funding.service.ProposeCmtServiceImpl"
+		  p:proposeCmtDAO-ref="proposeCmtDAO"
+		  />
+		  
+  	<bean id="proposeService"
+	  class="com.funding.service.ProjectProposeServiceImpl"
+	  p:proposeDAO-ref="proposeDAO"
+	  p:cmtDAO-ref="proposeCmtDAO"
+ 		  />
+</beans>

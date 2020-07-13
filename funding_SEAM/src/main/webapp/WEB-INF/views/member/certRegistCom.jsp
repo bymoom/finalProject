@@ -1,0 +1,173 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<!-- <style>
+
+div#picturePreView{
+	height:140px;
+	width:110px;
+	margin:3px auto;	  		
+	border : 1px solid lightgray;
+	float: left;  		
+}
+</style> -->
+
+<body>
+
+	<!-- <section class="content-header">
+	<div class="container-fluid">
+		<div class="row md-1">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4">
+				<h1>일반회원가입</h1>
+			</div>
+			<div class="col-sm-4"></div>
+		</div>
+	</div>
+	</section> -->
+	<div class="container">
+		<div class="text-center">
+				<h3>소상공인 회원가입</h3>
+		</div>
+		<br>
+			<form role="form" action="certRegistCom" method="post">
+				<div class="card-body">
+				<hr>
+				<div class="mt-3 mb-3 text-center">
+					<h3>회원 정보</h3>
+					</div>
+						<div class="form-group row pb-1">
+							<label for="id" class="col-sm-2 col-form-label">이메일</label>
+							<div class="col-8">
+								<div class="input-group">
+									<input type="email" class="form-control" id="id" placeholder="이메일을 입력하세요" name="mem_email">
+									<button type="button" id="btnid" class="btn btn-outline-success btn-flat" onclick="checkId()" >중복검사 및 인증메일전송</button>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group row pb-1">
+							<label for="name" class="col-sm-2 col-form-label">인증번호입력</label>
+							<div class="col-4">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="인증번호를 입력하세요" name="uuid_key">
+								</div>
+							</div>
+						</div>
+						
+					<div class="row justify-content-md-center">
+						<button type="button" class="btn btn-outline-success btn-flat" onclick="SubmitCertRegist('form');">인증하기(회원가입 진행)</button>
+<!-- 						<button type="button" class="btn btn-outline-success btn-flat" onclick="javascript:history.go(-1)">뒤로가기</button> -->
+					</div>
+				</div>
+			</form>
+	</div>
+</body>
+
+<script>
+//form submit
+function SubmitCertRegist(formRole){
+
+	var form = $('form[role="'+formRole+'"]');
+	form.submit();
+
+}
+
+function checkId() {
+	var id = $('input[name="mem_email"]');
+	if(!id.val()){
+		alert("이메일주소를 입력하세요.")
+		id.focus();
+		return;
+	}
+	
+	var bRes = idFormCheck();
+	
+	if(!bRes)
+		return;
+	
+	
+	$.ajax({
+		url:"checkId",
+		type:"get",
+		data:{"id" : id.val()},
+		success:function(data){
+			if(data.result){
+				alert("사용가능합니다.");					
+			}else{
+				alert("중복된 아이디입니다.");
+			}
+		},
+		error:function(data){
+			alert("중복 확인이 불가합니다.\n Error");
+			window.close();
+		}
+	});
+	
+	
+	$.ajax({
+		url: "sendUuidKey",
+		type: "get",
+		data: {"mem_email" : id.val()},
+		success: function(data) {
+			if(data.result)
+				alert("해당 메일로 인증키를 전송했습니다.");
+			else
+				alert("메일 전송 에러입니다.");
+		}
+	});
+	
+	
+	
+}
+
+$("#id").blur(function() {
+	  var email = $(this).val();
+
+	  // if value is empty then exit
+	  if( email == '' || email == 'undefined') return;
+
+	  // valid check
+	  if(! email_check(email) ) {
+// 	  	$("#result-check").text('Not valid email.');
+		alert("올바르지 않은 이메일형식입니다.")
+	    $(this).focus();
+	    return false;
+	  }
+	  else {
+// 	  	$("#result-check").text('Email address test OK.');
+		return true;
+	  }
+	
+})
+
+function idFormCheck() {
+	  var email = $("#id").val();
+
+	  // if value is empty then exit
+	  if( email == '' || email == 'undefined') return;
+
+	  // valid check
+	  if(! email_check(email) ) {
+// 	  	$("#result-check").text('Not valid email.');
+		alert("올바르지 않은 이메일형식입니다.");
+	    $(this).focus();
+	    return false;
+	  }
+	  else {
+// 	  	$("#result-check").text('Email address test OK.');
+		console.log("올바른 이메일 형식");
+		return true;
+	  }
+}
+
+// email check function
+function email_check( email ) {    
+    var regex=/([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    return (email != '' && email != 'undefined' && regex.test(email)); 
+}
+
+</script>
+
+
+</html>

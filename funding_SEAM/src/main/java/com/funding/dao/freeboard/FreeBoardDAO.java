@@ -1,0 +1,60 @@
+package com.funding.dao.freeboard;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.FreeBoardVO;
+import com.funding.request.PreOrNextForBoardRequest;
+import com.funding.request.SearchCriteria;
+
+public interface FreeBoardDAO {
+
+	//관리자용 - 검색 키워드 받아 리스트 출력, 페이징 처리
+	List<FreeBoardVO> selectSearchFreeBoardList(SearchCriteria cri) throws SQLException;
+	
+	//관리자용 - 글 개수
+	int selectSearchFreeBoardListTotalCount(SearchCriteria cri) throws SQLException;
+	
+	//일반 사용자 - 검색 키워드 받아 리스트 출력, 페이징 처리
+	List<FreeBoardVO> selectSearchFreeBoardListForEnabled(SearchCriteria cri) throws SQLException;
+		
+	//일반 사용자 - 글 개수
+	int selectSearchFreeBoardListForEnabledTotalCount(SearchCriteria cri) throws SQLException;
+	
+	//전체 글 리스트 출력
+	List<FreeBoardVO> selectFreeBoardList() throws SQLException;
+	
+	//글번호로 글 상세 정보 조회
+	FreeBoardVO selectFreeBoardByFreeNum(int free_num) throws SQLException;
+	
+	//글 등록
+	void registFreeBoard(FreeBoardVO freeBoard) throws SQLException;
+	
+	//글 수정
+	void modifyFreeBoard(FreeBoardVO freeBoard) throws SQLException;
+	
+	//글 권한 수정
+	void modifyFreeBoardEnabled(FreeBoardVO freeBoard) throws SQLException;
+	
+	//글 삭제
+	void removeFreeBoard(int free_num) throws SQLException;
+	
+	//조회수 증가
+	void increaseFreeViewCnt(int free_num) throws SQLException;
+	
+	//좋아요 증가
+	void increaseFreeLike(int free_num) throws SQLException;
+	
+	//좋아요 감소
+	void decreaseFreeLike(int free_num) throws SQLException;
+	
+	//시퀀스 번호 가져오기
+	int selectFreeBoardSeqNext() throws SQLException;
+	
+	//이전글 다음글(일반회원)
+	PreOrNextForBoardRequest selectPreOrNext(int free_num) throws SQLException;
+	
+	//이전글 다음글(관리자)
+	PreOrNextForBoardRequest selectPreOrNextForAdmin(int free_num) throws SQLException;
+	
+}

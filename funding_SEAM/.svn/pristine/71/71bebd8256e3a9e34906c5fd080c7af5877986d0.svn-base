@@ -1,0 +1,19 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.PjtSearchCriteria;
+
+public interface ProjectService {
+
+	public Map<String, Object> getProjectList(PjtSearchCriteria pjtCri)throws SQLException;
+	
+	public ProjectVO getProject(int pjt_num)throws SQLException;
+	
+	public List<ProjectVO> getSearchProjectList(String val)throws SQLException;
+	
+	public int selectProjectCount(String val)throws SQLException;
+}

@@ -1,0 +1,168 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.NoticeDAO;
+import com.funding.dao.Notice_atcDAO;
+import com.funding.dto.NoticeVO;
+import com.funding.dto.Notice_atcVO;
+import com.funding.request.PageMaker;
+import com.funding.request.SearchCriteria;
+
+public class NoticeServiceImpl implements NoticeService{
+	
+	@Autowired
+	private NoticeDAO noticeDAO;
+	public void setNoticeDAO(NoticeDAO noticeDAO) {
+		this.noticeDAO = noticeDAO;
+	}
+	
+	@Autowired
+	private Notice_atcDAO notice_atcDAO;
+	public void setNotice_atcDAO(Notice_atcDAO notice_atcDAO) {
+		this.notice_atcDAO = notice_atcDAO;
+	}
+	
+
+	@Override
+	public Map<String, Object> getNoticeList(SearchCriteria cri) throws SQLException {
+		
+		Map<String, Object> dataMap = new HashMap<String,Object>();
+		List<NoticeVO> noticeList = noticeDAO.searchedNoticeList(cri);
+		List<NoticeVO> pointList = noticeDAO.selectPointNoticeList(cri);
+		int totalCount = noticeDAO.searchedNoticeListCount(cri);
+		
+	    for(NoticeVO notice : noticeList) {
+			List<Notice_atcVO> attachList=notice_atcDAO.selectAttachByNotice_num(notice.getNotice_num());
+			notice.setAttachList(attachList);
+		}
+	    for(NoticeVO notice : pointList) {
+	    	List<Notice_atcVO> attachList=notice_atcDAO.selectAttachByNotice_num(notice.getNotice_num());
+	    	notice.setAttachList(attachList);
+	    }
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri);
+		pageMaker.setTotalCount(totalCount);
+		
+		dataMap.put("noticeList", noticeList);
+		dataMap.put("pointList", pointList);
+		dataMap.put("pageMaker", pageMaker);
+		
+		return dataMap;
+		//System.out.println(dataMap);
+	}
+
+	@Override
+	public List<NoticeVO> getPointNoticeList(SearchCriteria cri) throws SQLException {
+		List<NoticeVO> noticeList = noticeDAO.selectPointNoticeList(cri);
+		
+		for(NoticeVO notice : noticeList) {
+			List<Notice_atcVO> attachList=notice_atcDAO.selectAttachByNotice_num(notice.getNotice_num());
+			notice.setAttachList(attachList);
+		}
+		return noticeList;
+	}
+
+	@Override
+	public NoticeVO getNotice(int notice_num) throws SQLException {
+		noticeDAO.increaseViewCnt(notice_num);
+		
+		NoticeVO nextTitle = noticeDAO.next_notice_title(notice_num);
+		NoticeVO prevTitle = noticeDAO.prev_notice_title(notice_num);
+		
+		NoticeVO notice = noticeDAO.selectNoticeByNotice_num(notice_num);
+		
+		List<Notice_atcVO> attachList=notice_atcDAO.selectAttachByNotice_num(notice_num);
+		if(attachList!=null) {
+			
+			notice.setAttachList(attachList);
+		}
+		
+		notice.setNext_notice_title(nextTitle.getNext_notice_title());
+		notice.setPrev_notice_title(prevTitle.getPrev_notice_title());
+		notice.setNext_notice_num(nextTitle.getNext_notice_num());
+		notice.setPrev_notice_num(prevTitle.getPrev_notice_num());
+		
+	 
+		return notice;
+	}
+
+	
+	
+	@Override
+	public void regist(NoticeVO notice) throws SQLException {
+		int nno=noticeDAO.selectNoticeSeqNext();
+		notice.setNotice_num(nno);
+		
+		noticeDAO.insertNotice(notice);
+		
+		
+		if(notice.getAttachList()!=null) {
+			for(Notice_atcVO attach : notice.getAttachList()) {
+				
+			attach.setNotice_num(nno);
+			
+			notice_atcDAO.insertAttach(attach);
+			System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+attach);
+			}
+		}
+	}
+	@Override
+	public void modify(NoticeVO notice) throws SQLException {
+		
+		noticeDAO.updateNotice(notice);
+		//notice_atcDAO.deleteAllAttach(notice.getNotice_num());
+		
+		if(notice.getAttachList()!=null) {
+			for(Notice_atcVO attach:notice.getAttachList()) {
+				attach.setNotice_num(notice.getNotice_num());
+				
+				notice_atcDAO.insertAttach(attach);
+			}
+		}
+		
+	}
+
+	@Override
+	public void remove(int notice_num) throws SQLException {
+		notice_atcDAO.deleteAllAttach(notice_num);
+		noticeDAO.deleteNotice(notice_num);
+			
+		
+	}
+
+	@Override
+	public NoticeVO readAttach(int notice_num) throws SQLException {
+		NoticeVO notice=noticeDAO.selectNoticeByNotice_num(notice_num);
+		List<Notice_atcVO> attachList=notice_atcDAO.selectAttachByNotice_num(notice_num);
+		notice.setAttachList(attachList);
+		noticeDAO.increaseViewCnt(notice_num);
+		
+		return notice;
+	}
+
+	@Override
+	public Map<String, Object> getNoticeListAll() throws SQLException {
+		Map<String, Object> dataMap = new HashMap<String,Object>();
+		List<NoticeVO> noticeList = noticeDAO.selectNoticeListAll();
+		
+		dataMap.put("noticeList", noticeList);
+		
+		return dataMap;
+	}
+
+	@Override
+	public void updatePoint(NoticeVO notice) throws SQLException {
+		noticeDAO.pointNoticeUpdate(notice);
+		
+	}
+	
+
+
+
+}

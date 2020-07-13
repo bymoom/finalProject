@@ -1,0 +1,51 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.InterestCancleRequest;
+import com.funding.request.MainSearchCriteria;
+import com.funding.request.PjtSearchCriteria;
+import com.funding.request.SearchCriteria;
+
+public interface ProjectDAO {
+	
+	public List<ProjectVO> categorySelectDonationProjectList(PjtSearchCriteria pjtCri)throws SQLException;
+	public List<ProjectVO> categorySelectLoanProjectList(PjtSearchCriteria pjtCri)throws SQLException;
+	
+	public int categorySelectDonationProjectListCount(PjtSearchCriteria pjtCri)throws SQLException;
+	public int categorySelectLoanProjectListCount(PjtSearchCriteria pjtCri)throws SQLException;
+	
+	public List<ProjectVO> selectProjectList() throws SQLException;
+	
+	public ProjectVO selectProjectByNum(int pjt_num)throws SQLException;
+	
+	List<ProjectVO> searchSelectProjectList(String val)throws SQLException;
+	
+	int selectProjectCount(String val)throws SQLException;
+	
+	
+	public int insertProjectSeq()throws SQLException;
+	public void insertDonationProject(ProjectVO project)throws SQLException;
+	public void insertLoanProject(ProjectVO project)throws SQLException;
+	
+	public void projectViewCount(int pjt_num)throws SQLException;
+	
+	public List<ProjectVO> projectRegistList(SearchCriteria cri,int mem_num) throws SQLException;
+	public int projectRegistListCount(SearchCriteria cri,int mem_num)throws SQLException;
+	
+	public void updateProject(ProjectVO project)throws SQLException;
+	
+	public List<ProjectVO> projectProgressList(PjtSearchCriteria pjtCri,int mem_num) throws SQLException;
+	public int projectProgressListCount(PjtSearchCriteria pjtCri,int mem_num)throws SQLException;
+	
+	public List<ProjectVO> selectProjectListMain(MainSearchCriteria mainCri)throws SQLException;
+	public int selectProjectListMainCount(MainSearchCriteria mainCri)throws SQLException;
+	
+	public List<InterestCancleRequest> selectInterestPjtListBymemNum(PjtSearchCriteria pjtCri,int mem_num) throws SQLException;
+	public int selectInterestPjtListBymemNumCount(PjtSearchCriteria pjtCri,int mem_num)throws SQLException;
+	
+	public List<ProjectVO> selectPjtPayListByMemNum(MainSearchCriteria mainCri,int mem_num)throws SQLException;
+	public int selectPjtPayListByMemNumCount(MainSearchCriteria mainCri,int mem_num)throws SQLException;
+}

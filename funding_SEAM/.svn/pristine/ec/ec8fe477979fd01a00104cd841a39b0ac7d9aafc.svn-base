@@ -1,0 +1,7 @@
+#employee attach
+filePath.employee.document=c:\\employee\\document
+#pds attach
+filePath.notice.attach=c:\\upload\\notice\\attach
+#summernote img
+filePath.summernote.images=/resources/uploadImg
+

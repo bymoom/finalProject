@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Project-Mapper">
+
+<select id="selectProjectList" resultType="project">
+	select p.PJT_NUM,
+			p.PJT_TITLE,
+			p.PJT_CONTENTS,
+			p.PJT_CASH,
+			p.PJT_INT_RATE,
+			p.PJT_STARTDATE,
+			p.PJT_ENDDATE,
+			p.PJT_REGDATE,
+			p.PJT_MODDATE,
+			p.PJT_VIEW_CNT,
+			p.PJT_ENABLED,
+			p.PJT_CATEGORY,
+			p.PJT_TYPE_CODE,
+			p.PJT_STATE_CODE,
+			p.MEM_NUM,
+			state.pjt_state_code_val,
+			state.PJT_STATE_COMMENT,
+			type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	order by p.PJT_NUM
+</select>
+
+<select id="searchSelectProjectList" resultType="project" parameterType="str">
+	select p.PJT_NUM,
+			p.PJT_TITLE,
+			p.PJT_CONTENTS,
+			p.PJT_CASH,
+			p.PJT_INT_RATE,
+			p.PJT_STARTDATE,
+			p.PJT_ENDDATE,
+			p.PJT_REGDATE,
+			p.PJT_MODDATE,
+			p.PJT_VIEW_CNT,
+			p.PJT_ENABLED,
+			p.PJT_CATEGORY,
+			p.PJT_TYPE_CODE,
+			p.PJT_STATE_CODE,
+			p.MEM_NUM,
+			state.pjt_state_code_val,
+			state.PJT_STATE_COMMENT,
+			type.pjt_type_code_val
+	from project p,project_state_code state,project_type_code type
+	where p.pjt_state_code=state.pjt_state_code
+	and p.pjt_type_code=type.pjt_type_code
+	and (p.pjt_title like '%'||#{value}||'%'
+    or p.pjt_contents like '%'||#{value}||'%')
+	
+	order by p.PJT_NUM
+</select>
+
+<select id="selectProjectCount" resultType="int" parameterType="str">
+	select
+	count(*)
+	from
+	project
+	where pjt_title like '%'||#{value}||'%'
+    or pjt_contents like '%'||#{value}||'%'
+</select>
+
+<select id="selectProjectByNum" parameterType="int" resultType="project">
+	select *
+	from project
+	where pjt_num=#{pjt_num}
+</select>
+
+</mapper>

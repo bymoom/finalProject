@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<br>
+ <h2 style="margin-left:20px;" class="page-section-heading text-center text-uppercase text-secondary mb-0">포인트 관리</h2>
+ <br>
+<div class="row">
+	<nav class="guide_nav col-md-3" style="padding:0px 50px 0px 100px;">
+			<div class="card">
+				<div class="card-header ui-sortable-handle">
+					<a href="/guide/common#comCro" class="link_cont">결제&포인트 관리</a>
+				</div>
+				<div class="card-body">
+					<ul class="lnb_depth">
+						<li id="memberManage"><a href="<%=request.getContextPath() %>/admin/point/main" class="navMenu">포인트 관리</a></li>
+						<li id="commemberManage"><a href="#" class="navMenu">결제 관리</a></li>
+					</ul>			
+				</div>
+			</div>
+	</nav>
+	<div class="container">
+		<div style="text-align:left;">
+			<button type="button" class="btn btn-secondary" id="saveBtn">저장</button>
+		</div>
+		<div>
+			<div class="col-md-4" style="background-color:lightblue;text-align:center;float:left;border-right:1px solid white;">
+				<b>회원 가입 포인트지급</b>
+			</div>
+			<div class="col-md-4" style="background-color:lightblue;text-align:center;float:left;">
+				<b>출석 체크 포인트지급</b>
+			</div>
+		</div>
+		<br>
+		<div>
+			<div id="leftBox" class="col-md-4" style="border:1px solid lightgray;text-align:center;height:150px;float:left;padding-top:55px;">
+				<input type="radio" id="checkUse" name="check" value="사용"><b>사용</b> &nbsp;
+				<input type="radio" id="checkNotUse" name="check" value="미사용"><b>미사용</b><br>
+				<input style="border-radius:10px;border:1px solid gray;background-color:lightgray;" type="text" id="point" placeholder="지급할 포인트를 입력.." readonly> <b>포인트</b>
+			</div>
+			<div id="rightBox" class="col-md-4" style="border:1px solid lightgray;text-align:center;height:150px;float:left;padding-top:55px;">
+				<input type="radio" id="checkUse2" name="checkUseAttend" value="사용"><b>사용</b> &nbsp;
+				<input type="radio" id="checkNotUse2" name="checkUseAttend" value="미사용"><b>미사용</b><br>
+				<input style="border-radius:10px;border:1px solid gray;background-color:lightgray;" type="text" id="pointAttend" placeholder="지급할 포인트를 입력.." readonly> <b>포인트</b>
+			</div>
+		</div>
+		
+</div>
+</div>
+<br><br>
+<%@include file="point_js.jsp"%>

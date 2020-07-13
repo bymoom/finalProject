@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<head>
+<style>
+	.js-switch{
+    color             :'#64bd63',
+    jackColor         :'#fff'
+    className         :'switchery',
+    disabled          :false,
+    disabledOpacity   : 0.5,
+    speed             :'0.4s',
+    size              :'default'
+	}
+</style>
+</head>
+
+
+<div class="card-header">
+	<h3 class="card-title p-1">질문 등록</h3>
+</div>
+<div class="card-body pad">
+	<form role="form" method="post" action="regist" name="regist" id="regist">
+		<div class="form-group">
+			<label for="title">제 목</label> <input type="text" id="title"
+				name='qa_title' class="form-control" placeholder="제목을 쓰세요">
+		</div>
+		<div class="form-group">
+			<label for="writer">작성자</label> <input type="text" id="writer"
+				readonly name="mem_num" class="form-control"
+				value="${loginUser.mem_num }">
+		</div>
+		<div class="form-group">
+			<label for="content">내 용</label>
+			<textarea class="textarea" name="qa_contents" id="contents"
+				rows="20" placeholder="1000자 내외로 작성하세요." style="display: none;"></textarea>
+		</div>
+	<div id="aa">
+		<label for="secret">공개/비공개</label> 
+		<input type="checkbox" class="js-switch" /> 
+		<!-- <input style="display: none;" type="password" class="form-control col-4" name="qa_pwd" id="qa_pwd" placeholder="패스워드를 입력하세요."> -->
+	</div>
+	</form>
+</div>
+<!--end card-body  -->
+<div class="card-footer" style="display:none"></div>
+
+<%@ include file="../commons/summernote_js.jsp" %>
+
+
+
+<br><br>
+<div class="card-tools">
+	<button type="button" class="btn btn-primary" id="registBtn">등록</button>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<button type="button" class="btn btn-warning" id="cancelBtn">취소</button>
+</div>
+
+
+
+<script>
+$(function(){
+	$('#qa_pwd').hide();
+});
+	$('#registBtn').on('click',function(){
+		document.regist.submit();
+		
+
+	});
+	$('#cancelBtn').on('click', function(e) {
+		alert("작성중인 문서는 저장되지 않습니다");
+		window.history.go(-1);
+		window.close();
+	});
+	
+//	var elem = document.querySelector('.js-switch');
+//	var init =new Switchery(elem);
+$('.js-switch').on('change',function(){
+	var pwd=$('<input>',{
+		'type':'password',
+		'id':'password',
+		'name':'qa_pwd',
+		'placeholder':'비밀번호를 입력해주세요.'
+	});
+	
+	if($(':checkbox[class="js-switch"]').is(':checked') == true){
+		$("#aa").append(pwd);		
+	}else{
+		$('input[name="qa_pwd"]').remove();
+	}
+	alert($('#password').val());
+});
+	
+	//alert('fffffffff')
+	/* if($('.js-switch').is(":checked")==true){
+		$("#qa_pwd").append(pwd);		
+	} */
+
+/* 	elem.onchange =function() {
+		alert('dd');
+	
+		}; */
+
+/*  	elem.on('click',function(){
+ 		if($(this).prop("checked",true)){
+ 			$("#qa_pwd").attr("style","display:''");
+ 			//alert('dd');
+ 		}else{
+// 			$(this).prop("checked",false);
+ 			$("#qa_pwd").attr("style","display:none");
+ 		}
+ 	}); */
+ 	//	$("input[name='qa_pwd']").is(":checked")==true;
+ 		
+//  		if($(this).prop('checked')==true){
+// 			$("#qa_pwd").attr("style","display:''");
+// 			alert('dd')
+// 		//	$(this).prop("checked",true);
+// // 			$("#qa_pwd").attr("disabled",false);
+// 		}else{
+// 		//	$(this).prop("checked",false);
+// 			$("#qa_pwd").attr("disabled",true);
+// 		}
+//  	};
+ 		
+ 		
+ 		
+		/* 	if($(this).prop('checked')==true){
+				$("#qa_pwd").attr("disabled",false);
+			}else{
+				$(this).prop('checked')=false;
+				$("#qa_pwd").attr("disabled",true);
+			}
+			 */
+/* 		$("input[name='qa_pwd']").is(":checked")==false;
+			if($("input[name='qa_pwd']").is(":checked")){
+				$("input[name='qa_pwd']").prop("checked",true);
+				$("#qa_pwd").attr("disabled",false);
+			}else{
+				$("input[name='qa_pwd']").prop("checked",false);
+				
+			}
+		
+		}; */
+	/* 	}); */
+		
+		
+//		$("input[name='qa_pwd']:checked").val();
+		
+
+ 
+
+</script>
+
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/switchery-master/dist/switchery.css" />
+<script src="<%=request.getContextPath()%>/resources/switchery-master/dist/switchery.js"></script>

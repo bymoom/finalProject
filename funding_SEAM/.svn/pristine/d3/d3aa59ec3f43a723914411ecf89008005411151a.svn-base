@@ -1,0 +1,71 @@
+package com.funding.controller.project;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.service.project.Pjt_pay_detailService;
+import com.funding.service.project.ProjectService;
+
+//프로젝트 컨트롤러
+@Controller
+@RequestMapping("/project")
+public class ProjectController {
+	
+	@Autowired
+	public ProjectService projectService;
+	
+	@Autowired
+	public Pjt_pay_detailService pjt_pay_detailService;
+	
+	@RequestMapping("/list")
+	public ModelAndView projectList(ModelAndView mav)throws SQLException{
+		String url="project/project_list.page";
+		mav.addAllObjects(projectService.getProjectList());
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/detail")
+	public ModelAndView projectDetail(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/project_detail.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		return mav;
+	}
+	
+	@RequestMapping("/payForm")
+	public ModelAndView projectPayForm(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/project_payForm.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="pay",method=RequestMethod.POST)
+	public ModelAndView payRegist(ModelAndView mav, Pjt_pay_detailVO pjt_pay_detail)throws SQLException{
+		String url="project/project_pay_success.page";
+		
+		pjt_pay_detailService.pjtPay(pjt_pay_detail);
+		
+		mav.setViewName(url);
+		return mav;
+	}
+	
+	
+
+}

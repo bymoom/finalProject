@@ -1,0 +1,64 @@
+package com.funding.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+public class Summernote {
+	
+	public ResponseEntity<String> uploadImg(MultipartFile file, HttpServletRequest request, String savePath, String where) throws Exception {
+		ResponseEntity<String> result = null;
+
+		String uploadPath = request.getServletContext().getRealPath(savePath + "/" + where);
+		String uuid = UUID.randomUUID().toString().replace("-", "");
+		String fileName = uuid + "$$" + file.getOriginalFilename();
+
+		File saveFile = new File(uploadPath, fileName);
+
+		if (!saveFile.exists()) {
+			saveFile.mkdirs();
+		}
+		try {
+			file.transferTo(saveFile);
+			System.out.println("SUCCESS Summernote Img Upload : " + request.getContextPath() + savePath + "/" + where + "/" + fileName);
+			result = new ResponseEntity<String>(request.getContextPath() + savePath + "/" + where + "/" + fileName, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println("Fail Summernote Img Upload : " + request.getContextPath() + savePath + "/" + where + "/" + fileName);
+			result = new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return result;
+	}
+	
+	public ResponseEntity<String> deleteImg(HttpServletRequest request, String fileName, String savePath, String where) throws Exception {
+		ResponseEntity<String> result = null;
+
+		String uploadPath = request.getServletContext().getRealPath(savePath + "/" + where + "/");
+		
+		File target = new File(uploadPath + "/" + fileName);
+		if (!target.exists()) {
+			result = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		} else {
+			try {
+				target.delete();
+				System.out.println("SUCCESS Summernote Img Delete : " + uploadPath + "/" + fileName);
+				result = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+			} catch (Exception e) {
+				System.out.println("Fail Summernote Img Delete : " + uploadPath + "/" + fileName);
+				result = new ResponseEntity<String>("Fail", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		return result;
+	}
+	
+}

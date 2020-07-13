@@ -1,0 +1,69 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.member.ComMemberDAO;
+import com.funding.dao.project.Pjt_pay_detailDAO;
+import com.funding.dao.project.ProjectDAO;
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.ProjectVO;
+
+public class ProjectServiceImpl implements ProjectService {
+	
+	@Autowired
+	public ProjectDAO projectDAO;
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
+	
+	@Autowired
+	private Pjt_pay_detailDAO pjt_pay_detailDAO;
+	public void setPjt_pay_detailDAO(Pjt_pay_detailDAO pjt_pay_detailDAO) {
+		this.pjt_pay_detailDAO=pjt_pay_detailDAO;
+	}
+	
+	@Autowired
+	private ComMemberDAO comMemberDAO;
+	public void setComMemberDAO(ComMemberDAO comMemberDAO) {
+		this.comMemberDAO = comMemberDAO;
+	}
+	
+
+	@Override
+	public Map<String, Object> getProjectList() throws SQLException {
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		List<ProjectVO> list = projectDAO.selectProjectList();
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+		}
+		
+		
+		dataMap.put("projectList", list);
+		
+		return dataMap;
+	}
+
+
+	@Override
+	public ProjectVO getProject(int pjt_num) throws SQLException {
+		ProjectVO project = projectDAO.selectProjectByNum(pjt_num);
+		
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(pjt_num);
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+		return project;
+	}
+
+}

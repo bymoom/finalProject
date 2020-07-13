@@ -1,0 +1,42 @@
+package com.funding.service.freeboard;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.FreeBoardVO;
+import com.funding.request.SearchCriteria;
+
+public interface FreeBoardService {
+	
+	//관리자용 - 글 검색 목록 조회
+	Map<String, Object> getFreeBoardList(SearchCriteria cri) throws SQLException;
+	
+	//일반 사용자 - 검색 키워드 받아 리스트 출력, 페이징 처리
+	Map<String, Object> getSearchFreeBoardListForEnabled(SearchCriteria cri) throws SQLException;
+	
+	//글 전체 목록 조회
+	List<FreeBoardVO> getFreeBoardList() throws SQLException;
+		
+	//글 상세 조회
+	FreeBoardVO getFreeBoard(int free_num) throws SQLException;	
+	
+	//글 수정 후 상세 조회
+	FreeBoardVO getFreeBoardForModify(int free_num) throws SQLException;
+		
+	//글 등록
+	void regist(FreeBoardVO freeBoard) throws SQLException;
+	
+	//글 수정
+	void modify(FreeBoardVO freeBoard) throws SQLException;
+
+	//글 권한 수정
+	void modifyEnabled(FreeBoardVO freeBoard) throws SQLException;
+	
+	//글 삭제
+	void remove(int free_num) throws SQLException;
+	
+	//좋아요 개수 변경
+	void modifyFreeLike(int free_num, String str) throws SQLException;
+		
+}

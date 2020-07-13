@@ -1,0 +1,77 @@
+package com.funding.controller.admin;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.funding.service.admin.AdminPointManageService;
+
+@Controller
+@RequestMapping("/admin/*")
+public class AdminPointManageController {
+
+	@Autowired
+	private AdminPointManageService adminPointService;
+	
+	@RequestMapping("join/point")
+	public String joinPoint(int point)throws Exception{
+		String url="pay&point/joinPoint_enabled";
+		try {
+				adminPointService.joinGiveEnabled();
+				adminPointService.updateJoinPoint(point);
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
+	
+	@RequestMapping("join/noPoint")
+	public String joinNoPoint()throws Exception{
+		String url="pay&point/joinPoint_disabled";
+		try {
+			adminPointService.joinGiveDisabled();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return url;
+		
+	}
+	
+	@RequestMapping("attend/point")
+	public String attendPoint(int point)throws Exception{
+		String url="pay&point/attendPoint_enabled";
+		try {
+			adminPointService.AttendGiveEnabled();
+			adminPointService.updateAttendPoint(point);
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
+	
+	@RequestMapping("attend/noPoint")
+	public String attendNoPoint()throws Exception{
+		String url="pay&point/attendPoint_disabled";
+		try {
+			adminPointService.AttendGiveDisabled();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return url;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

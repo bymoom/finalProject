@@ -1,0 +1,25 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.PopupVO;
+import com.funding.request.SearchCriteria;
+
+public interface PopupDAO {
+	//팝업 리스트조회
+	List<PopupVO> selectPopupList(SearchCriteria cri)throws SQLException;
+	
+	int selectPopupListCount(SearchCriteria cri)throws SQLException;
+	
+	int selectPopupSeqNext()throws SQLException;
+	
+	//팝업 등록
+	void registPopup(PopupVO popup)throws SQLException;
+	
+	void deletePopup(int p_num)throws SQLException;
+	
+	void popupDisabled(int p_num)throws SQLException;
+	
+	void popupEnabled(int p_num)throws SQLException;
+}

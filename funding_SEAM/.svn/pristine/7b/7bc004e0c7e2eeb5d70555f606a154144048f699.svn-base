@@ -1,0 +1,209 @@
+package com.funding.controller.mypage.info;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.funding.dto.MemberVO;
+import com.funding.request.ComMemberModifyRequest;
+import com.funding.request.MemberModifyRequest;
+import com.funding.request.MemberRegistRequest;
+import com.funding.service.MemberService;
+import com.funding.service.myinfo.MyinfoService;
+
+@Controller
+@RequestMapping("/mypage/info")
+public class MypageInfoController {
+
+//	@Autowired
+//	private MemberService memberService;
+//	public void setMemberService(MemberService memberService) {
+//		this.memberService = memberService;
+//	}
+	
+	@Autowired
+	private MyinfoService myinfoService;
+	
+	public void setMyinfoService(MyinfoService myinfoService) {
+		this.myinfoService = myinfoService;
+	}
+	
+	@Resource(name = "memberAtcPath")
+	private String memberAtcPath;
+	
+//	@RequestMapping(value = "/index.htm", method = RequestMethod.GET)
+	@RequestMapping(value = "/calmain")
+	public String test() throws Exception {
+		String url = "mypage/info/calmain";
+
+		return url;
+	}
+	
+	@RequestMapping(value = "/test4id")
+	public String test4Id() throws Exception {
+		String url = "mypage/info/calmain";
+		
+		MemberVO member = myinfoService.getMember("d1com@ddit.com");
+		
+		System.out.println(member.getMem_email());
+
+		return url;
+	}
+	
+	@RequestMapping(value="dailycheck", method=RequestMethod.POST)
+	public ResponseEntity<String> dailyCheck(HttpSession session) {
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+		String mem_email = member.getMem_email();
+		
+		ResponseEntity<String> entity = null;
+		return entity;
+	}
+	
+	//일반회원 정보수정 폼
+	@RequestMapping(value="modifyForm")
+	public String modifyMyinfoForm( HttpSession session,
+									HttpServletRequest request
+									) {
+		String url = "mypage/info/modifyMyinfoForm";
+		
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+		
+		request.setAttribute("member", member);
+		
+		return url;
+	}
+	
+	//일반회원 정보수정
+	@RequestMapping(value="modify", method = RequestMethod.POST)
+	public String modifyMyinfo (HttpSession session,
+								MemberModifyRequest modReq,
+								HttpServletResponse response,
+								Model model
+								) throws Exception {
+		String url = "";
+		
+//		MemberVO member = modReq.toMemberVO();
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+
+		MultipartFile[] files = { modReq.getMem_profile_img(), modReq.getMem_profile_ori()};
+		List<String> saveFileName = new ArrayList<String>();
+		for(MultipartFile file : files) {
+			if (file == null) 
+				continue;
+			
+//			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+			String fileName = UUID.randomUUID().toString().replace("-", "");
+			File savePath = new File(memberAtcPath + File.separator + member.getMem_email());
+			if (!savePath.exists()) {
+				savePath.mkdirs();
+			}
+
+			file.transferTo(new File(savePath, fileName));
+			saveFileName.add(fileName);
+		}
+		
+		//memberVO 에 각 attach set
+		member.setMem_profile_img(saveFileName.get(0));
+//		member.setMem_email(member.getMem_email());
+		System.out.println(member);
+		
+		try {
+//			myinfoService.modify(member);
+			myinfoService.modify(member);
+			model.addAttribute("member", member);
+			url = "mypage/info/modify_success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "mypage/info/modify_fail";
+		}
+		
+		return url;
+	}
+	
+	//소상공인 회원 정보수정 폼
+	@RequestMapping(value="modifyComForm")
+	public String modifyComMyinfoForm( HttpSession session,
+									HttpServletRequest request
+									) {
+		String url = "mypage/info/modifyComMyinfoForm";
+		
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+		
+		request.setAttribute("member", member);
+		
+		return url;
+	}
+	
+	//소상공인 회원 정보수정
+	@RequestMapping(value="modifyCom", method = RequestMethod.POST)
+	public String modifyComMyinfo (HttpSession session,
+								ComMemberModifyRequest comModReq,
+								HttpServletResponse response,
+								Model model
+								) throws Exception {
+		String url = "mypage/info/modifyComMyinfoForm"; //temp
+		
+//		MemberVO member = comModReq.toMemberVO();
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+		
+		System.out.println(comModReq.toString());
+		
+		return url;
+	}
+	
+	@RequestMapping("/picture/{mem_email}")
+	@ResponseBody
+	public ResponseEntity<byte[]> sendPicture(@PathVariable("mem_email") String mem_email,	
+												HttpServletResponse response,
+												HttpSession session) throws Exception {
+		ResponseEntity<byte[]> entity = null;
+		
+		MemberVO mem = (MemberVO)session.getAttribute("loginUser");
+		
+		String fileName = mem.getMem_profile_img();
+		String savePath = memberAtcPath + File.separator;		// + emp.getId();
+
+		FileInputStream in = null;
+
+		try {
+			in = new FileInputStream(savePath + File.separator + mem.getMem_email() + File.separator + fileName);
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), HttpStatus.OK);
+		} catch (IOException e) {
+			entity = new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+		} finally {
+			if(in!=null)in.close();
+		}
+
+		return entity;
+
+	}
+			
+//	@RequestMapping("/dailychk")
+//	public ResponseEntity<List<CalendarListToJsonDTO>> getDailyCheckData(String mem_email) throws Exception {
+//		ResponseEntity<List<CalendarListToJsonDTO>> result = null;
+//		   
+//		return result;
+//	}
+	
+	
+}

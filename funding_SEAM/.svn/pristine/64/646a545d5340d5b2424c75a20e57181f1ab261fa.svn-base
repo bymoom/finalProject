@@ -1,0 +1,427 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
+<footer class="footer text-center" style="height:60%;">
+			<div class="container">
+			 <h4 class="text-uppercase mb-4" style="color:crimson;">공지사항</h4>
+				<div class="row justify-content-md-center">
+					<div class="news" id="notice5">
+								<div class="open-event fl" style="border:none; text-align:center; width:100px;height:15px; font-size:1.5em;">
+									<ul class="notice-list">
+										<c:forEach items="${noticeList }" var="list">
+											<span class="fa fa-bullhorn"></span>  <a  href="<%=request.getContextPath() %>/board/notice/detail?notice_num=${list.notice_num}"><strong>${list.notice_title }</strong></a><br>
+										</c:forEach>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br><br><br>
+            
+            <div class="container" style="height:40%;">
+                <div class="row">
+                	
+                    <!-- Footer Location-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Location</h4>
+                        <p class="lead mb-0">2215 John Daniel Drive<br>Clark, MO 65243</p>
+                    </div>
+                    <!-- Footer Social Icons-->
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h4 class="text-uppercase mb-4">Around the Web</h4>
+                        <a class="btn btn-outline-light btn-social mx-1" href="#!"><svg class="svg-inline--fa fa-facebook-f fa-w-10 fa-fw" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"></path></svg><!-- <i class="fab fa-fw fa-facebook-f"></i> --></a><a class="btn btn-outline-light btn-social mx-1" href="#!"><svg class="svg-inline--fa fa-twitter fa-w-16 fa-fw" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg><!-- <i class="fab fa-fw fa-twitter"></i> --></a><a class="btn btn-outline-light btn-social mx-1" href="#!"><svg class="svg-inline--fa fa-linkedin-in fa-w-14 fa-fw" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin-in" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"></path></svg><!-- <i class="fab fa-fw fa-linkedin-in"></i> --></a><a class="btn btn-outline-light btn-social mx-1" href="#!"><svg class="svg-inline--fa fa-dribbble fa-w-16 fa-fw" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="dribbble" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119.252 8 8 119.252 8 256s111.252 248 248 248 248-111.252 248-248S392.748 8 256 8zm163.97 114.366c29.503 36.046 47.369 81.957 47.835 131.955-6.984-1.477-77.018-15.682-147.502-6.818-5.752-14.041-11.181-26.393-18.617-41.614 78.321-31.977 113.818-77.482 118.284-83.523zM396.421 97.87c-3.81 5.427-35.697 48.286-111.021 76.519-34.712-63.776-73.185-116.168-79.04-124.008 67.176-16.193 137.966 1.27 190.061 47.489zm-230.48-33.25c5.585 7.659 43.438 60.116 78.537 122.509-99.087 26.313-186.36 25.934-195.834 25.809C62.38 147.205 106.678 92.573 165.941 64.62zM44.17 256.323c0-2.166.043-4.322.108-6.473 9.268.19 111.92 1.513 217.706-30.146 6.064 11.868 11.857 23.915 17.174 35.949-76.599 21.575-146.194 83.527-180.531 142.306C64.794 360.405 44.17 310.73 44.17 256.323zm81.807 167.113c22.127-45.233 82.178-103.622 167.579-132.756 29.74 77.283 42.039 142.053 45.189 160.638-68.112 29.013-150.015 21.053-212.768-27.882zm248.38 8.489c-2.171-12.886-13.446-74.897-41.152-151.033 66.38-10.626 124.7 6.768 131.947 9.055-9.442 58.941-43.273 109.844-90.795 141.978z"></path></svg><!-- <i class="fab fa-fw fa-dribbble"></i> --></a>
+                    </div>
+                    <!-- Footer About Text-->
+                    <div class="col-lg-4">
+                        <h4 class="text-uppercase mb-4">About Freelancer</h4>
+                        <p class="lead mb-0">Freelance is a free to use, MIT licensed Bootstrap theme created by <a href="http://startbootstrap.com">Start Bootstrap</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+
+$(function() {
+	
+	var $ = jQuery;
+		/* setInterval(function(){
+			for(i=0;i<3;i++){
+				$('#img1').attr('src','http://placeimg.com/800/500/any/red');
+				$('#img2').attr('src','http://placeimg.com/800/500/any/blue');
+				$('#img3').attr('src','http://placeimg.com/800/500/any');
+			}
+		}, 0.5); */
+	  jQuery('.btn').addClass('pointer').click(function () {
+	   var ih = $(this).index() == 0 ? -18 : 18; //위아래로 움직이는 px 숫자
+	   var obj = $('.recommend_list');
+	   obj.animate({ scrollTop:obj.scrollTop() + ih }, 100);
+	  });
+	});
+jQuery(function(){
+	  function fn_article(container,btn, auto){}
+	  
+	});
+	fn_article3('notice5','bt5',true);
+function fn_article3(containerID, buttonID, autoStart){
+	var $element = $('#'+containerID).find('.notice-list');
+	var $prev = $('#'+buttonID).find('.prev');
+	var $next = $('#'+buttonID).find('.next');
+	var $play = $('#'+containerID).find('.control > a.play');
+	var $stop = $('#'+containerID).find('.control > a.stop');
+	var autoPlay = autoStart;
+	var auto = null;
+	var speed = 4000;
+	var timer = null;
+
+	var move = $element.children().outerHeight();
+	var first = false;
+	var lastChild;
+
+	lastChild = $element.children().eq(-1).clone(true);
+	lastChild.prependTo($element);
+	$element.children().eq(-1).remove();
+
+	if($element.children().length==1){
+		$element.css('top','0px');
+	}else{
+		$element.css('top','-'+move+'px');
+	}
+
+	if(autoPlay){
+		timer = setInterval(moveNextSlide, speed);
+		$play.addClass('on').text('▶');
+		auto = true;
+	}else{
+		$play.hide();
+		$stop.hide();
+	}
+
+	$element.find('>li').bind({
+		'mouseenter': function(){
+			if(auto){
+				clearInterval(timer);
+			}
+		},
+		'mouseleave': function(){
+			if(auto){
+				timer = setInterval(moveNextSlide, speed);
+			}
+		}
+	});
+
+	$play.bind({
+		'click': function(e){
+			if(auto) return false;
+
+			e.preventDefault();
+			timer = setInterval(moveNextSlide, speed);
+			$(this).addClass('on').text('▶');
+			$stop.removeClass('on').text('▣');
+			auto = true;
+		}
+	});
+
+	$stop.bind({
+		'click': function(e){
+			if(!auto) return false;
+
+			e.preventDefault();
+			clearInterval(timer);
+			$(this).addClass('on').text('■');
+			$play.removeClass('on').text('▷');
+			auto = false;
+		}
+	});
+
+	$prev.bind({
+		'click': function(){
+			movePrevSlide();
+			return false;	
+		},
+		'mouseenter': function(){
+			if(auto){
+				clearInterval(timer);
+			}
+		},
+		'mouseleave': function(){
+			if(auto){
+				timer = setInterval(moveNextSlide, speed);
+			}
+		}
+	});
+
+	$next.bind({
+		'click': function(){
+			moveNextSlide();
+			return false;
+		},
+		'mouseenter': function(){
+			if(auto){
+				clearInterval(timer);
+			}
+		},
+		'mouseleave': function(){
+			if(auto){
+				timer = setInterval(moveNextSlide, speed);
+			}
+		}
+	});
+
+	function movePrevSlide(){
+		$element.each(function(idx){
+			if(!first){
+				$element.eq(idx).animate({'top': '0px'},'normal',function(){
+					lastChild.prependTo($element.eq(idx));
+					$(this).children().eq(-1).remove();
+					$(this).css('top','-'+move+'px');
+				});
+				first = true;
+				return false;
+			}
+
+			$element.eq(idx).animate({'top': '0px'},'normal',function(){
+				lastChild.prependTo($element.eq(idx));
+				$(this).children().filter(':last-child').remove();
+				$(this).css('top','-'+move+'px');
+			});
+		});
+	}
+
+	function moveNextSlide(){
+		$element.each(function(idx){
+
+			var firstChild = $element.children().filter(':first-child').clone(true);
+			firstChild.appendTo($element.eq(idx));
+			$element.children().filter(':first-child').remove();
+			$element.css('top','0px');
+
+			$element.eq(idx).animate({'top':'-29.8px'},'normal');
+
+		});
+	}
+	
+/* 	var slideIndex = 0;
+	showSlides(); */
+
+/* 	function showSlides() {
+	    var i;
+	    var slides = document.getElementsByClassName("mySlides");
+	    var dots = document.getElementsByClassName("dot");
+	    for (i = 0; i < slides.length; i++) {
+	       slides[i].style.display = "none";  
+	    }
+	    slideIndex++;
+	    if (slideIndex > slides.length) {slideIndex = 1}    
+	    for (i = 0; i < dots.length; i++) {
+	        dots[i].className = dots[i].className.replace(" active", "");
+	    }
+	    slides[slideIndex-1].style.display = "block";  
+	    dots[slideIndex-1].className += " active";
+	    setTimeout(showSlides, 4000); // Change image every 2 seconds
+	} */
+	
+	
+}  
+
+$('#image1').on('click',function(){
+	location.href="http://edu.sbiz.or.kr/edu/main/main.do";
+});
+$('#image2').on('click',function(){
+	location.href="http://www.redcross.or.kr/redcross_customer/redcross_customer_corona_qna_information.do";
+});
+$('#image3').on('click',function(){
+	location.href="http://ncov.mohw.go.kr/index.jsp";
+});
+
+
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/5eccaa688ee2956d73a49111/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+
+<!-- Bootstrap 4 --><!-- Bootstrap 4 -->
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<%=request.getContextPath()%>/resources/bootstrap/dist/js/adminlte.min.js"></script>
+
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+
+
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/bootstrap-slider/bootstrap-slider.min.js"></script>
+
+<script src="<%=request.getContextPath() %>/resources/js/common.js"></script>
+</body>
+
+<style>
+.slider .indicators .indicator-item {
+  border: 3px solid #ffffff;
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.slider .indicators .indicator-item.active {
+  background-color: #ffffff;
+}
+.slider {
+  width: 900px;
+  margin: 0 auto;
+}
+.slider .indicators {
+  bottom: 60px;
+  z-index: 100;
+  /* text-align: left; */
+}
+
+.gnbWrapper .gnbFullBannerDimmed {
+    width: 100%;
+    height: 100%;
+    opacity: .8;
+}
+.pointer{cursor:pointer}
+.blind{display:none}
+.fl{float:left}
+
+/* default */
+.news {padding:0 0px 20px;font-size:11px;font-family:dotum;}
+.news .open-event {height:16px; position:relative; border:1px solid #ccc; overflow:hidden;width:400px;}
+.news .open-event ul{position:absolute; top:0px;margin:0;padding:0;}
+.news .open-event ul#notice1 {left:0;}
+.news .open-event ul#notice2 {right:20px;}
+.news .open-event ul li {height:20px;}
+.news .open-event ul li a {display:inline-block; width:310px;}
+.news .open-event ul li a:hover {color:#8f7614; text-decoration:underline;}
+.news .open-event ul li a strong {margin-right:10px;}
+.news .open-event ul li span.date {display:inline-block; width:60px;}
+.news .open-event .prev{position:absolute; top:1px; right:2px; width:7px; height:4px; line-height:0; font-size:0;}
+.news .open-event .next{position:absolute; bottom:1px; right:2px; width:7px; height:4px; line-height:0; font-size:0;}
+.news .control {float:left; margin:0px 0 0 10px; }
+.news .control a.stop {font-size:12px;}
+.news .control a.on {color:red; font-size:12px;}
+	.menus{
+		font-size:1.5em;
+	}
+	.menu{
+		float:left;
+		margin-left:30px;
+	}
+	
+	* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+.mySlides {display: none}
+img {vertical-align: middle;}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 3.0s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev, .next,.text {font-size: 11px}
+}
+</style>
+</html>
+
+
+
+
+
+
+

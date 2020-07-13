@@ -1,0 +1,121 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    
+<!-- Page Path Begins -->
+<div class="container">
+	<div class="row justify-content-md-center">
+		<h2 class="page-section-heading text-center text-uppercase text-primary mb-0">자유게시판</h2>
+	</div>
+</div>
+<!-- Page Path Ends -->
+
+<!-- Page Content Begins -->	
+<div class="content-wrapper">
+	<!-- Main content -->
+	<section class="content">
+		<div class="card">
+			<div class="card-header with-border">		
+				<c:if test="${loginUser.mem_name eq freeBoard.mem_name}">					
+					<button type="button" class="btn btn-primary pointer" onclick="modify_go();">수정</button>		
+					<button type="button" class="btn btn-primary pointer" onclick="remove_go();">삭제</button>		
+				</c:if>
+				<button type="button" class="btn btn-primary pointer" onclick="javascript:history.go(-1);">목록</button>
+			</div>
+	
+			<div class="post">
+				<div class="titleArea row">
+					<h3 class="col-sm-10">${freeBoard.free_title }</h3>
+					<c:if test="${loginUser.mem_num eq null }">
+						<a href="javascript:alert('로그인이 필요합니다.');" class="link-black text-sm col-sm-2"><i class="far fa-thumbs-up mr-1"></i>${freeBoard.free_like } Like</a>
+					</c:if>
+				</div>
+					
+				<div class="user-block">
+		          <img class="img-circle img-bordered-sm" src="https://source.unsplash.com/category/nature" alt="user image">
+		          <span class="username">${freeBoard.mem_name }</span>
+		          <span class="description"><fmt:formatDate value="${freeBoard.free_regdate}" pattern="yyyy-MM-dd HH:mm:ss" /></span>
+		        </div>
+		        	
+				<div>${freeBoard.free_contents}</div>
+	
+		<div id="commentArea">
+			<!-- 댓글쓰기 -->
+			<form id="CommentsForm">
+				<%-- <div class="panel panel-info">
+			      <div class="panel-title">
+			      	<h5 class="float-left" style="margin-left:10px;">댓글</h5>
+					<span class="text-sm float-right">
+						<i class="far fa-comments mr-1"></i> Comments (${freeCmtsCount }) 비활성화된 댓글 개수 빼야함
+					</span>
+			      </div> --%>
+			      <div class="panel-body row" style="padding:5px;">		
+					<div class="col-sm-10">
+						<textArea style="width:100%; height:60px; line-height:120%;" id="free_cmts_contents" name="free_cmts_contents"></textarea>
+						<br>
+						<font color="#656565">현재 <span id="tmptext">0</span>/최대 1000byte(한글 500자, 영문 1000자)</font>
+					</div>
+					<div id="commentSave col-sm-2">
+						<button type="button" class="btn btn-primary pointer" onclick="reply_regist_go();">
+							댓글저장
+						</button>
+					</div>			
+			      </div>
+				
+				<!-- 댓글 리스트 -->
+				<c:if test="${loginUser.mem_num eq 1 }">
+						<button type="button" id="checkAll" class="btn btn-primary pointer" style="display:visible;">전체 선택</button>
+						<button type="button" id="checkClearAll" class="btn btn-primary pointer" style="display:none;">전체 해제</button>
+					&nbsp;
+					<button type="button" id="enabledBtn" class="btn btn-primary pointer" onclick="enabled();">글 숨기기</button>
+	      		</c:if>
+	      		<div id="comment-tab___" class="tab-pane___ active___" style=" margin: 5px 10px;">
+					<div class="comments___ ace-scroll___" style="position: relative;">
+						<div class="scroll-track___ scroll-active___" style="display: block; sheight: 300px;">
+						<div class="scroll-bar___" style="sheight: 232px; top: 0px;"></div>
+						</div>
+						<div id="repliesDiv" class="scroll-content___" style="smax-height: 300px;">		
+						</div>
+						<div class='text-center'>
+							<ul id="pagination" class="pagination pagination-sm no-margin ">
+				
+							</ul>
+						</div>									
+				   </div>		
+			    </div>
+			<!-- </div> -->
+		</form>
+		</div>
+		</div>
+	</div>
+	</section>
+	<!-- /.content -->
+</div>
+<!-- Page Content Ends -->
+
+<!-- 댓글 Modal -->
+<div id="modifyModal" class="modal fade in" >
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">댓글 수정</h4>
+        <input type="hidden" class="modal_free_cmts_num">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>        
+      </div>
+      <div class="modal-body" data-free_cmts_num>
+        <p><input type="text" id="modal_free_cmts_contents" class="form-control"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" id="replyModBtn">Modify</button>
+        <button type="button" class="btn btn-danger" id="replyDelBtn">DELETE</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>            
+
+<%@ include file="/WEB-INF/views/board/free/reply.jsp" %>
+<%@ include file="/WEB-INF/views/board/free/detail_js.jsp" %>

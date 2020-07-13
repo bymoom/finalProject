@@ -1,0 +1,14 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<script>
+	$('#registBtn').on('click',function(){
+		OpenWindow('<%=request.getContextPath()%>/admin/popup/regist','등록',1280,800);
+	});
+	$('#modifyBtn').on('click',function(){
+		alert("d");
+	});
+	$('#deleteBtn').on('click',function(){
+		alert("d");
+	});
+</script>

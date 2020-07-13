@@ -1,0 +1,77 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.PjtSearchCriteria;
+
+public class ProjectDAOImpl implements ProjectDAO {
+	
+	@Autowired
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	@Override
+	public List<ProjectVO> categorySelectDonationProjectList(PjtSearchCriteria pjtCri) throws SQLException {
+		int offset = pjtCri.getPageStartRowNum();
+		int limit=pjtCri.getPerPageNum();
+		
+		//RowBounds : offset 만큼 건너뛰고 limit 만큼 가져온다
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.categorySelectDonationProjectList",pjtCri,rowBounds);
+		
+		return projectList;
+	}
+
+	@Override
+	public List<ProjectVO> selectProjectList() throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.selectProjectList",null);
+		return projectList;
+	}
+
+	@Override
+	public ProjectVO selectProjectByNum(int pjt_num) throws SQLException {
+		ProjectVO project = sqlSession.selectOne("Project-Mapper.selectProjectByNum",pjt_num);
+		return project;
+	}
+
+	@Override
+	public List<ProjectVO> searchSelectProjectList(String val) throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.searchSelectProjectList",val);
+		return projectList;
+	}
+
+	@Override
+	public int selectProjectCount(String val) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.selectProjectCount",val);
+		return count;
+	}
+
+	@Override
+	public int categorySelectDonationProjectListCount(PjtSearchCriteria pjtCri) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.categorySelectDonationProjectListCount",pjtCri);
+		return count;
+	}
+
+	@Override
+	public int insertDonationProjectSeq() throws SQLException {
+		int seq = sqlSession.selectOne("Project-Mapper.insertDonationProjectSeq");
+		return seq;
+	}
+
+	@Override
+	public void insertDonationProject(ProjectVO project) throws SQLException {
+		sqlSession.update("Project-Mapper.insertDonationProject",project);
+	}
+
+
+
+}

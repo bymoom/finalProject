@@ -1,0 +1,39 @@
+package com.funding.service.member;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.member.PointDAO;
+import com.funding.dto.PointVO;
+
+public class PointServiceImpl implements PointService {
+	
+	@Autowired
+	private PointDAO pointDAO;
+	public void setPointDAO(PointDAO pointDAO) {
+		this.pointDAO = pointDAO;
+	}
+
+	@Override
+	public int getPointByMemNum(int mem_num) throws SQLException {
+		int point = pointDAO.getPoint(mem_num);
+		return point;
+	}
+
+	@Override
+	public void usePoint(PointVO point) throws SQLException {
+		pointDAO.usePoint(point);
+	}
+
+	@Override
+	public void savePoint(PointVO point) throws SQLException {
+		pointDAO.savePoint(point);
+	}
+
+	@Override
+	public void deletePointByMemNum(int mem_num) throws SQLException {
+		pointDAO.deletePoint(mem_num);
+	}
+
+}

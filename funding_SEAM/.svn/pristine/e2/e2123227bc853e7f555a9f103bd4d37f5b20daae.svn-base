@@ -1,0 +1,297 @@
+package com.funding.controller.project;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.Interest_pjtVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.PointVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.PjtSearchCriteria;
+import com.funding.service.member.PointService;
+import com.funding.service.project.Interest_pjtService;
+import com.funding.service.project.Pjt_bank_sum_attachService;
+import com.funding.service.project.Pjt_pay_detailService;
+import com.funding.service.project.ProjectService;
+
+//프로젝트 컨트롤러
+@Controller
+@RequestMapping("/project")
+public class ProjectController {
+	
+	@Autowired
+	public ProjectService projectService;
+	
+	@Autowired
+	public Pjt_pay_detailService pjt_pay_detailService;
+	
+	@Autowired
+	public Interest_pjtService interest_pjtService;
+	
+	@Autowired
+	public Pjt_bank_sum_attachService pjt_bank_sum_attachService;
+	
+	@Autowired
+	public PointService pointService;
+	
+/*	@RequestMapping("/list")
+	public ModelAndView projectList(PjtSearchCriteria pjtCri,ModelAndView mav)throws SQLException{
+		String url="project/project_list.page";
+		mav.addAllObjects(projectService.getProjectList(pjtCri));
+		mav.setViewName(url);
+		
+		return mav;
+	}*/
+	
+	@RequestMapping("/list")
+	public ModelAndView projectList(PjtSearchCriteria pjtCri,ModelAndView mav)throws SQLException{
+		String url="project/project_list.page";
+		mav.addAllObjects(projectService.getDonationProjectList(pjtCri));
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/list_loan")
+	public ModelAndView loanProjectList(PjtSearchCriteria pjtCri,ModelAndView mav)throws SQLException{
+		String url="project/project_list_loan.page";
+		mav.addAllObjects(projectService.getLoanProjectList(pjtCri));
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/getlist")
+	@ResponseBody
+	public ResponseEntity<Map<String,Object>> projectList(PjtSearchCriteria pjtCri)throws Exception{
+		
+		ResponseEntity<Map<String,Object>> entity =null;
+		System.out.println(pjtCri.getKeyword());
+		try {
+			Map<String,Object> dataMap = projectService.getDonationProjectList(pjtCri);
+			
+			entity = new ResponseEntity<Map<String,Object>>(dataMap,HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity=new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/getloanlist")
+	@ResponseBody
+	public ResponseEntity<Map<String,Object>> loanProjectList(PjtSearchCriteria pjtCri)throws Exception{
+		
+		ResponseEntity<Map<String,Object>> entity =null;
+		System.out.println(pjtCri.getKeyword());
+		try {
+			Map<String,Object> dataMap = projectService.getLoanProjectList(pjtCri);
+			entity = new ResponseEntity<Map<String,Object>>(dataMap,HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity=new ResponseEntity<Map<String,Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/detail")
+	public ModelAndView projectDetail(ModelAndView mav,int pjt_num) throws SQLException{
+		String url="project/project_detail.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		
+		String sumnail=pjt_bank_sum_attachService.getSumnail(pjt_num);
+		mav.addObject("sumnail",sumnail);
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/loanDetail")
+	public ModelAndView loanProjectDetail(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/project_detail_loan.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		
+		String sumnail=pjt_bank_sum_attachService.getSumnail(pjt_num);
+		mav.addObject("sumnail",sumnail);
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping("/payForm")
+	public ModelAndView projectPayForm(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/project_payForm.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/loanPayForm")
+	public ModelAndView loanProjectPayForm(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/loanProject_payForm.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="pay",method=RequestMethod.POST)
+	public ModelAndView payRegist(ModelAndView mav, Pjt_pay_detailVO pjt_pay_detail)throws SQLException{
+		String url="project/project_pay_success.page";
+		
+		pjt_pay_detailService.pjtPay(pjt_pay_detail);
+		
+		ProjectVO project = projectService.getProject(pjt_pay_detail.getPjt_num());
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		return mav;
+	}
+	
+	@RequestMapping(value="/search/list/{val}",method=RequestMethod.GET)
+	public String searchProjectList(@PathVariable("val") String val,Model model)throws Exception{
+		String url="project/searchList.page";
+		
+		List<ProjectVO> projectList = projectService.getSearchProjectList(val);
+		int count = projectService.selectProjectCount(val);
+		model.addAttribute("projectList",projectList);
+		model.addAttribute("count",count);
+		return url;
+	}
+	
+	@RequestMapping(value="/isInterest",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> isInterestPjt(@RequestBody Interest_pjtVO interest_pjt)throws Exception{
+		ResponseEntity<String> entity=null;
+		Interest_pjtVO interestPjt = null;
+		
+			interestPjt=interest_pjtService.getInterestPjt(interest_pjt);
+			
+			if(interestPjt==null) {
+				entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+			}else {
+				entity = new ResponseEntity<String>("FAIL",HttpStatus.OK);
+			}
+			
+		return entity;
+	}
+	
+	@RequestMapping(value="/interest",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> interestPjt(@RequestBody Interest_pjtVO interest_pjt)throws Exception{
+		ResponseEntity<String> entity=null;
+		
+		try {
+			interest_pjtService.interestPjt(interest_pjt);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	@RequestMapping(value="/interestCancle",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> interestPjtCancle(@RequestBody Interest_pjtVO interest_pjt)throws Exception{
+		ResponseEntity<String> entity=null;
+		
+		try {
+			interest_pjtService.interestPjtCancle(interest_pjt);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	@RequestMapping(value="/getPoint",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Integer> getPoint(@RequestBody PointVO point)throws Exception{
+		ResponseEntity<Integer> entity=null;
+		try {
+			int po=pointService.getPointByMemNum(point.getMem_num());
+			entity=new ResponseEntity<Integer>(po,HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity=new ResponseEntity<Integer>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	@RequestMapping(value="/usePoint",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> userPoint(@RequestBody PointVO point)throws Exception{
+		ResponseEntity<String> entity=null;
+		
+		try {
+			pointService.usePoint(point);
+			entity=new ResponseEntity<String>(HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity=new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+		
+		return entity;
+	}
+	
+	@Resource(name="projectUploadPath")
+	private String projectUploadPath;
+	
+	@RequestMapping("/picture/get")
+	@ResponseBody
+	public ResponseEntity<byte[]> getPicture(String picture)throws Exception{
+		
+		InputStream in=null;
+		ResponseEntity<byte[]> entity=null;
+		String imgPath = this.projectUploadPath;
+		try{
+			
+			//in=new FileInputStream(imgPath+File.separator+picture);
+			in=new FileInputStream(new File(imgPath,picture));
+			
+			entity=new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.CREATED);
+		}catch(IOException e){
+			e.printStackTrace();
+			entity=new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}finally{
+			if(in != null)
+				in.close();
+		}
+		return entity;
+	}
+
+}

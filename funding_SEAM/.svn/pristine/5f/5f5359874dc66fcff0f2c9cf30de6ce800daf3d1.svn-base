@@ -1,0 +1,449 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<body>
+	<div class="container">
+		<div class="row justify-content-md-center">
+				       <div class="col-lg-12 text-center p-5">
+	                       <h4 class="pb-5">대출형 프로젝트 등록시 유의사항 및 이용약관</h4>
+	                    <div class="form-check float-right">
+                          <input class="form-check-input agreeAll float-right" type="checkbox">
+                          <label class="form-check-label"><strong>전체 동의</strong></label>
+                        </div>
+                      
+	                        <textarea id="inputDescription1" class="form-control" rows="4" readonly>
+프로젝트의 개설
+① 개설자는 프로젝트 페이지를 생성하여 프로젝트 개설을 회사에 신청한 후 회사가 프로젝트를 심사하여 승인한 경우에 한하여 해당 프로젝트는 홈페이지에 게시 또는 등록(이하 “게시”)됩니다.
+② 제1항에 따라 프로젝트가 홈페이지에 게시되기 위하여는 다음 각 호의 기준에 따라 회사의 심사를 거쳐 승인되어야 합니다.
+
+	1. 회사의 프로젝트 개설에 따른 규정과 절차를 준수하였는가
+	2. 회사가 제공한 프로젝트 개설 양식의 항목을 빠짐없이 기재하였는가
+	3. 회사가 요구한 프로젝트 관련 파일 (이미지, 동영상, 음성 파일 등)을 규격에 맞게 제공하였는가
+	4. 관계법령에 위배되거나 사회의 안녕질서 혹은 미풍양속을 저해하려는 목적이 있지는 않는가
+	5. 범죄적 행위, 국익 또는 사회적 공익을 저해하려는 목적이 있지는 않는가
+	6. 타인의 명예를 손상시키거나 불이익을 주려는 목적이 있지는 않는가
+	7. 기타 회사가 정한 프로젝트 심사 조건에 부합하는가
+③ 심사를 신청한 프로젝트의 내용에 허위, 기재누락, 오기가 있어서는 안 되며, 이를 준수하지 않아 발생한 불이익에 대해서는 개설자가 모든 책임을 부담하여야 합니다. 개설자가 작성 및 제공한 프로젝트 내용 및 서류에 대한 모든 책임은 해당 개설자에게 있습니다.
+	                        </textarea>
+	                    <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+	                        <textarea id="inputDescription2" class="form-control" rows="4" readonly>
+프로젝트 정보의 게재
+① 제 6 조에 따라 회사의 승인을 받은 프로젝트의 경우 개설자는 참여자들의 펀딩 판단에 도움이 될 수 있는 프로젝트에 대한 정보를 홈페이지에 게재할 수 있습니다.
+② 제1항에도 불구하고 회사는 개설자가 게재한 프로젝트의 내용, 정보 등이 다음 각 호에 해당한다고 판단하는 경우 사전통지 없이 삭제할 수 있습니다. 다만, 시정이 가능하다고 판단되는 경우에는 개설자에게 소명 또는 시정을 요구할 수 있습니다.
+
+	1. 개설자가 제공한 회원정보 또는 프로젝트의 정보, 개설을 위해 제출한 서류가 조작되었거나 허위임이 판명된 경우
+	2. 제3자의 지적 재산권 및 기타 권리를 침해하는 내용인 경우
+	3. 회사로부터 사전승인 받지 아니한 내용을 게시한 경우
+	4. 개설자가 회사 사이트와 게시판에 음란, 비방, 욕설, 명예훼손, 개인정보 무단공개 등 이에 준하는 게시물을 게재하거나 관련 사이트를 링크하는 경우
+	5. 개설자가 프로젝트 정보를 불법적으로 변경 또는 조작한 경우
+	6. 기타 관계법령에 위반된다고 판단되는 경우
+③ 승인되어 게시된 프로젝트는 프로젝트 기간이 종료한 후에도 홈페이지에 게시될 수 있으며, 삭제가 불가능합니다.
+④ 회사의 승인에도 불구하고 게시된 프로젝트의 내용에 허위, 기재누락, 오기가 있음에 따라 발생한 분쟁, 법적 책임, 불이익에 대해서는 개설자가 모든 책임을 단독으로 부담하여야 합니다. 개설자가 작성 및 제공한 프로젝트 내용 및 서류에 대한 모든 책임은 해당 개설자에게 있습니다.
+⑤ 참여자가 홈페이지에 게재된 내용에 의존하여 펀딩 판단을 한 경우 이로부터 발생하는 결과에 대하여 회사는 회사의 고의 또는 과실이 없는 이상 책임을 지지 않습니다.
+	                        </textarea>
+	                    <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+                        <div>
+	                        <textarea id="inputDescription3" class="form-control" rows="4" readonly>
+프로젝트의 내용변경 및 공지
+① 회사가 프로젝트를 승인하기 이전에 개설자는 마이페이지의 개설프로젝트에서 프로젝트의 내용을 수정할 수 있습니다.
+② 회사가 프로젝트를 승인한 이후에는 개설자는 원칙적으로 서비스약정 또는 회사의 규정에 따라 변경이 금지된 것으로 정해진 사항(이하 "변경금지사항")에 대하여는 정정 또는 삭제(이하 "변경")를 할 수 없습니다. 다만, 예외적으로 변경금지사항을 변경하기 위해서 별도의 변경신청(전화, 이메일)을 하여 회사가 해당 변경신청에 대하여 승인을 한 경우에 한하여 변경하여 게시할 수 있습니다.
+(*변경금지사항: 펀딩 방식, 펀딩 목표 금액, 리워드 금액)
+③ 개설자는 참여자가 언제든지 확인을 할 수 있도록 변경되거나 추가된 프로젝트의 내용을 '최근소식' 게시판에 업데이트 하는 방법으로 공지하여야 합니다.
+④ 제2항, 제3항에도 불구하고 개설자가 변경금지사항을 임의로 변경하거나 변경한 내용을 공지하지 아니한 경우에는 해당 프로젝트의 참여자와의 관계에서 발생할 수 있는 법적 분쟁과 책임, 불이익에 대하여 회사는 책임을 지지 않습니다.
+
+프로젝트의 취소
+① 개설자는 프로젝트가 승인되기 이전에는 회사에 요청하여 회사가 정한 방법에 따라 프로젝트를 취소할 수 있습니다.
+② 개설자는 프로젝트가 승인된 이후 프로젝트 기간이 종료되기 전까지는 회사에 프로젝트의 취소를 요청하여 서비스약정 및 회사의 안내에 따라 프로젝트의 취소 절차를 밟아야 합니다.
+③ 프로젝트가 성공한 경우에 개설자는 정당한 사유가 없는 한 프로젝트를 취소할 수 없습니다. 다만, 천재지변, 국가비상사태 등 불가항력적 사유로 인하여 프로젝트를 취소하게 된 경우는 예외로 합니다.
+	                        </textarea>
+                        </div>
+		                <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+		                </div>
+		                
+			<div class="col-12">
+				<form class="form-horizontal" name="projectRegist" action="pjtRegist_loan" method="post" enctype="multipart/form-data">
+											<hr>
+					<div class="text-center p-3">
+					<h4 class="pb-5">업체 정보</h4>
+						<div class="form-group row pb-1">
+							<label for="comName" class="col-sm-2 col-form-label">상호명</label>
+							<div class="col-sm-6">
+								<input type="text" name="comName" class="form-control"
+									id="comName" readonly="readonly" value="${comMember.com_bsns_name}">
+							</div>
+						</div>
+						<div class="form-group row pb-1">
+							<label for="Addr" class="col-sm-2 col-form-label">사업장 주소</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control col-4" id="comAddr"
+									readonly="readonly" value="${comMember.com_zipcode }">
+								<input type="text" class="form-control" id="comAddr"
+									readonly="readonly" value="${comMember.com_addr1 }">
+								<input type="text" class="form-control" id="comAddr"
+									readonly="readonly" value="${comMember.com_addr2 }">
+							</div>
+						</div>
+						<div class="form-group row pb-1">
+							<label for="phone" class="col-sm-2 col-form-label">연락처</label>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" id="comphone"
+									readonly="readonly" value="${comMember.com_bsns_phone }">
+							</div>
+						</div>
+						<div class="form-group row pb-1">
+							<label for="pjt_category" class="col-sm-2 col-form-label">업종</label>
+							<div class="col-sm-4">
+								<select class="form-control" name="pjt_category">
+									<option selected="selected">선택</option>
+									<option>음식점</option>
+									<option>서비스/문화</option>
+									<option>도소매</option>
+									<option>교육</option>
+									<option>제조</option>
+									<option>기타</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">통장 사본</label>
+							<div class="col-sm-8">
+								<div class="input-group">
+				                      <input type="file" class="custom-file-input" id="bankBook" name="pjt_atc_bankbook_name">
+				                      <input type="text" id="isbankBookUpload" value="0" style="display:none;">
+				                      <label class="custom-file-label text-left" for="bankBook" id="bankBookName"></label>
+								</div>
+							</div>
+							<label class="col-sm-2 col-form-label">
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="프로젝트 달성시 정산받으실 통장 사본파일을 업로드해주세요.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						</div>
+						<hr>
+						
+						<div class="text-center p-3">
+						<h4 class="pb-5">프로젝트 정보</h4>
+												<div class="form-group row pb-1">
+							<label class="col-sm-2 col-form-label">대표 이미지</label>
+							<div class="col-sm-8">
+								<div class="input-group">
+				                      <input type="file" class="custom-file-input" id="sumImg" name="pjt_atc_sum_name">
+				                      <input type="text" id="isSumImgUpload" value="0" style="display:none;">
+				                      <label class="custom-file-label text-left" for="customFile" id="fileName">
+				                      </label>
+								</div>
+							</div>
+							<label class="col-sm-2 col-form-label">
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="프로젝트 목록 및 프로젝트 상세페이지 첫번째 노출되는 이미지입니다.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						<div class="form-group row pb-1">
+							<label class="col-sm-2 col-form-label">미리보기</label>
+							<div class="col-sm-8" >
+								<div id="sumImgPreView" class="col-sm-12 no-padding" style="height:400px;width:100%;border:1px solid lightgray;"></div>
+							</div>
+						</div>
+						
+						<div class="form-group row pb-1">
+							<label for="pjtTitle" class="col-sm-2 col-form-label">프로젝트 유형</label>
+							<div class="col-sm-8">
+								<input type="text" style="display: none;" name="pjt_type_code"
+									class="form-control" value="2"
+									readonly="readonly"> <input type="text"
+									class="form-control" value="대출형" readonly="readonly">
+							</div>
+						</div>
+						<div class="form-group row pb-1">
+							<label for="pjtTitle" class="col-sm-2 col-form-label">프로젝트 제목</label>
+							<div class="col-sm-8">
+								<input type="text" name="pjt_title" class="form-control"
+									id="pjtTitle" placeholder="프로젝트 제목  35자 이하로 입력해주세요." maxlength="35">
+							</div>
+							<label class="col-sm-2 col-form-label">
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="프로젝트의 제목은 한눈에 알아볼 수 있도록 만드는 것이 좋습니다.정답이 있는 것은 아니에요! 개성이 담긴 멋진 제목을 만들 수도 있어요.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						
+						<div class="form-group row pb-1">
+							<label for="date" class="col-sm-2 col-form-label">프로젝트 기간</label>
+							<div class="col-sm-4 input-group-prepend">
+								<input type="text" name="pjt_startdate" placeholder="yyyy-mm-dd"
+									id="fromDate" class="form-control datepicker"
+									data-inputmask-alias="datetime"
+									data-inputmask-inputformat="mm/dd/yyyy" data-mask=""
+									im-insert="false"> ~<input type="text"
+									name="pjt_enddate" placeholder="yyyy-mm-dd" id="toDate"
+									class="form-control datepicker" data-inputmask-alias="datetime"
+									data-inputmask-inputformat="mm/dd/yyyy" data-mask=""
+									im-insert="false">
+							</div>
+							<label class="col-sm-2 col-form-label">
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="많은 분들이 보통 30일에서 40일 사이의 기간을 설정하고 있으며, 
+							최대 90일까지 설정 가능합니다. 심사 기간(최대 7일) 내 피드백 반영까지 고려하여 여유 있게 프로젝트 시작일정을 설정해 주시고,
+							프로젝트 및 정산 상황에 따라 적절한 마감일정을 설정해 주세요. 오랫동안 진행한다고 해서 프로젝트가 반드시 성공하는 것은 아닙니다.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						
+						<div class="form-group row pb-1">
+							<label for="pjtCash" class="col-sm-2 col-form-label">목표 금액</label>
+							<div class="col-sm-4">
+								<input type="text" name="pjt_cash" class="form-control"
+									id="pjtCash" placeholder="숫자로 입력해주세요" onkeyup="this.value=this.value.replace(/[\ㄱ-ㅎㅏ-ㅣ가-힣 a-z A-Z]/g, '');">
+							</div>
+							<label class="col-sm-2 col-form-label">
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="대출형은 최대 5,000만원까지 정할수 있어요. 기간을 고려하여 설정해주세요.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						
+						<div class="form-group row">
+							<label for="pjtCash" class="col-sm-2 col-form-label">총 상환 금액</label>
+							<div class="col-sm-4">
+								<input type="text" name="pjt_cash" class="form-control"
+									id="a" readonly>
+							</div>
+							<label class="col-sm-2 col-form-label">
+							
+							<a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-placement="right" 
+							data-trigger="focus" data-content="대출형 이자율은 2.5%이며 정산일로 부터 2년 후 만기 상환입니다.">
+							<i class="far fa-question-circle"></i></a>
+							</label>
+						</div>
+						<div class="form-group row pb-1">
+							<label class="col-sm-2 col-form-label">상세내용</label>
+							<div class="col-sm-10">
+								<textarea class="textarea" name="pjt_contents" id="contents"
+									rows="20" placeholder="1000자 내외로 작성하세요." style="display: none;"></textarea>
+							</div>
+						</div>
+
+
+					<input style="display:none;" name="mem_num" value="${loginUser.mem_num }">
+					</div>
+					<!-- /.card-body -->
+						<div class="row justify-content-md-center">
+							<button type="button" class="btn btn-outline-success btn-flat"
+								onclick="registForm();">등록</button>
+							<button type="button" class="btn btn-outline-success btn-flat"
+								onclick="javaScript:history.go(-1)">뒤로가기</button>
+						</div>
+					<!-- /.card-footer -->
+				</form>
+
+			</div>
+		</div>
+	</div>
+ 
+<%@ include file="../../commons/summernote_js.jsp"%> 
+
+	<script>
+	$(function () {
+		$('.popover-dismiss').popover({
+			  trigger: 'focus'
+			})
+	});
+	
+	$('#pjtCash').on('change',function(){
+		if($(this).val()*1 > 50000000){
+			alert("대출형 프로젝트는 최대 5000만원까지 가능합니다.");
+			$(this).val('');
+			$(this).focus();
+		}
+		
+	})
+	/* 전체 동의 */
+	$('.agreeAll').on('click',function(){
+	    var chk = $(this).is(":checked");
+	    if(chk) $(".agree").prop('checked', true);
+	    else  $(".agree").prop('checked', false);
+	});
+	
+	/* 대출이자 계산 */
+	$('#pjtCash').on('change',function(){
+		var cash=$('#pjtCash').val()*0.025*2+$('#pjtCash').val()*1;
+		$('#a').val(cash.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	})
+	
+	/* 프로젝트 등록 버튼 */
+		function registForm() {
+		if(!'${loginUser.mem_num}'){
+			alert('로그인이 필요합니다.');
+			location.href="/commons/loginForm"
+			return;
+		}
+	
+		//약관 동의
+        var isSeasonChk = false;
+        var arr_Season = document.getElementsByName("agree");
+        for(var i=0;i<arr_Season.length;i++){
+            if(arr_Season[i].checked == false) {
+                isSeasonChk = false;
+                arr_Season[i].focus();
+                alert("프로젝트 등록시 유의사항을 확인하고 동의해주세요.");
+                return;
+            }
+        }
+        //업종 미선택
+        if($('[name=pjt_category]').val()=='선택'){
+        	alert('업종을 선택해주세요.');
+        	$('[name=pjt_category]').focus();
+	        return;
+        }
+        //통장사본 미업로드
+		if($('#isbankBookUpload').val()=="0"){
+			alert('통장사본을 업로드해주세요.');
+        	$('#bankBook').focus();
+	        return;
+		}
+        //대표이미지 미업로드
+        if($('#isSumImgUpload').val()=="0"){
+        	alert('대표이미지를 업로드해주세요.');
+        	$('#sumImg').focus();
+	        return;
+        }
+        //제목 미입력
+        if($('#pjtTitle').val()==""){
+    		alert("프로젝트 제목을 입력해주세요.");
+    		$('#pjtTitle').focus();
+    		return;
+    	}
+        //날짜 미입력
+        if($('#fromDate').val()==""){
+			alert("프로젝트 시작일을 입력해주세요");
+			$('#fromDate').focus();
+			return;
+		}
+        if($('#toDate').val()==""){
+        	alert("프로젝트 종료일을 입력해주세요");
+			$('#toDate').focus();
+			return;
+        }
+        //목표 금액 미입력
+        if($('#pjtCash').val()==""){
+        	alert("목표 금액을 입력해주세요.");
+			$('#pjtCash').focus();
+			return;
+        }
+			$('form[name="projectRegist"]').submit();
+		}
+
+	/* 사진업로드 */
+	$('input#sumImg').on('change',function(event){
+		//$('input[name="checkUpload"]').val(0);
+		
+		var fileFormat=this.value.substr(this.value.lastIndexOf(".")+1).toUpperCase();
+		//이미지 확장자 jpg 확인
+		if(fileFormat!="JPG"){
+			alert("이미지는 jpg 형식만 가능합니다.");
+			return;
+		}
+		//이미지 파일 용량 체크
+		if(this.files[0].size>1024*1024*1){
+			alert("사진 용량은 1MB 이하만 가능합니다.");
+			return;
+		}
+		$('#fileName').text(this.files[0].name);
+		$('#isSumImgUpload').val('1');
+		
+		if(this.files && this.files[0]){
+			
+			var reader = new FileReader();
+			
+			reader.onload = function (e){
+				//이미지 미리보기
+				$('div#sumImgPreView').css({
+					'background-image':'url('+e.target.result+')',
+					'background-position':'center',
+					'background-size':'cover',
+					'background-repeat':'no-repeat',
+					'width':'100%',
+					'height':'400px'
+				});
+			}
+			
+			reader.readAsDataURL(this.files[0]);
+		}
+	});
+	
+	/* 통장 사본 업로드 */
+	$('input#bankBook').on('change',function(event){
+		$('#bankBookName').text(this.files[0].name);
+		$('#isbankBookUpload').val("1");
+	});
+		/* 데이트 픽커 */
+		$(function() {
+			//오늘 날짜를 출력
+			$("#today").text(new Date().toLocaleDateString());
+
+			//datepicker 한국어로 사용하기 위한 언어설정
+			$.datepicker.setDefaults($.datepicker.regional['ko']);
+
+			// 시작일(fromDate)은 종료일(toDate) 이후 날짜 선택 불가
+			// 종료일(toDate)은 시작일(fromDate) 이전 날짜 선택 불가
+
+			//시작일.
+			$('#fromDate').datepicker(
+					{
+						showButtonPanel : true,
+						closeText : '닫기', // 닫기 버튼 텍스트 변경
+						currentText : '오늘',
+						changeMonth : true, // 월을 이동하기 위한 선택상자 표시여부
+						minDate : 0, // 선택할수있는 최소날짜, ( 0 : 오늘 이전 날짜 선택 불가)
+						onClose : function(selectedDate) {
+
+							//시작일을 다시 설정할 경우 종료 기간을 초기화시킨다.
+							$('#toDate').datepicker('setDate', '');
+
+							//시작일로 부터 최대 90일
+							var orginalDate = new Date(selectedDate);
+							var monthsAddedDate = new Date(
+									new Date(orginalDate).setDate(orginalDate
+											.getDate() + 90));
+
+							// 시작일(fromDate) datepicker가 닫힐때
+							// 종료일(toDate)의 선택할수있는 최소 날짜(minDate)를 선택한 시작일로 지정
+							$("#toDate").datepicker("option", "minDate",
+									selectedDate);
+							$("#toDate").datepicker("option", "maxDate",
+									monthsAddedDate);
+						}
+					});
+
+			//종료일
+			$('#toDate').datepicker({
+				showButtonPanel : true,
+				closeText : '닫기', // 닫기 버튼 텍스트 변경
+				currentText : '오늘',
+				changeMonth : true,
+				minDate : 0, // 오늘 이전 날짜 선택 불가
+				onClose : function(selectedDate) {
+					// 종료일(toDate) datepicker가 닫힐때
+					// 시작일(fromDate)의 선택할수있는 최대 날짜(maxDate)를 선택한 종료일로 지정 
+					//$("#fromDate").datepicker( "option", "maxDate", selectedDate );
+				}
+			});
+		});
+	</script>
+
+</body>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- notice attach -->
+	<bean id="uploadPath" class="java.lang.String">
+		<constructor-arg value="${filePath.notice.attach}"/>
+	
+	</bean>
+	
+	<!-- DAO -->
+	<bean id="qnaDAO"
+		  class="com.funding.dao.QnADAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+
+		
+	<!-- Service -->
+	<bean id="qnaService"
+		  class="com.funding.service.QnAServiceImpl"
+		  p:qnaDAO-ref="qnaDAO"
+		  />
+		
+	<bean id="notice_atcDAO"
+		  class="com.funding.dao.Notice_atcDAOImpl"	
+		  p:sqlSession-ref="sqlSession"
+		  />	
+	
+		
+		
+</beans>

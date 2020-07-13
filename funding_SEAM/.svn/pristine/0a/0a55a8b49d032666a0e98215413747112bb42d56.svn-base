@@ -1,0 +1,121 @@
+package com.funding.dao.freeboard;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.FreeBoardVO;
+import com.funding.request.PreOrNextForBoardRequest;
+import com.funding.request.SearchCriteria;
+
+public class FreeBoardDAOImpl implements FreeBoardDAO {
+
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	@Override
+	public List<FreeBoardVO> selectSearchFreeBoardList(SearchCriteria cri) throws SQLException {
+		int offset = cri.getPageStartRowNum();		
+		int limit = cri.getPerPageNum();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<FreeBoardVO> freeBoardList = sqlSession.selectList("FreeBoard-Mapper.selectSearchFreeBoardList", cri, rowBounds);
+		
+		return freeBoardList;
+	}
+
+	@Override
+	public int selectSearchFreeBoardListTotalCount(SearchCriteria cri) throws SQLException {
+		int count = sqlSession.selectOne("FreeBoard-Mapper.selectSearchFreeBoardListTotalCount", cri);
+		return count;
+	}
+	
+	@Override
+	public List<FreeBoardVO> selectSearchFreeBoardListForEnabled(SearchCriteria cri) throws SQLException {
+		int offset = cri.getPageStartRowNum();		
+		int limit = cri.getPerPageNum();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<FreeBoardVO> freeBoardList = sqlSession.selectList("FreeBoard-Mapper.selectSearchFreeBoardListForEnabled", cri, rowBounds);
+		
+		return freeBoardList;
+	}
+
+	@Override
+	public int selectSearchFreeBoardListForEnabledTotalCount(SearchCriteria cri) throws SQLException {
+		int count = sqlSession.selectOne("FreeBoard-Mapper.selectSearchFreeBoardListForEnabledTotalCount", cri);
+		return count;
+	}
+
+	@Override
+	public List<FreeBoardVO> selectFreeBoardList() throws SQLException {
+		List<FreeBoardVO> freeBoardList = sqlSession.selectList("FreeBoard-Mapper.selectFreeBoardList");
+		return freeBoardList;
+	}
+
+	@Override
+	public FreeBoardVO selectFreeBoardByFreeNum(int free_num) throws SQLException {
+		FreeBoardVO freeBoard = sqlSession.selectOne("FreeBoard-Mapper.selectFreeBoardByFreeNum", free_num);
+		return freeBoard;
+	}
+
+	@Override
+	public void registFreeBoard(FreeBoardVO freeBoard) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.registFreeBoard", freeBoard);
+	}
+
+	@Override
+	public void modifyFreeBoard(FreeBoardVO freeBoard) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.modifyFreeBoard", freeBoard);
+	}
+	
+	@Override
+	public void modifyFreeBoardEnabled(FreeBoardVO freeBoard) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.modifyFreeBoardEnabled", freeBoard);
+	}
+
+	@Override
+	public void removeFreeBoard(int free_num) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.removeFreeBoard", free_num);
+	}
+
+	@Override
+	public void increaseFreeViewCnt(int free_num) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.increaseFreeViewCnt", free_num);
+	}
+
+	@Override
+	public void increaseFreeLike(int free_num) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.increaseFreeLike", free_num);
+	}
+	
+	@Override
+	public void decreaseFreeLike(int free_num) throws SQLException {
+		sqlSession.update("FreeBoard-Mapper.decreaseFreeLike", free_num);		
+	}
+
+	@Override
+	public int selectFreeBoardSeqNext() throws SQLException {
+		int free_num = sqlSession.selectOne("FreeBoard-Mapper.selectFreeBoardSeqNext");
+		return free_num;
+	}
+
+	@Override
+	public PreOrNextForBoardRequest selectPreOrNext(int free_num) throws SQLException {
+		PreOrNextForBoardRequest preOrNext = sqlSession.selectOne("FreeBoard-Mapper.selectPreOrNext", free_num);
+		return preOrNext;
+	}
+
+	@Override
+	public PreOrNextForBoardRequest selectPreOrNextForAdmin(int free_num) throws SQLException {
+		PreOrNextForBoardRequest preOrNextForAdmin = sqlSession.selectOne("FreeBoard-Mapper.selectPreOrNextForAdmin", free_num);
+		return preOrNextForAdmin;
+	}
+
+}

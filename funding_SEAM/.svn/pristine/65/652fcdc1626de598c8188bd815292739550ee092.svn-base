@@ -1,0 +1,43 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dto.ProjectVO;
+
+public class ProjectDAOImpl implements ProjectDAO {
+	
+	@Autowired
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public List<ProjectVO> selectProjectList() throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.selectProjectList",null);
+		return projectList;
+	}
+
+	@Override
+	public ProjectVO selectProjectByNum(int pjt_num) throws SQLException {
+		ProjectVO project = sqlSession.selectOne("Project-Mapper.selectProjectByNum",pjt_num);
+		return project;
+	}
+
+	@Override
+	public List<ProjectVO> searchSelectProjectList(String val) throws SQLException {
+		List<ProjectVO> projectList = sqlSession.selectList("Project-Mapper.searchSelectProjectList",val);
+		return projectList;
+	}
+
+	@Override
+	public int selectProjectCount(String val) throws SQLException {
+		int count = sqlSession.selectOne("Project-Mapper.selectProjectCount",val);
+		return count;
+	}
+
+}

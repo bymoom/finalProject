@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Point-Mapper">
+	<select id="getPoint">
+		select sum(point) point
+		from point 
+		where mem_num=#{mem_num}
+	</select>
+	
+	<update id="usePoint" parameterType="point">
+		insert into point
+		(point_num,mem_num,point,point_type)
+		values(seq_point_num.nextval,#{mem_num},#{point},'사용')
+	</update>
+
+</mapper>

@@ -1,0 +1,31 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.Qnavo2;
+import com.funding.request.SearchCriteria;
+
+public interface QnAService {
+	
+//	Map<String, Object> getQnAList(SearchCriteria cri)throws SQLException;
+	
+	List<Qnavo2> getAllQnAList()throws SQLException;
+	
+	Qnavo2 getDetail(int qa_num) throws SQLException;
+	
+	Qnavo2 getModForm(int qa_num)throws SQLException;
+	
+	void regist(Qnavo2 qna)throws SQLException;
+	
+	void modify(Qnavo2 qna)throws SQLException;
+	
+//	void enabled(Qnavo2 qna)throws SQLException;
+	
+	void remove(int qa_num)throws SQLException;
+	
+	
+	
+	
+}

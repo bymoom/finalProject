@@ -1,0 +1,133 @@
+package com.funding.controller;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.funding.dto.MemberVO;
+import com.funding.dto.Project_ProposeVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.SearchCriteria;
+import com.funding.service.MemberService;
+import com.funding.service.ProjectProposeService;
+
+@Controller
+@RequestMapping("/")
+public class CommonController {
+	
+	@Autowired
+	private MemberService memberService;
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	@Autowired
+	private ProjectProposeService proposeService;
+
+	@RequestMapping(value = "/index.htm", method = RequestMethod.GET)
+	public String test() throws Exception {
+		String url = "home.page";
+		String js="js";
+		return url;
+	}
+
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String test2() throws Exception {
+		String url = "commons/main.page";
+		return url;
+	}
+	
+	@RequestMapping(value = "/commons/propose", method = RequestMethod.GET)
+	public String projectProposeGET(Model model, SearchCriteria cri) throws Exception {
+		String url = "commons/propose.page";
+		
+		List<Project_ProposeVO> list = proposeService.getProposeList(cri);
+		
+		Map<String, Object> dataMap = new HashMap<>();
+		
+		dataMap.put("propose", list);
+		
+		model.addAttribute(dataMap);
+		
+		return url;
+	}
+	
+	
+	
+	@RequestMapping("/commons/loginForm")
+	public String loginForm(Model model) throws Exception {
+		String url = "commons/login";
+		String message=null;
+		
+		return url;
+	}
+	
+	@RequestMapping(value = "/commons/login.do", method=RequestMethod.POST)
+	public String login(String mem_email,
+						String mem_pw,
+						HttpServletRequest request,
+						HttpSession session) throws Exception {
+		String url = "commons/login";
+		
+		String message=null;
+		
+		try {
+			memberService.login(mem_email, mem_pw);
+			
+			MemberVO loginUser = memberService.getMember(mem_email);
+		} catch (NotFoundIDException e) {
+			message="아이디가 존재하지 않습니다.";			
+			url="redirect:login";
+		}  catch (InvalidPasswordException e) {
+			message="패스워드가 일치하지 않습니다.";
+			url="redirect:login";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			message="시스템장애로 로그인이 불가합니다.";	
+			url="redirect:login";
+		}
+		
+		session.setAttribute("msg",message);
+		session.setAttribute("mem_email", mem_email);
+		
+		System.out.println("CommonController>>>로그인 성공");
+		
+		return url;
+	}
+	
+	@RequestMapping("/commons/joinIntro")
+	public String join() throws Exception {
+		String url = "commons/joinIntro";
+		
+		return url;
+	}
+	
+	@RequestMapping("/commons/find/id")
+	public String findId() throws Exception {
+		String url = "commons/findId";
+		
+		return url;
+	}
+
+	@RequestMapping("/commons/find/pw")
+	public String findPassword() throws Exception {
+		String url = "commons/findPw";
+		
+		return url;
+	}
+
+
+}
+
+

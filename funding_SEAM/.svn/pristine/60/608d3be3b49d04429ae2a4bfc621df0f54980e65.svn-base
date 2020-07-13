@@ -1,0 +1,16 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.request.AdminMemberDetailRequest;
+
+public interface AdminMainDAO {
+
+	//일반 회원 가입 수
+	List<Integer> selectJoinMemDataList() throws SQLException;
+	
+	//소상공인 회원 가입 수
+	List<Integer> selectJoinComMemDataList() throws SQLException;
+
+}

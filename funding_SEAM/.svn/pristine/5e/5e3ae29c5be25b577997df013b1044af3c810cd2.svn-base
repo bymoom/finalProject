@@ -1,0 +1,94 @@
+package com.funding.controller.admin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.MemberVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.SearchCriteria;
+import com.funding.service.admin.AdminMemberManageService;
+import com.funding.service.member.PointService;
+
+/**
+ * 일반 회원 관리
+ *
+ */
+@Controller
+@RequestMapping("admin/member/*")
+public class AdminMemberManageController {
+
+	@Autowired
+	private AdminMemberManageService adminMemberManageService;
+	
+	@Autowired
+	private PointService pointService;
+	
+	/**
+	 * 일반 회원 관리 메인 페이지
+	 */
+	@RequestMapping(value="list")
+	public ModelAndView memberList(SearchCriteria cri, ModelAndView mnv) throws Exception{
+		String url="admin/member/list.admin_page";
+		
+		try {
+			Map<String, Object> dataMap = adminMemberManageService.getMemberList(cri);
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	/**
+	 * 일반 회원 상세 보기
+	 */
+	@RequestMapping(value="detail", method=RequestMethod.GET)
+	public ModelAndView memberDetail(int mem_num, ModelAndView mnv) throws Exception {
+		String url = "admin/member/detail.admin_open";
+		
+		try {
+			MemberVO member = adminMemberManageService.getMemberByMemNum(mem_num);
+			int point = pointService.getPointByMemNum(mem_num);
+
+			List<Pjt_pay_detailVO> pjtPayDetailList = adminMemberManageService.getProjectPayDetailByMemNum(mem_num);
+			List<ProjectVO> projectList = new ArrayList<>();
+			
+			for(Pjt_pay_detailVO pjtPayDetail : pjtPayDetailList) {
+				int pjt_num = pjtPayDetail.getPjt_num();
+				ProjectVO project = adminMemberManageService.getProjectByPjtNum(pjt_num);
+				///////////////////////pjt_num으로 pjt_bank_sum_attach 테이블 조회할것////////////////////////////
+				projectList.add(project);
+			}
+
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			
+			dataMap.put("pjtPayDetailList", pjtPayDetailList);
+			dataMap.put("projectList", projectList);
+			
+			dataMap.put("member", member);
+			dataMap.put("point", point);
+
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	
+}

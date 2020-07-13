@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<br>
+<div style="width:100%; text-align:center;">
+	<h3>수정하기</h3>
+</div>
+
+<div style="width:100%; text-align:right; margin-right:10px;">
+	<button id="proposeModify" type="button" class="btn btn-warning">수정완료</button>
+	<button type="button" class="btn btn-success" onclick="javascript:history.go(-1);">뒤로가기</button>
+	
+</div>
+<hr style="border:1px solid blue;">
+<form name="modifyForm" action="<%=request.getContextPath() %>/menu/proposeModify?pjtprp_num=${propose.pjtprp_num}" method="post">
+	<br>
+	<label class="label">작성자</label><input name="mem_name" type="text" readonly value="${loginUser.mem_name }"><br>
+	<label class="label">목표금액</label><input placeholder="1000원 단위" name="pjtprp_cash" type="text" value="${propose.pjtprp_cash}">원<br>
+	<label class="label">제목</label><input name="pjtprp_title" type="text" style="width:37%;" value="${propose.pjtprp_title }"><br>
+	<label class="label">내용</label><br>
+	<textarea name="pjtprp_contents" rows="20" cols="90" style="margin-left:20px;">${propose.pjtprp_contents}</textarea>
+	
+	
+	
+	
+</form>
+
+<script>
+	var dataForm = $('form[name="modifyForm"]');
+	$('#proposeModify').on('click',function(){
+		dataForm.submit();
+	});
+</script>

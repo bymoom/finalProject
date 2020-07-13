@@ -1,0 +1,36 @@
+package com.funding.dao.admin;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+import com.funding.dto.MemberVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.AdminMemberDetailRequest;
+import com.funding.request.SearchCriteria;
+
+public interface AdminMemberManageDAO {
+
+	//일반 회원 목록 + 검색
+	List<MemberVO> selectSearchMemberList(SearchCriteria cri) throws SQLException;
+	
+	//일반 회원 총 데이터 수 + 검색 후 총 개수
+	int selectSearchMemberListTotalCount(SearchCriteria cri) throws SQLException;
+	
+	//가입 날짜로 검색?????????? 할거면 cri 추가
+	List<MemberVO> selectSearchMemberListByRegDate(Date[] mem_regdate) throws SQLException;
+	
+	//일반 회원 상세 정보 조회 (+회원 상태 string 데이터)
+	MemberVO selectMemberByMemNum(int mem_num) throws SQLException;
+
+	//일반 회원 상세 정보 조회 (+결제 내역, 프로젝트, 프로젝트 타입, 프로젝트 통장-섬네일 첨부 파일)
+	List<AdminMemberDetailRequest> selectMemberDetailForProjectPay(int mem_num) throws SQLException;
+	
+	//일반 회원 결제 내역 조회
+	List<Pjt_pay_detailVO> selectProjectPayDetailByMemNum(int mem_num) throws SQLException;
+	
+	//프로젝트 조회 (+프로젝트 타입 string 데이터)
+	ProjectVO selectProjectByPjtNum(int pjt_num) throws SQLException;
+	
+}

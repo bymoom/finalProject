@@ -1,0 +1,32 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.QnAVO;
+import com.funding.dto.Qnavo2;
+import com.funding.request.SearchCriteria;
+
+public interface QnADAO2 {
+
+	// 전체 글 리스트
+	List<Qnavo2> selectQnAList() throws SQLException;
+
+	// 글번호로 글의 상세조회
+	Qnavo2 selectQnAByqa_Num(int qa_num) throws SQLException;
+
+	// 질문 등록
+	void registQnA(Qnavo2 qna) throws SQLException;
+
+	// 질문 수정
+	void modifyQnA(Qnavo2 qna) throws SQLException;
+
+	// 질문 삭제
+	void removeQnA(int qa_num) throws SQLException;
+
+	// 조회수 증가
+	void increaseQnAViewCnt(int qa_num) throws SQLException;
+
+	// 시퀀스넘버 가져오기
+	int selectQnASeqNext() throws SQLException;
+}

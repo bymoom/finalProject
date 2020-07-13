@@ -1,0 +1,14 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.ProjectProposeCmtVO;
+
+public interface ProposeCmtDAO {
+	List<ProjectProposeCmtVO> selectReplyList(int pjtprp_num)throws SQLException;
+	
+	void insertReply(ProjectProposeCmtVO proposeCmt)throws SQLException;
+	
+	int selectReplySeqNext()throws SQLException;
+}

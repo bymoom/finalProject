@@ -1,0 +1,108 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.QnADAO2;
+import com.funding.dto.Qnavo2;
+import com.funding.request.PageMaker;
+import com.funding.request.SearchCriteria;
+
+public class QnAServiceImpl implements QnAService{
+	
+@Autowired
+private QnADAO2 qnaDAO2;
+public void setQnaDAO2(QnADAO2 qnaDAO2) {
+	this.qnaDAO2 = qnaDAO2;
+}
+
+
+	@Override
+	public Map<String, Object> getAllQnAList(SearchCriteria cri) throws SQLException {
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		List<Qnavo2> list = qnaDAO2.selectQnAList(cri);
+
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri);
+		
+		dataMap.put("list", list);
+		dataMap.put("pageMaker", pageMaker);
+		
+		return dataMap;
+	}
+
+
+	@Override
+	public Qnavo2 getDetail(int qa_num) throws SQLException {
+		qnaDAO2.increaseQnAViewCnt(qa_num);
+		Qnavo2 qna = qnaDAO2.selectQnAByqa_Num(qa_num);
+		return qna;
+	}
+	
+	@Override
+	public boolean chkPwd(String qa_pwd) throws SQLException {
+		return qnaDAO2.selectSecretQnA(qa_pwd);
+		
+	}
+
+
+
+	@Override
+	public Qnavo2 getModForm(int qa_num) throws SQLException {
+		return qnaDAO2.selectQnAByqa_Num(qa_num);
+	}
+
+
+	@Override
+	public void regist(Qnavo2 qna) throws SQLException {
+		String pwd = qna.getQa_pwd();
+		int qna_no=qnaDAO2.selectQnASeqNext();
+		qna.setQa_num(qna_no);
+		
+		
+		
+		
+		if(pwd == null) {
+			qna.setQa_secret(1);
+			qnaDAO2.registQnAnone(qna);
+			
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@" +qna.getQa_secret());
+		}else {
+			qna.setQa_secret(0);
+			qnaDAO2.registQnA(qna);
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@" +qna.getQa_secret());
+		}
+		
+	}
+
+
+	@Override
+	public void modify(Qnavo2 qna) throws SQLException {
+		qnaDAO2.modifyQnA(qna);
+		
+	}
+
+
+/*	@Override
+	public void enabled(Qnavo2 qna) throws SQLException {
+		
+	}
+*/
+
+	@Override
+	public void remove(int qa_num) throws SQLException {
+		qnaDAO2.removeQnA(qa_num);
+		
+	}
+
+
+
+
+
+
+
+}

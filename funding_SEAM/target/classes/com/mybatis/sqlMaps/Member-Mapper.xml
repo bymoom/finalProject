@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member-Mapper">
+	
+	<sql id="search">	
+		<if test="searchType == 'i'.toString()">
+			and mem_email like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'p'.toString()">
+			and phone like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'e'.toString()">
+			and email like '%'||#{keyword}||'%'			
+		</if>		
+	</sql>	
+
+	<select id="selectSearchMemberList" resultType="member">
+		SELECT
+		* 
+		FROM member
+		WHERE mem_email IS NOT NULL
+		<include refid="search" />
+		ORDER BY mem_regdate DESC
+	</select>
+	
+	<select id="selectSearchMemberListCount" resultType="int">
+		SELECT
+		COUNT(*) 
+		FROM member
+		WHERE mem_email IS NOT NULL
+		<include refid="search" />
+		ORDER BY mem_regdate DESC
+	</select>
+		
+	<select id="selectMemberListCount" resultType="int">
+		SELECT count(*) 
+		FROM member
+	</select>
+
+	<select id="selectMemberList" resultType="member">
+		SELECT * 
+		FROM member
+	</select>
+
+	<select id="selectMemberById" resultType="member">
+		select 
+		* 
+		from member 
+		where mem_email=#{mem_email}
+	</select>
+
+	<select id="selectMemNumById" resultType="int">
+		select mem_num
+		from member 
+		where mem_email=#{mem_email}
+	</select>
+
+	<select id="selectMemberByNum" resultType="member">
+		select 
+		* 
+		from member 
+		where mem_num=#{mem_num}
+	</select>
+
+	<select id="selectComMemberByNum" resultType="commember">
+		SELECT 
+		* 
+		FROM commember 
+		WHERE mem_num=#{mem_num}
+	</select>
+	
+	<select id="selectMemberByName" resultType="member" parameterType="str">
+		select 
+		* 
+		from member 
+		where mem_name=#{mem_name}
+	</select>
+	
+	<select id="selectComMemberByMemNum" parameterType="int" resultType="comMemberDetailRequest">
+		SELECT * 
+		FROM member, commember
+		WHERE commember.mem_num = #{mem_num}
+		AND member.mem_num = commember.mem_num
+	</select>
+	
+	<select id="findIdByEmailAndPhone" resultType="member" parameterType="member">
+		SELECT
+		* 
+		FROM member 
+		WHERE mem_name=#{mem_name} AND mem_phone=#{mem_phone}
+	</select>
+	
+	<select id="selectIdByIdPwUuid" parameterType="member" resultType="str">
+		SELECT mem_email
+		FROM member
+		WHERE mem_email = #{mem_email} AND mem_pw = #{mem_pw} AND uuid_key = #{uuid_key}
+	</select>
+	
+	<select id="selectMemberLoginLastDate" resultType="date" parameterType="member">
+		SELECT mem_lastdate 
+		FROM member
+		WHERE mem_email=#{mem_email}
+	</select>
+	
+	<select id="selectLoginFailCount" resultType="int" parameterType="member">
+		SELECT login_fail_cnt 
+		FROM member
+		WHERE mem_email=#{mem_email}
+	</select>
+	
+	<select id="selectSeqMemNumNextVal" resultType="int">
+		SELECT seq_mem_num.nextval
+		FROM dual
+	</select>
+	
+	<select id="selectDormantMemberList" resultType="member">
+		SELECT * 
+		FROM member
+		WHERE TRUNC(MONTHS_BETWEEN(sysdate, mem_lastdate)) <![CDATA[ > ]]>= 12 
+	</select>
+	
+	<select id="selectDormantMember" resultType="str" parameterType="member">
+		SELECT mem_email
+		FROM member
+		WHERE TRUNC(MONTHS_BETWEEN(sysdate, mem_lastdate)) <![CDATA[ > ]]>= 12
+		AND mem_email=#{mem_email}
+	</select>
+	
+	<update id="insertMember" parameterType="member">
+		insert into 
+		member(mem_num, mem_email, mem_pw, mem_name, mem_phone, mem_profile_img, mem_profile_ori, mem_regdate, mem_lastdate, code_num, code_state_num, login_fail_cnt)
+		values(seq_mem_num.nextval, #{mem_email}, #{mem_pw}, #{mem_name}, #{mem_phone}, #{mem_profile_img}, #{mem_profile_img}, sysdate, sysdate, #{code_num}, #{code_state_num}, 0)
+	</update>
+	
+	<update id="insertComMember" parameterType="member">
+		INSERT INTO
+		commember(com_num, com_bsns_name, com_bsns_rep_name, com_bsns_number, com_bsns_phone, com_bsns_reg_license, com_bsns_cert, mem_num, com_zipcode, com_addr1, com_addr2)
+		VALUES(seq_com_num.nextval, #{com_bsns_name}, #{com_bsns_rep_name}, #{com_bsns_number}, #{com_bsns_phone}, #{com_bsns_reg_license}, #{com_bsns_cert}, seq_mem_num.currval, #{com_zipcode}, #{com_addr1}, #{com_addr2})				
+	</update>
+	
+	<select id="selectUuidKeyById" resultType="str">
+		SELECT uuid_key
+		FROM member
+		WHERE mem_email = #{mem_email}
+	</select>
+	
+	<update id="updateUuidKey" parameterType="member">
+		UPDATE member
+		SET
+		uuid_key = #{uuid_key} 
+		WHERE mem_email = #{mem_email}
+	</update>
+		
+	<!--    회원 정보 수정   -->
+	<!-- 	작성중... -->
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		mem_pw = #{mem_pw}, mem_name = #{mem_name}, mem_phone = #{mem_phone}, mem_profile_img = #{mem_profile_img}, mem_profile_ori = #{mem_profile_img}, mem_lastdate = sysdate
+		where mem_email = #{mem_email}
+	</update>
+	
+	<update id="updateComMember" parameterType="member">
+		UPDATE (
+					SELECT m.mem_pw, m.mem_name, m.mem_phone, m.mem_profile_img, m.mem_profile_ori, m.mem_lastdate, 
+			        cm.com_bsns_name, cm.com_bsns_rep_name, cm.com_bsns_number, cm.com_bsns_phone, cm.com_bsns_reg_license, cm.com_bsns_cert, cm.com_zipcode, cm.com_addr1, cm.com_addr2
+					FROM member m, commember cm
+					WHERE m.mem_num = cm.mem_num
+				)
+		SET
+		m.mem_pw = #{mem_pw}, m.mem_name = #{mem_name}, m.mem_phone = #{mem_phone}, m.mem_profile_img = #{mem_profile_img}, m.mem_profile_ori = #{mem_profile_img}, m.mem_lastdate = sysdate,
+		cm.com_bsns_name = #{com_bsns_name}, cm.com_bsns_rep_name = #{com_bsns_rep_name}, cm.com_bsns_number = #{com_bsns_number}, cm.com_bsns_phone = #{com_bsns_phone}, cm.com_bsns_reg_license = #{com_bsns_reg_license}, cm.com_bsns_cert = #{com_bsns_cert},
+		cm.com_zipcode = #{com_zipcode}, cm.com_addr1 = #{com_addr1}, cm.com_addr2 = #{com_addr2}
+		WHERE mem_email = #{mem_email}
+	</update>
+	
+	<update id="updateNewComMember" parameterType="comMemberDetailRequest">
+		UPDATE commember
+		SET
+		com_bsns_name = #{com_bsns_name}, com_bsns_rep_name = #{com_bsns_rep_name}, com_bsns_number = #{com_bsns_number}, com_bsns_phone = #{com_bsns_phone}, com_bsns_reg_license = #{com_bsns_reg_license}, com_bsns_cert = #{com_bsns_cert},
+		com_zipcode = #{com_zipcode}, com_addr1 = #{com_addr1}, com_addr2 = #{com_addr2}
+		WHERE mem_num = #{mem_num}
+	</update>
+	
+	<update id="updateMemberPassword" parameterType="member">
+		update member
+		set
+		mem_pw = #{mem_pw}
+		where mem_email = #{mem_email}
+	</update>
+	<!-- 	Temp -->
+	
+	<update id="deleteMember" parameterType="str" >
+		delete 
+		from member 
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="deleteComMember" parameterType="int" >
+		delete 
+		from commember 
+		where mem_num=#{mem_num}
+	</update>
+	
+	
+	<update id="disableMember" >
+		update 
+		member
+		set
+		code_state_num=0
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="enableMember" >
+		update 
+		member
+		set
+		code_state_num=1
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="updateRecentLoginTime" >
+		update member 
+		set
+		lastdate = sysdate
+		where mem_email=#{mem_email}	
+	</update>
+	
+	<!-- 추가 -->
+	<update id="plusLoginFailCount">
+		UPDATE member
+		SET
+		login_fail_cnt = login_fail_cnt + 1
+		WHERE mem_email=#{mem_email}
+	</update>
+	
+	<update id="updateClearLoginFailCount">
+		UPDATE member
+		SET
+		login_fail_cnt = 0
+		WHERE mem_email=#{mem_email}
+	</update>
+
+	<update id="updateLoginLastDate">
+		UPDATE member
+		SET
+		mem_lastdate = sysdate
+		WHERE mem_email=#{mem_email}
+	</update>
+	
+</mapper>
+
+
+
+

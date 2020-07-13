@@ -1,0 +1,43 @@
+package com.funding.controller.project;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.ProjectVO;
+import com.funding.service.project.ProjectService;
+
+//프로젝트 컨트롤러
+@Controller
+@RequestMapping("/project")
+public class ProjectController {
+	
+	@Autowired
+	public ProjectService projectService;
+	
+	@RequestMapping("/list")
+	public ModelAndView projectList(ModelAndView mav)throws SQLException{
+		String url="project/project_list.page";
+		mav.addAllObjects(projectService.getProjectList());
+		mav.setViewName(url);
+		
+		return mav;
+	}
+	
+	@RequestMapping("/detail")
+	public ModelAndView projectDetail(ModelAndView mav,int pjt_num)throws SQLException{
+		String url="project/project_detail.page";
+		
+		ProjectVO project = projectService.getProject(pjt_num);
+		
+		mav.addObject("project",project);
+		mav.setViewName(url);
+		return mav;
+	}
+	
+	
+
+}

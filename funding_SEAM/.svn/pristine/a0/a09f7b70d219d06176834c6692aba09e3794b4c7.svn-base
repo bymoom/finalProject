@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Project_state_code-Mapper">
+<select id="selectGetPjtStateCodeVal" parameterType="int" resultType="str">
+select pjt_state_code_val
+from project_state_code
+where pjt_state_code=#{pjt_state_code}
+</select>
+</mapper>

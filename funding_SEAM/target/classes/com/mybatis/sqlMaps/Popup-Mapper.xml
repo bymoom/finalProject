@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Popup-Mapper">
+
+	<select id="selectPopupList" resultType="popup">
+		select *
+		from popup
+		order by p_num desc
+	</select>
+	
+	<select id="selectPopupListByNum" resultType="popup">
+		select *
+		from popup
+		where p_num=#{p_num}
+		order by p_num desc
+	</select>
+	
+	<select id="selectPopupListCount" resultType="int">
+		select count(*)
+		from popup
+		
+	</select>
+
+	<select id="selectPopupSeqNext" resultType="int">
+		select seq_p_num.nextval from dual
+	</select>
+	
+	<select id="selectActivePopup" resultType="popup">
+		select *
+		from popup
+		where p_enable='게시중'
+	</select>
+	
+	<update id="registPopup" parameterType="popup">
+		insert into
+		popup(p_num,p_name,p_url,p_uploadpath,p_filename,p_filetype,p_enddate,p_top,p_left,p_width,p_height)
+		values(#{p_num},#{p_name},#{p_url},#{p_uploadpath},#{p_filename},#{p_filetype},#{p_enddate},#{p_top},#{p_left},#{p_width},#{p_height})
+	</update>
+	
+	<update id="modifyPopup" parameterType="popup">
+		update
+		popup
+		set p_name=#{p_name},
+		p_url=#{p_url},
+		p_uploadpath=#{p_uploadpath},
+		p_filename=#{p_filename},
+		p_filetype=#{p_filetype},
+		p_enddate=#{p_enddate},
+		p_top=#{p_top},
+		p_left=#{p_left},
+		p_width=#{p_width},
+		p_height=#{p_height}
+		where p_num=#{p_num}
+		
+	</update>
+	
+	<update id="deletePopup">
+		delete popup
+		where p_num=#{p_num}
+	</update>
+	
+	<update id="popupDisabled">
+		update popup set p_enable='중단됨'
+		where p_num=#{p_num}
+	</update>
+	
+	<update id="popupEnabled">
+		update popup set p_enable='게시중'
+		where p_num=#{p_num}
+	</update>
+	
+	
+	
+</mapper>

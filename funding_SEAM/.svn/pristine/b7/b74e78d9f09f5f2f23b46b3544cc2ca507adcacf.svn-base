@@ -1,0 +1,11 @@
+package com.funding.service.member;
+
+import java.sql.SQLException;
+
+import com.funding.dto.PointVO;
+
+public interface PointService {
+
+	public int getPointByMemNum(int mem_num)throws SQLException;
+	public void userPoint(PointVO point)throws SQLException;
+}

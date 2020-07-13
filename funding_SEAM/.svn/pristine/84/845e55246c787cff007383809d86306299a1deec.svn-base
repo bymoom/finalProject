@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+<script type="text/javascript">
+
+	function saveState(){
+		
+		var pjt_state_code = $('select[id="stateSelect"] option:selected').val();
+		var pjt_num = ${project.pjt_num};
+		
+		if(pjt_state_code == 3){
+			<%-- 보류 선택 후 저장 버튼 클릭시 모달창 띄우기 --%>	
+			$('#saveStateBtn').attr({'data-toggle':'modal', 'data-target':'#registMessageModal'});
+		}else{
+			<%-- 승인 선택시 --%>
+			$('#saveStateBtn').removeAttr('data-toggle');
+			$('#saveStateBtn').removeAttr('data-target');
+			
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/modifyState',
+				type : 'POST',
+				data : {'pjt_state_code' : pjt_state_code, 'pjt_num' : pjt_num},
+				success : function(data){
+					var con = confirm("프로젝트를 승인하시겠습니까?");
+					if(con){
+						alert("승인되었습니다.");
+						location.reload();
+						opener.location.reload();
+					}
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+				},
+				complete:function(){
+					$('#modifyModal').modal('hide');
+					location.reload();
+				}
+			})
+		}
+	}
+	
+	<%-- 모달창의 저장 버튼 눌렀을 때 --%>	
+	<%-- $('#comStateCodeModifyBtn').on('click', function(){
+		var com_state_code_val = $('select[name="com_state_code"] option:selected').text();
+		var com_state_code = $('select[name="com_state_code"]').val();
+		var mem_num = ${comMember.mem_num};
+		var mem_name = "${comMember.mem_name}";
+		var com_state_comment = $('#modal_com_state_comment').val();
+		
+		var con = confirm(mem_name + '님의 가입을 ' + com_state_code_val + "하시겠습니까?");
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/comMember/modifyComStateCode',
+				type : 'POST',
+				data : {'com_state_code' : com_state_code, 'mem_num' : mem_num, 'com_state_comment' : com_state_comment},
+				success : function(data){
+					alert('변경되었습니다.');
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다.');
+				},
+				complete:function(){
+					$('#modifyModal').modal('hide');
+					location.reload();
+				}
+			})
+		}else{
+			$('#modifyComStateCodeBtn').removeAttr('data-toggle');
+			$('#modifyComStateCodeBtn').removeAttr('data-target');
+			alert('변경을 취소하였습니다.');
+			return;
+		}
+	}) --%>
+	
+	<%-- function modifyComStateCode(){
+		var com_state_code_val = $('select[name="com_state_code"] option:selected').text();
+		var com_state_code = $('select[name="com_state_code"] option:selected').val();
+		var mem_num = ${comMember.mem_num};
+		var mem_name = "${comMember.mem_name}";
+		
+		if(com_state_code != 0){ //선택 값이 보류가 아닌 경우
+			var con = confirm(mem_name + '님의 가입을 ' + com_state_code_val + "하시겠습니까?");
+			if(con){
+				$.ajax({
+					url : '<%= request.getContextPath() %>/admin/comMember/modifyComStateCode',
+					type : 'POST',
+					data : {'com_state_code' : com_state_code, 'mem_num' : mem_num},
+					success : function(data){
+						alert('변경되었습니다.');
+						location.reload();
+					},
+					error : function(error){
+						alert('서버 오류로 변경에 실패했습니다.');
+					}
+				})
+			}else{
+				$('#modifyComStateCodeBtn').removeAttr('data-toggle');
+				$('#modifyComStateCodeBtn').removeAttr('data-target');
+				alert('변경을 취소하였습니다.');
+				return;
+			}
+		}else{
+			return;
+		}
+		
+	} --%>
+	
+	<%-- function modifyStateCode(){
+		var code_state = $('select[name="code_state"] option:checked').text();
+		var code_state_num = $('select[name="code_state"]').val();
+		var mem_num = ${comMember.mem_num};
+		
+		var con = confirm('회원 상태를 ' + code_state + "로 변경하시겠습니까?");
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/member/modifyStateCode',
+				type : 'POST',
+				data : {'code_state_num' : code_state_num, 'mem_num' : mem_num},
+				success : function(data){
+					alert('변경되었습니다.');
+					location.reload();
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다.');
+				}
+			})
+		}else{
+			alert('변경을 취소하였습니다.');
+			return;
+		}
+	} --%>
+	
+	function fnExcelReport(id, title) {
+		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+		tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+		tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+		tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+		tab_text = tab_text + "<table border='1px'>";
+		var exportTable = $('#' + id).clone();
+		exportTable.find('input').each(function (index, elem) { $(elem).remove(); });
+		tab_text = tab_text + exportTable.html();
+		tab_text = tab_text + '</table></body></html>';
+		var data_type = 'data:application/vnd.ms-excel';
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf("MSIE ");
+		var fileName = title + '.xls';
+		//Explorer 환경에서 다운로드
+		if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+		if (window.navigator.msSaveBlob) {
+		var blob = new Blob([tab_text], {
+		type: "application/csv;charset=utf-8;"
+		});
+		navigator.msSaveBlob(blob, fileName);
+		}
+		} else {
+		var blob2 = new Blob([tab_text], {
+		type: "application/csv;charset=utf-8;"
+		});
+		var filename = fileName;
+		var elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob2);
+		elem.download = filename;
+		document.body.appendChild(elem);
+		elem.click();
+		document.body.removeChild(elem);
+		}
+	}
+	
+</script>

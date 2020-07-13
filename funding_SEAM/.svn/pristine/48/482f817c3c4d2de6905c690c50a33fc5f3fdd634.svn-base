@@ -1,0 +1,15 @@
+@charset "UTF-8";
+ .popup1 {
+	 top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 50%;
+	 margin: 50px auto;
+	 padding: 0px;
+	 background: #;
+	 border: 1px solid #666;
+	 width: 350px;
+	 box-shadow: 0 0 50px rgba(0, 0, 0, 5);
+	 position: fixed;
+   border-radius: 25px;
+}

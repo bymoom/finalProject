@@ -1,0 +1,199 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<body>
+<div class="container">
+	<div class="row justify-content-md-center">
+		<div class="col-12">
+	       <div class="card-header">
+	         <h3 class="card-title">후원형 프로젝트 등록</h3>
+	       </div>
+		</div>
+           <!-- /.card-header -->
+        <!-- form start -->
+       <div class="col-12">
+        <form class="form-horizontal">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="comName" class="col-sm-2 col-form-label">상호명</label>
+              <div class="col-sm-6">
+                <input type="text" name="comName" class="form-control" id="comName" readonly="readonly">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="Addr" class="col-sm-2 col-form-label">사업장 주소</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="comAddr" readonly="readonly">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="phone" class="col-sm-2 col-form-label">연락처</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" id="comphone" readonly="readonly">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="pjt_category" class="col-sm-2 col-form-label">업종</label>
+              <div class="col-sm-4">
+                 <select class="form-control" name="pjt_category">
+                  <option selected="selected">선택</option>
+                  <option>음식점</option>
+                  <option>서비스/문화</option>
+                  <option>도소매</option>
+                  <option>교육</option>
+                  <option>제조</option>
+                  <option>기타</option>
+                </select>
+              </div>
+              <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+                
+            </div>
+            
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">통장 사본</label>
+              <div class="col-sm-6">
+           		<div class="custom-file">
+                  <input type="file" class="custom-file-input" id="bankBook">
+                  <label class="custom-file-label" for="customFile"></label>
+                </div>
+              </div>
+                <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+            </div>
+            
+            
+            <hr>
+            <div class="form-group row">
+              <label for="pjtTitle" class="col-sm-2 col-form-label">프로젝트 유형</label>
+              <div class="col-sm-8">
+                <input type="text" name="pjt_title" class="form-control" id="pjtTitle" value="후원형" readonly="readonly">
+              </div>
+                <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+            </div>
+            <div class="form-group row">
+              <label for="pjtTitle" class="col-sm-2 col-form-label">프로젝트 제목</label>
+              <div class="col-sm-8">
+                <input type="text" name="pjt_title" class="form-control" id="pjtTitle" placeholder="프로젝트 제목">
+              </div>
+                <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+            </div>
+            <div class="form-group row">
+              <label for="pjtCash" class="col-sm-2 col-form-label">목표 금액</label>
+              <div class="col-sm-4">
+                <input type="text" name="pjt_cash" class="form-control" id="pjtCash" placeholder="숫자로 입력해주세요">
+              </div>
+                <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+            </div>
+
+				<div class="form-group row">
+				  <label for="date" class="col-sm-2 col-form-label">프로젝트 기간</label>
+				   
+                    <div class="col-sm-4 input-group-prepend">
+                    <input type="text" placeholder="yyyy-mm-dd" class="form-control datepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="mm/dd/yyyy" data-mask="" im-insert="false">
+                    ~<input type="text" placeholder="yyyy-mm-dd" class="form-control datepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="mm/dd/yyyy" data-mask="" im-insert="false">
+                    </div>
+                   <label for="pjtTitle" class="col-sm-2 col-form-label">총 30일</label>
+                   		<label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+                    </div>
+                    
+	        <div class="form-group row">
+              <label class="col-sm-2 col-form-label">대표 이미지</label>
+              <div class="col-sm-6">
+           		<div class="custom-file">
+                  <input type="file" class="custom-file-input" id="sumNail">
+                  <label class="custom-file-label" for="customFile"></label>
+                </div>
+              </div>
+                <label class="col-sm-2 col-form-label"><i class="far fa-question-circle"></i></label>
+            </div>
+          <div class="form-group row">
+             <label class="col-sm-2 col-form-label">상세내용</label>
+                           <div class="col-sm-10">
+			<textarea class="textarea" name="free_contents" id="contents" rows="20" placeholder="1000자 내외로 작성하세요." style="display: none;"></textarea>
+          </div>
+          </div>
+
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+           	<div class="row justify-content-md-center">
+	            <button type="submit" class="btn btn-info">등록</button>
+	            <button type="button" class="btn btn-default" onclick="javaScript:history.go(-1)">취소</button>
+            </div>
+          </div>
+          <!-- /.card-footer -->
+        </form>
+      </div>
+      </div>
+      </div>
+
+
+
+<%@ include file="../../commons/summernote_js.jsp" %>
+<script>
+	$('.datepicker').datepicker({
+		minDate: 0,
+		showButtonPanel: true
+	});
+	
+/* 	$(function(){
+		var option = {
+		// datepicker 애니메이션 타입
+		// option 종류 : "show" , "slideDown", "fadeIn", "blind", "bounce", "clip", "drop", "fold", "slide"
+		showAnim : "slideDown",
+		// 해당 월의 다른 월의 날짜가 보이는 여부, 예를 들면 10월이면 전후에 9월 마지막과 11월의 시작 일이 보이는 여부입니다. 즉, 달력이 꽉 차 보이게 하는 것
+		showOtherMonths: true,
+		// 선택 여부 (showOtherMonths 옵션과 같이 일치시키지 않으면 에러가 발생합니다.)
+		selectOtherMonths: true,
+		// 달력 밑에 오늘과 닫기 버튼이 보인다.
+		showButtonPanel: true,
+		// 년 월이 셀렉트 박스로 표현 되어서 선택할 수 있다.
+		changeMonth: true,
+		changeYear: true,
+		// 한번에 보이는 개월 수
+		numberOfMonths: 3,
+		// 데이터 포멧
+		dateFormat: "yy-mm-dd",
+		// 텍스트 박스 옆의 달력 포시
+		showOn: "button",
+		//이미지 타입인지 버튼 타입인지 설정
+		buttonImageOnly: true,
+		// 이미지 경로
+		buttonImage: "https://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+		// 버튼 타입이면 버튼 값
+		buttonText: "Select date",
+		// alt 데이터 포멧
+		altFormat: "DD, d MM, yy",
+		// 선택 가능한 날짜(수 형식) - 현재 기준 -20일
+		minDate: -20,
+		// 선택 가능한 최대 날짜(문자 형식) - 현재 기준 +1월 +20일
+		maxDate: "+1M +20D",
+		// 주 표시
+		showWeek: true
+		};
+		var optionFrom = option;
+		optionFrom.altField = "#alternateFrom";
+		var dateFormat = "mm/dd/yy";
+		// 시작일이 선택이 되면 종료일은 시작일 보다 앞을 선택할 수 없다.
+		var from = $( "#from" )
+		.datepicker(optionFrom)
+		.on( "change", function() {
+		to.datepicker( "option", "minDate", getDate( this ) );
+		});
+		var optionTo = option;
+		optionTo.altField = "#alternateTo";
+		// 종료일이 선택이 되면 시작일은 시작일 보다 앞을 선택할 수 없다.
+		var to = $( "#to" )
+		.datepicker(optionTo)
+		.on( "change", function() {
+		from.datepicker( "option", "maxDate", getDate( this ) );
+		});
+		function getDate( element ) {
+		return moment(element.value).toDate();
+		}
+		}); */
+</script>
+
+</body>

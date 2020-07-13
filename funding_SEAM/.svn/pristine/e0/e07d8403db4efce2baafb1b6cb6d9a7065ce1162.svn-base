@@ -1,0 +1,107 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+	
+<!-- Tell the browser to be responsive to screen width -->
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/plugins/fontawesome-free/css/all.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/dist/css/adminlte.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- fullCalendar -->
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar/main.min.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-daygrid/main.min.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-timegrid/main.min.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-bootstrap/main.min.css">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	
+	
+	
+	
+<!-- jQuery -->
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap -->                                   
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery UI -->                                   
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- AdminLTE App -->                                
+<script src="<%=request.getContextPath()%>/resources/bootstrap/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->                  
+<script src="<%=request.getContextPath()%>/resources/bootstrap/dist/js/demo.js"></script>
+<!-- fullCalendar 2.2.5 -->                          
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/moment/moment.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar/main.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-daygrid/main.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-timegrid/main.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-interaction/main.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/bootstrap/plugins/fullcalendar-bootstrap/main.min.js"></script>
+
+<title>calendar - FUN&#36;&#123;SEAM&#125;DING</title>
+
+</head>
+
+<body>
+	<input type="hidden" name="mem_email" value="${mem_email}">
+	<div id="calendar"></div>
+</body>
+
+<script>
+window.addEventListener('load', function(){
+	   calendar().render();
+//	   searchTypeDatepickerAble('select[name=searchType]');
+});
+
+var calendar = function(data){
+	var date = new Date();
+	var d = date.getDate();
+	var m = date.getMonth();
+	var y = date.getFullYear();
+
+	var calendarEl = document.getElementById('calendar');
+	var calendarResult = new FullCalendar.Calendar(calendarEl, {
+	   plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid' ],
+	   header: {
+	      left: "prev,next dailyChk",
+	      center: "title",
+	      right: ""
+	   },
+	   
+	   customButtons: {
+		   dailyChk: {
+			   text: '출석체크',
+			   id: 'check',
+			   click: function() {
+				   $.ajax({
+					 url: '${pageContext.request.contextPath}/mypage/info/dailychk?mem_email=${mem_email}',
+					 type: 'get',
+					 data: {},
+					 success: function(data) {
+						 
+					 },
+					 error: function(xhr) {
+						 alert("에러!");
+					 }
+				   })
+			   }
+		   }
+	   }
+	});
+	
+	calendarResult.render();
+	
+	return calendarResult;
+}
+</script>
+
+
+</html>

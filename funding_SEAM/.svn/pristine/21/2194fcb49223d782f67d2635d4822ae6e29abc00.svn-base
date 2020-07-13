@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Admin-Mapper">
+
+	<sql id="search">
+		<if test="searchType == 'all'.toString()">
+			and (member.mem_name like '%'||#{keyword}||'%'
+				 or member.mem_email like '%'||#{keyword}||'%'
+				 or member.mem_phone like '%'||#{keyword}||'%')			
+		</if>	
+		<if test="searchType == 'name'.toString()">
+			and member.mem_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'email'.toString()">
+			and member.mem_email like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'phone'.toString()">
+			and member.mem_phone like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<select id="selectSearchMemberList" parameterType="cri" resultType="member">
+		select member.*, mem_state_code.code_state
+		from member, mem_state_code
+		where member.mem_num is not null
+		and member.code_state_num = mem_state_code.code_state_num
+		and member.code_num = 1
+		<include refid="search" />
+		order by member.mem_num desc
+	</select>
+	
+	<select id="selectSearchMemberListTotalCount" parameterType="cri" resultType="int">
+		select count(*)
+		from
+			(select member.*, mem_state_code.code_state
+			from member, mem_state_code
+			where member.mem_num is not null
+			and member.code_state_num = mem_state_code.code_state_num
+			and member.code_num = 1 			  	
+			<include refid="search" />)
+	</select>
+
+	<select id="selectSearchMemberListByRegDate" parameterType="date[]" resultType="member">
+		select member.*, mem_state_code.code_state
+		from member, mem_state_code
+		<![CDATA[
+		where member.code_state_num = mem_state_code.code_state_num
+		and member.code_num = 1
+		and member.mem_regdate >= #{mem_regdate}
+		and member.mem_regdate <= #{mem_regdate}
+		]]>
+	</select>
+	
+	<select id="selectMemberByMemNum"  resultType="member">
+		select * 
+		from member, mem_state_code 
+		where member.mem_num = #{mem_num}
+		and member.code_state_num = mem_state_code.code_state_num
+	</select>
+	
+	<select id="selectProjectPayDetailByMemNum"  resultType="pjt_pay_detail">
+		select *
+		from pjt_pay_detail
+		where mem_num = #{mem_num}
+	</select>
+	
+	<select id="selectProjectByPjtNum"  resultType="project">
+		select project.*, project_type_code.pjt_type_code_val
+		from project, project_type_code
+		where project.pjt_type_code = project_type_code.pjt_type_code
+		and pjt_num = #{pjt_num}
+	</select>
+	
+	
+</mapper>

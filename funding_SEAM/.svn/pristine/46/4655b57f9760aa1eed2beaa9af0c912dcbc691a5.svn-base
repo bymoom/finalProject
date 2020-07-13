@@ -1,0 +1,11 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import com.funding.dto.Pjt_bank_sum_attachVO;
+
+public interface Pjt_bank_sum_attachDAO {
+	
+	public void insertPjtBankSumAttach(Pjt_bank_sum_attachVO pjt_bank_sum_attach)throws SQLException;
+
+}

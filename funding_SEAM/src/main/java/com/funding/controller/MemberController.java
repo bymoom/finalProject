@@ -1,0 +1,434 @@
+package com.funding.controller;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.funding.dto.EmailVO;
+import com.funding.dto.MemberVO;
+import com.funding.dto.PointManageVO;
+import com.funding.dto.PointVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.MemberRegistRequest;
+import com.funding.request.SearchCriteria;
+import com.funding.service.MemberService;
+import com.funding.service.admin.AdminPointManageService;
+import com.funding.service.member.PointService;
+
+@Controller
+@RequestMapping("/member/*")
+public class MemberController {
+
+	@Autowired
+	private MemberService memberService;
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	@Autowired
+	public EmailSender mailSender;
+	
+	@Autowired
+	public EmailVO email;
+	
+	@Autowired
+	private AdminPointManageService adminPointService;
+	
+	@Autowired
+	private PointService pointService;
+	
+	@Resource(name = "memberAtcPath")
+	private String memberAtcPath;
+	
+	@RequestMapping("list")
+	public String list(SearchCriteria cri, Model model) throws Exception {
+		String url = "member/list.page";
+		
+		Map<String, Object> dataMap = memberService.getMemberList(cri);
+		
+		dataMap.put("title",  "회원리스트");
+		
+		model.addAllAttributes(dataMap);
+		model.addAttribute("title", "테스트");
+		
+		return url;
+	}
+	
+	@RequestMapping("/sendUuidKey")
+	@ResponseBody
+	public ResponseEntity<Map<String, Boolean>> sendUuidAction(String mem_email, HttpServletRequest request) {
+//		String url = "";
+//		return url;
+		ResponseEntity<Map<String, Boolean>> entity = null;
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		
+		String uuid = "YgnZf2AzviqfHe0";
+		
+		email.setReceiver(mem_email);	//수신자 메일주소
+		email.setContent("<img src=\"http://localhost/resources/images/funseamding2.png\" style='width:250px;'><br/>안녕하세요 FUN SEAM DING 입니다.<br/> 인증키는 " + uuid + "입니다.<br/>");
+		email.setSubject(mem_email + "님 회원가입 인증 메일 입니다.");
+		
+		try {
+			mailSender.SendEmail(email);
+			result.put("result", true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", false);
+			return  new ResponseEntity<Map<String, Boolean>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		entity = new ResponseEntity<Map<String, Boolean>>(result, HttpStatus.OK);
+		return entity;
+	}
+	
+	//일반회원가입 인증과정
+	@RequestMapping(value = "certRegist", method = RequestMethod.POST)
+	public String certRegistForm(String mem_email, String uuid_key, HttpServletRequest request) throws Exception {
+		String url = "member/regist.page";
+ 
+		String uuid_ori = "YgnZf2AzviqfHe0";
+		if(!uuid_key.equals(uuid_ori)) {
+			url = "member/certRegist_fail.page";
+		}
+		
+		request.setAttribute("mem_email", mem_email);
+		
+		return url;
+	}
+	
+	
+	//소상공인회원 인증과정
+	@RequestMapping(value = "certRegistCom", method = RequestMethod.POST)
+	public String certRegistComForm(String mem_email, String uuid_key, HttpServletRequest request) throws Exception {
+		String url = "member/registCom.page";
+ 
+		String uuid_ori = "YgnZf2AzviqfHe0";
+		if(!uuid_key.equals(uuid_ori)) {
+			url = "member/certRegist_fail.page";
+		}
+		
+		request.setAttribute("mem_email", mem_email);
+		
+		return url;
+	}
+	
+	//일반회원가입
+	@RequestMapping("registForm")
+	public String registForm() throws Exception {
+//		String url = "member/regist.page";
+		String url = "member/certRegist.page";
+		return url;
+	}
+	
+	//소상공인 회원가입
+	@RequestMapping("registComForm")
+	public String registComForm() throws Exception {
+//		String url = "member/registCom.page";
+		String url = "member/certRegistCom.page";
+		return url;
+	}
+	
+	@RequestMapping(value = "regist", method = RequestMethod.POST)
+	public String regist(	MemberRegistRequest registReq,
+							HttpServletResponse response,
+							Model model
+							) throws Exception {
+//		String url = "redirect:/main";
+		String url = "";
+		
+		MemberVO member = registReq.toMemberVO();
+		member.setCode_num(1);			//일반회원
+		member.setCode_state_num(1);	//일반회원
+		
+		MultipartFile[] files = { registReq.getMem_profile_img(), registReq.getMem_profile_ori()};
+		List<String> saveFileName = new ArrayList<String>();
+		for(MultipartFile file : files) {
+			if (file == null) 
+				continue;
+//			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + file.getOriginalFilename();
+			File savePath = new File(memberAtcPath + File.separator + member.getMem_email());
+			if (!savePath.exists()) {
+				savePath.mkdirs();
+			}
+
+			file.transferTo(new File(savePath, fileName));
+			saveFileName.add(fileName);
+		}
+		
+		//memberVO 에 각 attach set
+		member.setMem_profile_img(saveFileName.get(0));
+//		member.setMem_profile_ori(saveFileName.get(1));
+		
+		System.out.println(member);
+		
+		try {
+			memberService.regist(member);
+			model.addAttribute("member", member);
+			PointManageVO joinPoint = adminPointService.checkJoinPoint();
+			if(joinPoint.getPointmng_enabled()==1) {
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				MemberVO getMember = memberService.getMemberByName(registReq.getMem_name());
+				int mem_num = getMember.getMem_num();
+				int getPoint = joinPoint.getPoint();
+				
+				PointVO point = new PointVO();
+				point.setMem_num(mem_num);
+				point.setPoint(getPoint);
+				
+				pointService.savePoint(point);
+				url = "member/regist_successWithPoint";
+			}else {
+				url = "member/regist_success";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "member/regist_fail";
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping(value = "registCom", method = RequestMethod.POST)
+	public String registCom(MemberRegistRequest registReq,
+							HttpServletResponse response,
+							Model model) throws Exception {
+//		String url = "redirect:/main";
+		String url = "";
+		MemberVO member = registReq.toMemberVO();
+		member.setCode_num(9);			//소상공인 가입 //ROLE_COM_HOLD
+		member.setCode_state_num(9);	//소상공인 가입
+		
+		//첨부파일 저장 : com_bsns_reg_license, com_bsns_cert
+		MultipartFile[] files = { registReq.getMem_profile_img(), registReq.getCom_bsns_reg_license(), registReq.getCom_bsns_cert() };
+		List<String> saveFileName = new ArrayList<String>();
+		for(MultipartFile file : files) {
+			if (file == null) 
+				continue;
+//			String fileName = UUID.randomUUID().toString().replace("-", "");
+			String fileName = UUID.randomUUID().toString().replace("-", "")+"$$" + file.getOriginalFilename();
+			File savePath = new File(memberAtcPath + File.separator + member.getMem_email());
+			if (!savePath.exists()) {
+				savePath.mkdirs();
+			}
+
+			file.transferTo(new File(savePath, fileName));
+			saveFileName.add(fileName);
+			
+		}
+		
+		//attach set
+		member.setMem_profile_img(saveFileName.get(0));
+		member.setCom_bsns_reg_license(saveFileName.get(1));
+		member.setCom_bsns_cert(saveFileName.get(2));
+		
+		try {
+			memberService.registComMember(member);
+			model.addAttribute("member", member);		
+			PointManageVO joinPoint = adminPointService.checkJoinPoint();
+			if(joinPoint.getPointmng_enabled()==1) {
+				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				MemberVO getMember = memberService.getMemberByName(registReq.getMem_name());
+				int mem_num = getMember.getMem_num();
+				int getPoint = joinPoint.getPoint();
+				
+				PointVO point = new PointVO();
+				point.setMem_num(mem_num);
+				point.setPoint(getPoint);
+				
+				pointService.savePoint(point);
+				url = "member/regist_successWithPoint";
+			}else {
+				url = "member/regist_success";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "member/regist_fail";
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping("/joinIntro")
+	public String join() throws Exception {
+		String url = "member/joinIntro.page";
+		
+		return url;
+	}
+	
+	@RequestMapping("/findId")
+	public String findIdForm() throws Exception {
+		String url = "member/findIdForm.open";
+		return url;
+	}
+	
+	@RequestMapping("/findPw")
+	public String findPwForm() throws Exception {
+		String url = "member/findPwForm.open";
+		return url;
+	}
+
+	@RequestMapping(value = "/findPw_ok", method=RequestMethod.GET)
+	public String findPw(String email, HttpServletRequest request) throws Exception {
+		String url = "member/findPw_ok";
+		
+		request.setAttribute("email", email);
+		
+		System.out.println("Use >>>> findPw ");
+	
+		System.out.println(email);
+		
+		return url;
+	}
+	
+	@RequestMapping(value = "/requestFindId", method=RequestMethod.POST)
+	public ResponseEntity<Map<String, String>> requestFindId(String mem_name, String mem_phone, HttpServletResponse response) throws Exception {
+//		ResponseEntity<Map<String, Boolean>> entity = null;
+		ResponseEntity<Map<String, String>> entity = null;
+		
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+
+		Map<String, String> strResult = new HashMap<String, String>();
+		
+		MemberVO mem = null;
+
+		try {
+//			memberService.login(mem_email, "");
+			mem = memberService.findId(mem_name, mem_phone);
+		}
+		catch (NotFoundIDException e) {		
+//			result.put("result", true);		//아이디가 없음
+			strResult.put("strResult", "");	//아이디가 없음
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+//			return  new ResponseEntity<Map<String, Boolean>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return  new ResponseEntity<Map<String, String>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(mem != null)		//아이디가 존재
+			strResult.put("strResult", mem.getMem_email());
+		
+//		entity = new ResponseEntity<Map<String, Boolean>>(result, HttpStatus.OK);
+		entity = new ResponseEntity<Map<String, String>>(strResult, HttpStatus.OK);
+		return entity;
+	}
+	
+	@RequestMapping(value = "/requestFindPw", method=RequestMethod.POST)
+	public ResponseEntity<Map<String, String>> requestFindPw(String mem_email, HttpServletResponse response) throws Exception {
+		ResponseEntity<Map<String, String>> entity = null;
+		
+		Map<String, String> strResult = new HashMap<String, String>();
+
+		MemberVO mem = null;
+		
+		try {
+			mem = memberService.getMember(mem_email);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			return  new ResponseEntity<Map<String, String>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(mem == null)
+			strResult.put("strResult", "");	//아이디가 없음
+		else
+			strResult.put("strResult", mem.getMem_email());
+		
+		System.out.println(mem.getMem_email());
+		System.out.println(mem.getMem_pw());
+		
+		entity = new ResponseEntity<Map<String, String>>(strResult, HttpStatus.OK);
+		return entity;
+	}
+	
+	@RequestMapping("/sendPassword")
+	public String sendEmailAction(String mem_email, HttpServletRequest request) {
+		String url = "member/findPw_ok";
+		
+		System.out.println(mem_email);
+		
+		String tempPassword = UUID.randomUUID().toString().replace("-", "");
+		System.out.println(tempPassword);
+		
+		tempPassword = tempPassword.substring(0, 9);
+		System.out.println(tempPassword);
+		
+		try {
+			memberService.updateMemberPassword(tempPassword, mem_email);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		email.setReceiver(mem_email);	//수신자 메일주소
+		email.setContent("안녕하세요 FUN SEAM DING 입니다.\n 비밀번호는 " + tempPassword + "입니다.");
+		email.setSubject(mem_email + "님 비밀번호 찾기 메일 입니다.");
+		
+		try {
+			mailSender.SendEmail(email);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+//		request.setAttribute("email", email);
+		request.setAttribute("mem_email", mem_email);
+		
+		return url;
+	}
+
+	@RequestMapping(value = "/findId_ok", method=RequestMethod.GET)
+	public String findIdOk(String email, HttpServletRequest request) throws Exception {
+		String url = "member/findId_ok.page";
+		
+		request.setAttribute("email", email);
+		
+		return url;
+	}
+	
+	@RequestMapping("/checkId")
+	@ResponseBody
+	public ResponseEntity<Map<String, Boolean>> checkId(String id, HttpServletResponse response) throws Exception {
+		ResponseEntity<Map<String, Boolean>> entity = null;
+		
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		
+		try {
+			memberService.login(id, "");
+		}catch(NotFoundIDException e) { 	//아이디가 없음.
+			result.put("result", true);
+			System.out.println("아이디가 없음");
+		}catch(InvalidPasswordException e) { //아이디가 존재
+			result.put("result", false);			
+			System.out.println("이미 아이디가 존재");
+		}catch(Exception e) {
+			e.printStackTrace();
+			return  new ResponseEntity<Map<String, Boolean>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		entity = new ResponseEntity<Map<String, Boolean>>(result, HttpStatus.OK);
+		return entity;
+	}
+	
+}

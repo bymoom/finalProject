@@ -1,0 +1,56 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
+<!-- Page Path Begins -->
+<div class="container">
+	<div class="row justify-content-md-center">
+		<h2 class="page-section-heading text-center text-uppercase text-primary mb-0">Q&A</h2>
+	</div>
+</div>
+<!-- Page Path Ends -->
+
+	<div class="titleArea row">
+		<h3 class="col-sm-10">title:&nbsp;${qna.qa_title }</h3>
+	</div>
+	<div class="user-block">
+		          <span class="username">writer:&nbsp;${qna.mem_num }</span>
+		          <span class="viewcnt">viewcnt:&nbsp;${qna.qa_view_cnt }</span>
+		          <span class="regdate">regdate:&nbsp;<fmt:formatDate value="${qna.qa_regdate}" pattern="yyyy-MM-dd HH:mm:ss" /></span>
+		        </div>
+		        <br><br>
+		        <div style="border: solid 2px olive">	
+				<div>content:&nbsp;<br>${qna.qa_contents}</div>
+				</div>
+				<br><br>
+	<div class="card-header with-border">		
+					<button type="button" class="btn btn-primary pointer" id="modifyBtn">수정</button>		
+					<button type="button" class="btn btn-primary pointer" name="remove" id="removeBtn">삭제</button>		
+				<button type="button" class="btn btn-primary pointer" onclick="javascript:location.href='/qna/list';">목록</button>
+			</div>
+<form role="form">
+   <input type="hidden" name="qa_num" value="${qna.qa_num }">
+  </form>
+			
+	<script>
+	var formObj = $("form[role='form']"); 
+	$('button#modifyBtn').on('click',function(e){
+		alert('modify btn click');
+		formObj.attr({
+			'action':'modify',
+			'method':'get'
+		});
+		formObj.submit();
+	});
+	
+	$('#removeBtn').on('click',function(){
+		formObj.attr("action", "remove");
+		formObj.attr("method", "post");
+		formObj.submit();
+		
+
+	});
+	</script>

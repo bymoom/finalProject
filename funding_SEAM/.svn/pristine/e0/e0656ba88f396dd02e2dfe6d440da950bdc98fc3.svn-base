@@ -1,0 +1,249 @@
+package com.funding.controller;
+
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.funding.dto.MemberVO;
+import com.funding.dto.ProjectVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.SearchCriteria;
+import com.funding.service.MemberService;
+import com.funding.service.NoticeService;
+import com.funding.service.project.ProjectService;
+import com.funding.util.NaverCaptchaKey;
+import com.funding.util.NaverCaptchaResult;
+
+@Controller
+@RequestMapping("/")
+public class CommonController {
+	
+	@Autowired
+	private MemberService memberService;
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	@Autowired
+	private NoticeService noticeService;
+	
+	@Autowired
+	private ProjectService pService;
+
+	private static String stcKeys;
+
+	@RequestMapping(value = "/index.htm", method = RequestMethod.GET)
+	public String test() throws Exception {
+		String url = "home.page";
+		String js="js";
+		return url;
+	}
+
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String main(Model model,SearchCriteria cri) throws Exception {
+		String url = "commons/main.page";
+		
+		cri.setPerPageNum(5);
+		Map<String, Object> dataMap = noticeService.getNoticeList(cri);
+		
+		model.addAllAttributes(dataMap);
+		return url;
+	}
+	
+	@RequestMapping(value = "/commons/main/search",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<List<ProjectVO>> searchProject( String val, Model model)throws Exception{
+		
+		ResponseEntity<List<ProjectVO>> entity = null;
+		System.out.println("val = " + val);
+		try {
+			List<ProjectVO> projectList = pService.getSearchProjectList(val);
+			//model.addAttribute("projectList",projectList);
+			System.out.println(projectList);
+			entity = new ResponseEntity<List<ProjectVO>>(projectList, HttpStatus.OK);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<List<ProjectVO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/commons/loginForm")
+	public String loginForm(Model model) throws Exception {
+		String url = "commons/login";
+		return url;
+	}
+	
+	@RequestMapping(value = "/commons/login.do", method=RequestMethod.POST)
+	public String login(String mem_email,
+						String mem_pw,
+						HttpServletRequest request,
+						HttpServletResponse response,
+						HttpSession session,
+						Model model,
+						SearchCriteria cri) throws Exception {
+		String url = "redirect:/main";
+		String message=null;
+		MemberVO loginUser = null;
+		int loginFailCnt = 0;
+		loginFailCnt = memberService.getLoginFailCount(mem_email);
+		
+		if(loginFailCnt > 4) {
+			url = "commons/login_capcha";
+			
+			String naverid = "CdDmuUEG8PE0B6pdNVZl";
+			String naverkey = "PR1202TAvY";
+
+			String key = NaverCaptchaKey.keyGo(naverid, naverkey);
+
+			int idx = key.indexOf(":");
+			int idx2 = key.lastIndexOf("}");
+
+			String keys = key.substring(idx + 2, idx2 - 1);
+			System.out.println(keys);
+			stcKeys = keys;
+			request.setAttribute("keys", keys);
+			request.setAttribute("mem_email", mem_email);
+			
+			return url;
+		}
+		
+		try {
+			memberService.login(mem_email, mem_pw);
+			loginUser = memberService.getMember(mem_email);
+			session.setAttribute("loginUser", loginUser);
+			session.setMaxInactiveInterval(60*6);
+			
+			//select login lastDate
+			Date loginLastDate = memberService.getMemberLoginLastDate(mem_email);
+			System.out.println("loginLastDate >>> " + loginLastDate);
+			
+			//clear login fail count
+			memberService.updateClearLoginFailCount(mem_email);
+
+		} catch (NotFoundIDException e) {
+			message="아이디가 존재하지 않습니다.";
+			url="redirect:login_fail";
+		}  catch (InvalidPasswordException e) {
+			message="패스워드가 일치하지 않습니다.";
+			url="redirect:login_fail";
+			memberService.updatePlusLoginFailCount(mem_email);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			message="시스템장애로 로그인이 불가합니다.";	
+			url="redirect:loginForm";
+		}
+		
+		Map<String, Object> dataMap = noticeService.getNoticeList(cri);
+		model.addAllAttributes(dataMap);
+		session.setAttribute("msg",message);
+		session.setAttribute("mem_email", mem_email);
+		
+		System.out.println("loginFailCnt >>>" + loginFailCnt);
+		
+		return url;
+	}
+	
+	@RequestMapping("/commons/logout.do")
+	public String logout(HttpSession session, Model model) throws Exception {
+		String url="commons/logout";
+		session.invalidate();
+		model.addAttribute("msg", "로그아웃 되었습니다.");
+		return url;
+	}
+	
+	@RequestMapping("/commons/login_fail")
+	public String login_fail() throws Exception {
+		String url = "commons/login_fail";
+		return url;
+	}
+	
+	@RequestMapping("/commons/capchaResult")
+	public String capcharesult(String capcha_keys,
+								String mem_email,
+								HttpServletRequest request,
+								HttpServletResponse response
+								) throws Exception {
+		String url="";
+		if(capcha_check(capcha_keys)) {
+			memberService.updateClearLoginFailCount(mem_email); //clear login fail count
+			url = "commons/login";
+		}
+		else
+		{
+			url = "commons/login_capcha";
+			
+			String naverid = "CdDmuUEG8PE0B6pdNVZl";
+			String naverkey = "PR1202TAvY";
+
+			String key = NaverCaptchaKey.keyGo(naverid, naverkey);
+
+			int idx = key.indexOf(":");
+			int idx2 = key.lastIndexOf("}");
+
+			String keys = key.substring(idx + 2, idx2 - 1);
+			System.out.println(keys);
+			stcKeys = keys;
+			request.setAttribute("keys", keys);
+			request.setAttribute("mem_email", mem_email);
+		}
+		
+		return url;
+	}
+
+	public boolean capcha_check(String val) {
+		boolean results = false;
+		
+		String naverid = "CdDmuUEG8PE0B6pdNVZl";
+		String naverkey = "PR1202TAvY";
+		
+		String res = NaverCaptchaResult.keyres(naverid, naverkey, stcKeys, val);
+		int idx = res.indexOf(":");
+		int idx2 = res.indexOf(",");
+
+		String strKey = NaverCaptchaKey.keyGo(naverid, naverkey);
+		String strKeys = strKey.substring(idx + 2, idx2 - 1);
+		String strResult = res.substring(idx + 1, idx2);
+
+		if (strResult.equals("true")) {
+			System.out.println("인증완료");
+
+			results = true;
+
+		} else {
+			System.out.println("인증실패");
+			results = false;
+//			capchar();
+		}
+
+		return results;
+	}
+	
+	@RequestMapping("/commons/calmain.do")
+	public String calmain() throws Exception {
+		String url = "commons/calmain";
+		return url;
+	}
+	
+	
+}
+
+

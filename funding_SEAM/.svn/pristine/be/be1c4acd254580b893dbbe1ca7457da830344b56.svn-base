@@ -1,0 +1,88 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
+<!-- Page Path Begins -->
+<div class="container-fluid ">
+	<div class="row justify-content-lg-center">
+		<h2 class="page-section-heading text-center text-uppercase text-primary mb-0">Q&A</h2>
+	</div>
+
+<!-- Page Path Ends -->
+
+	<div class="titleArea row">
+		<h3 class="col-sm-10">title:&nbsp;${qna.qna_title }</h3>
+	</div>
+	<div class="user-block">
+		          <span class="username">writer:&nbsp;${qna.mem_name }</span>
+		          <span class="viewcnt">viewcnt:&nbsp;${qna.qna_view_cnt }</span>
+		          <span class="regdate">regdate:&nbsp;<fmt:formatDate value="${qna.qna_regdate}" pattern="yyyy-MM-dd HH:mm:ss" /></span>
+		        </div>
+		        <br><br>
+		        <div style="border: solid 2px olive; max-width: 800px" >	
+				<div>content:&nbsp;<br>${qna.qna_contents}</div>
+				</div>
+				<br><br>
+	<div class="card-header with-border">		
+					<button type="button" class="btn btn-primary pointer" id="modifyBtn">수정</button>		
+					<button type="button" class="btn btn-primary pointer" name="remove" id="removeBtn">삭제</button>		
+				<button type="button" class="btn btn-primary pointer" onclick="javascript:location.href='/qna/list';">목록</button>
+				&nbsp;&nbsp;
+				<c:if test="${loginUser.mem_num eq 1 }">
+				<button type="button" class="btn btn-sm btn-primary" id="registCmts">답변등록</button>
+				</c:if>
+			</div>
+			
+			
+<form role="form">
+   <input type="hidden" name="qna_num" value="${qna.qna_num }">
+   <input type="hidden" name="qna_secret" value="${qna.qna_secret }">
+   <input type="hidden" name="qna_pwd" value="${qna.qna_pwd }">
+  </form>
+  </div>
+			
+	<script>
+	var formObj = $("form[role='form']"); 
+	$('button#modifyBtn').on('click',function(e){
+	//	alert('modify btn click');
+		if("${loginUser.mem_num}"=="" || "${loginUser.mem_num}"!="${qna.mem_num}"){
+			alert('로그인이 필요한 기능입니다')
+			location.href='/commons/loginForm';
+			return;
+		}else if("${loginUser.mem_num}"=="${qna.mem_num}"){
+	//		location.href='/qna/registForm';
+		formObj.attr({
+			'action':'modify',
+			'method':'get'
+			
+		});
+		formObj.submit();
+			
+	}
+	});
+	
+	$('#removeBtn').on('click',function(){
+		if("${loginUser.mem_num}"=="${qna.mem_num}"){
+			
+		formObj.attr("action", "remove");
+		formObj.attr("method", "post");
+		formObj.submit();
+		}else{
+			alert('잘못된 요청 입니다  로그인 해주세요');
+		}
+		
+
+	});
+	$('#registCmts').on('click',function(){
+		alert("답글등록");
+		formObj.attr({
+			'action':'registCmts',
+			'method':'get'
+		});
+		formObj.submit();
+	});
+	
+	</script>

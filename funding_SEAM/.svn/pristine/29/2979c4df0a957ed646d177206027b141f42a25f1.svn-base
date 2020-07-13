@@ -1,0 +1,40 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dao.ProposeCmtDAO;
+import com.funding.dto.ProjectProposeCmtVO;
+
+public class ProposeCmtServiceImpl implements ProposeCmtService{
+	private ProposeCmtDAO pDAO;
+	
+	public void setpDAO(ProposeCmtDAO pDAO) {
+		this.pDAO = pDAO;
+	}
+	@Override
+	public List<ProjectProposeCmtVO> selectReplyList(int pjtprp_num) throws SQLException {
+		List<ProjectProposeCmtVO> cmtList = pDAO.selectReplyList(pjtprp_num);
+		return cmtList;
+	}
+	@Override
+	public void regist(ProjectProposeCmtVO proposeCmt) throws SQLException {
+		int seq = pDAO.selectReplySeqNext();
+		proposeCmt.setPjtprp_cmts_num(seq);
+		pDAO.insertReply(proposeCmt);
+		
+	}
+	@Override
+	public void disabledProposeCmt(int pjtprp_cmts_num) throws SQLException {
+		pDAO.disabledProposeCmt(pjtprp_cmts_num);
+		
+	}
+	@Override
+	public void enabledProposeCmt(int pjtprp_cmts_num) throws SQLException {
+		pDAO.enabledProposeCmt(pjtprp_cmts_num);
+		
+	}
+
+}

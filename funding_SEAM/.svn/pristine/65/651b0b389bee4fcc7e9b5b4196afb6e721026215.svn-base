@@ -1,0 +1,14 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import com.funding.dto.Pjt_pay_detailVO;
+
+public interface Pjt_pay_detailDAO {
+
+	public int selectPjtPaySum(int pjt_num)throws SQLException;
+	
+	public int selectBoardSeqNext()throws SQLException;
+	
+	public void insertPjtPay(Pjt_pay_detailVO pjt_pay_detail)throws SQLException;
+}

@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<br>
+
+<div class="container">
+
+	<div class="row justify-content-md-center">
+
+		<a href="<%=request.getContextPath()%>/board/notice/notice_list">
+			<button	style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">공지사항</button>
+		</a> 
+		<a href="<%=request.getContextPath()%>/FAQ/list">
+			<button style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">F A Q</button>
+		</a>
+		 <a href="<%=request.getContextPath()%>/qna/list">
+			<button style="width: 150px; border-radius: 25px; border: 3px double green; margin: 5px;" type="button">Q & A</button>
+		</a>
+
+
+
+	</div>
+
+	<br>
+	<br>
+	<h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">F A Q</h2>
+	<br>
+	
+	<div class="container">
+		<div style="text-align:right;">
+			<button id="FAQRegist" class="btn btn-success" style="width:100px;" type="button" onclick="OpenWindow('regist','등록',1200,800)">FAQ 등록</button>
+		</div>
+	</div>
+	<br>
+	<!-- 일반 회원 리스트 -->
+	<div class="container">
+		<div class="row justify-content-md-center cols-xl-4">
+			<c:forEach items="${FAQ }" var="faq">
+				<input type="hidden" class="faqnum" value="${faq.faq_num }">			
+				<button class="accordion" style="margin-bottom:10px;text-align:center;background-color:lightblue;font-weight:bold;">${faq.faq_title }</button>
+				<div class="panel">
+				  <p>${faq.faq_contents }</p>
+				  <c:if test="${loginUser.mem_name eq '관리자' }">
+				  		<div style="width:100%;text-align:center;">
+				  			<button name="FAQModify" class="btn btn-success" style="width:100px;" type="button">수정</button>&nbsp;&nbsp;&nbsp;
+				  			<button name="FAQDelete" class="btn btn-danger" style="width:100px;" type="button">삭제</button>
+				  			<br><br>
+				  		</div>
+				  </c:if>
+				</div>
+			</c:forEach>
+		</div>
+		
+      <%@include file="pagination.jsp"%>
+      <%@include file="list_js.jsp"%>
+      		
+   </div>
+<script>
+	   var acc = document.getElementsByClassName("accordion");
+	var i;
+	
+	for (i = 0; i < acc.length; i++) {
+	  acc[i].addEventListener("click", function() {
+	    this.classList.toggle("active");
+	    var panel = this.nextElementSibling;
+	    if (panel.style.display === "block") {
+	      panel.style.display = "none";
+	    } else {
+	      panel.style.display = "block";
+	    }
+	  });
+	}
+	
+	
+</script>

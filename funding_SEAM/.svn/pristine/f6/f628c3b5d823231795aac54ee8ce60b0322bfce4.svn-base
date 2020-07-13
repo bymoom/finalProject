@@ -1,0 +1,33 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.project.Pjt_pay_detailDAO;
+import com.funding.dto.Pjt_pay_detailVO;
+
+public class Pjt_pay_detailServiceImpl implements Pjt_pay_detailService {
+	
+	@Autowired
+	private Pjt_pay_detailDAO pjt_pay_detailDAO;
+	public void setPjt_pay_detailDAO(Pjt_pay_detailDAO pjt_pay_detailDAO) {
+		this.pjt_pay_detailDAO=pjt_pay_detailDAO;
+	}
+
+	@Override
+	public int pjtSumPay(int pjt_num) throws SQLException {
+		int sum = pjt_pay_detailDAO.selectPjtPaySum(pjt_num);
+		return sum;
+	}
+
+	@Override
+	public void pjtPay(Pjt_pay_detailVO pjt_pay_detail) throws SQLException {
+		int num = pjt_pay_detailDAO.selectBoardSeqNext();
+		pjt_pay_detail.setPjt_pay_num(num);
+		
+		pjt_pay_detailDAO.insertPjtPay(pjt_pay_detail);
+		
+	}
+
+}

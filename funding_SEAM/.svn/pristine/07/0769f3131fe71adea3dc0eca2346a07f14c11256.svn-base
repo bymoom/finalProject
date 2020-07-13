@@ -1,0 +1,49 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+
+<footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="center">Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
+</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </footer>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+
+<!-- Bootstrap 4 -->
+<script src="<%=request.getContextPath()%>/resources/mart/js/custom.js"></script>
+<script src="<%=request.getContextPath()%>/resources/mart/js/jquery.nicescroll.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/mart/js/jquery.prettyPhoto.js"></script>
+<script src="<%=request.getContextPath()%>/resources/mart/js/owl.carousel.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/mart/js/wow.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/mart/js/isotope.pkgd.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<%=request.getContextPath()%>/resources/mart/css/animate.min.css"></script>
+<!-- common.js -->
+<script src="<%=request.getContextPath() %>/resources/mart/js/custom.js"></script>
+
+</body>
+  <script>
+
+  </script>
+
+
+
+
+</html>
+
+
+
+
+
+
+

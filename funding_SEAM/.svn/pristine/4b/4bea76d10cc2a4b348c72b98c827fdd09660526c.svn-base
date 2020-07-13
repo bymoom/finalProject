@@ -1,0 +1,59 @@
+package com.funding.controller;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.request.SearchCriteria;
+import com.funding.service.NoticeService;
+
+@Controller
+@RequestMapping("/board/notice/")
+public class NoticeController {
+	
+	@Autowired
+	private NoticeService noticeService;
+	public void setNoticeService(NoticeService noticeService) {
+		this.noticeService = noticeService;
+	}
+	
+	@RequestMapping("notice_list")
+	public ModelAndView noticeList(SearchCriteria cri,ModelAndView mnv)throws SQLException{
+		String url="board/notice/notice_list";
+		
+		Map<String, Object> dataMap = noticeService.getNoticeList(cri);
+		
+		List<ColName> colNames = new ArrayList<ColName>();
+		
+		String[] colNameArr = {"","번&nbsp;호","제&nbsp;목","작성일","작성자","첨&nbsp;부","조회수"};
+		String[] colWidthArr = {"4","10","46","10","10","10","10"};
+		for(int i=0;i<colNameArr.length;i++) {
+			colNames.add(new ColName(colNameArr[i], colWidthArr[i]));
+		}
+		
+		dataMap.put("colNames", colNames);
+		
+		mnv.addAllObjects(dataMap);
+		System.out.println(dataMap);
+		mnv.setViewName(url);
+		
+		return mnv;		
+	}
+	//@RequestMapping("/notice/regist")
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+}

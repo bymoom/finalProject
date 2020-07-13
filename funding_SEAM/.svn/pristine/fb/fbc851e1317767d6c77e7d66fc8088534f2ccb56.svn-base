@@ -1,0 +1,412 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+<script type="text/javascript">
+
+	/**
+	 * 대출 상환 예정일 출력
+	 */
+	var enddate = new Date(${project.pjt_enddate.time});
+	var repayDate = enddate.setFullYear(enddate.getFullYear()+2);
+	var displayRepayDate = new Date(repayDate);
+	//alert(displayRepayDate);
+	var year=displayRepayDate.getFullYear();
+	var month=displayRepayDate.getMonth()+1;
+	var date=displayRepayDate.getDate();
+	$('#repayDateTd').append(year+"-"+month+"-"+date);
+	 
+	<c:forEach items="${standByToCalcList }" var="standByToCalc">
+		<c:if test="${standByToCalc.pjt_num eq project.pjt_num }">
+			
+			var now = new Date();
+			//var then = ${standByToCalc.dateToRefund.time};
+			
+			//alert("${standByToCalc.dateToRefund}");
+			
+	 		//var gap = now.getTime() - then;
+			//gap = Math.floor(gap / (1000 * 60 * 60 * 24));
+			//alert("대출 상환일 : D" + gap);	
+			
+			var enddate = new Date(${project.pjt_enddate.time});
+			var repayDate = enddate.setFullYear(enddate.getFullYear()+2);
+			var displayRepayDate = new Date(repayDate);
+			
+			var gap = now.getTime() - displayRepayDate.getTime();
+			gap = Math.floor(gap / (1000 * 60 * 60 * 24));
+			//alert(displayRepayDate.getTime());
+			//alert(now.getTime());
+			
+			if(displayRepayDate.getTime() < now.getTime()){
+				$('#repayDate').text("대출 상환일 : D+" + gap).css('display','inline');
+			}else{
+				$('#repayDate').text("대출 상환일 : D" + gap).css('display','inline');
+			}
+			
+			$('.forRepayBtn').css('margin-top','15px');
+			$('#forRepaySelect').css('margin-top','15px');
+			
+		</c:if>      		
+	</c:forEach>
+
+	var pjt_num = ${project.pjt_num};
+	var mem_num = ${project.mem_num};
+
+	/**
+	 * 프로젝트 등록 승인 여부 저장
+	 */
+	function saveState(){
+		var pjt_state_code = $('select[id="stateSelect"] option:selected').val();
+		var pjt_state_comment = $('textarea[id="modal_pjt_state_comment"]').val();
+		
+		if(pjt_state_code == 3){
+			<%-- 보류 선택 후 저장 버튼 클릭시 모달창 띄우기 --%>	
+			$('#saveStateBtn').attr({'data-toggle':'modal', 'data-target':'#registMessageModal'});
+		}else{
+			<%-- 승인 선택시 --%>
+			$('#saveStateBtn').removeAttr('data-toggle');
+			$('#saveStateBtn').removeAttr('data-target');
+			
+			var con = confirm("프로젝트를 승인하시겠습니까?");
+			if(con){
+				$.ajax({
+					url : '<%= request.getContextPath() %>/admin/project/modifyState',
+					type : 'POST',
+					data : {'pjt_state_code' : pjt_state_code, 'pjt_num' : pjt_num, 'mem_num' : mem_num},
+					success : function(data){
+						alert("승인되었습니다. ${comMember.mem_name}님에게 문자를 발송했습니다.");
+						location.reload();
+						opener.location.reload();
+					},
+					error : function(error){
+						alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+					},
+					complete:function(){
+						$('#modifyModal').modal('hide');
+						location.reload();
+					}
+				})
+			}else{
+				alert("취소하였습니다.");
+			}
+		}
+	}
+	
+	<%-- 보류 메시지 입력 후 모달창의 저장 버튼 눌렀을 때 --%>	
+	$('#pjtStateCodeSaveBtn').on('click', function(){
+		var pjt_state_code = $('select[id="stateSelect"] option:selected').val();
+		var pjt_state_comment = $('textarea[id="modal_pjt_state_comment"]').val();
+		
+		//alert("pjt_state_code : " + pjt_state_code);
+		//alert("pjt_state_comment : " + pjt_state_comment);
+		//alert("pjt_num : " + pjt_num);
+		
+		$.ajax({
+			url : '<%= request.getContextPath() %>/admin/project/modifyState',
+			type : 'POST',
+			data : {'pjt_state_code' : pjt_state_code, 'pjt_num' : pjt_num, 'pjt_state_comment' : pjt_state_comment, 'mem_num' : mem_num},
+			success : function(data){
+				var con = confirm("프로젝트를 보류하시겠습니까?");
+				if(con){
+					alert("보류되었습니다. ${comMember.mem_name}님에게 문자를 발송했습니다.");
+					opener.location.reload();
+				}
+			},
+			error : function(error){
+				alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+			},
+			complete:function(){
+				$('#modifyModal').modal('hide');
+				location.reload();
+			}
+		})
+	});
+	
+	/**
+	 * 추천 프로젝트로 저장
+	 */	
+	function saveThumbsUp(){
+		var pjt_thumbsup = $('select[id="thumbsUpSelect"] option:selected').val();
+		var con = "";
+		
+		if(pjt_thumbsup == "--프로젝트 추천하기--"){
+			alert("프로젝트 추천 여부를 선택해주세요!");
+			return;
+		}
+		
+		if(pjt_thumbsup == 0){
+			con = confirm("'${project.pjt_title}' 프로젝트 추천을 취소하시겠습니까?");
+		}else{
+			con = confirm("'${project.pjt_title}' 프로젝트를 추천하시겠습니까?");
+		}
+		
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/modifyThumbsUp',
+				type : 'POST',
+				data : {'pjt_num' : pjt_num, 'pjt_thumbsup' : pjt_thumbsup},
+				success : function(data){
+					alert("추천 프로젝트로 등록했습니다.");
+					location.reload();
+					opener.location.reload();
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+				}
+			})
+		}else{
+			alert("취소하였습니다.");
+		}
+	}
+	
+	/**
+	 * 프로젝트 활성/비활성 여부 저장
+	 */
+	function saveEnabled(){
+		var pjt_enabled = $('select[id="enabledSelect"] option:selected').val();
+		var con = "";
+		
+		if(pjt_enabled == "--프로젝트 활성화 여부--"){
+			alert("프로젝트 활성화 여부를 선택해주세요!");
+			return;
+		}
+		
+		if(pjt_enabled == 0){
+			con = confirm("'${project.pjt_title}' 프로젝트를 비활성화하시겠습니까?");
+		}else{
+			con = confirm("'${project.pjt_title}' 프로젝트를 활성화하시겠습니까?");
+		}
+		
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/modifyEnabled',
+				type : 'POST',
+				data : {'pjt_num' : pjt_num, 'pjt_enabled' : pjt_enabled},
+				success : function(data){
+					alert("변경되었습니다.");
+					location.reload();
+					opener.location.reload();
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+				}
+			})
+		}else{
+			alert("취소하였습니다.");
+		}
+	}
+	
+	/**
+	 * 소상공인 대출 상환 여부 저장
+	 */
+	function saveRepay(){
+		var pjt_calculate_code = $('select[id="forRepaySelect"] option:selected').val();
+		var con = "";
+		
+		if(pjt_calculate_code == "--상환 여부--"){
+			alert("대출 상환 여부를 선택해주세요!");
+			return;
+		}
+		
+		if(pjt_calculate_code == 3){
+			con = confirm("대출 상환 여부를 미완료로 저장하시겠습니까?");
+		}else{
+			con = confirm("대출 상환 여부를 완료로 저장하시겠습니까?");
+		}
+		
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/modifyRepay',
+				type : 'POST',
+				data : {'pjt_num' : pjt_num, 'pjt_calculate_code' : pjt_calculate_code},
+				success : function(data){
+					alert("변경되었습니다.");
+					location.reload();
+					opener.location.reload();
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+				}
+			})
+		}else{
+			alert("취소하였습니다.");
+		}
+	}
+	
+	/**
+	 * 소상공인에게 정산 완료 저장
+	 */
+	function saveCalc(flag){
+		var con = "";
+		
+		if(flag == "정산"){
+			con = confirm("정산 완료로 처리 하시겠습니까?");
+		}/* else{
+			con = confirm("환불 완료로 처리 하시겠습니까?");			
+		} */
+		
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/modifyCalc',
+				type : 'POST',
+				data : {'pjt_num' : pjt_num},
+				success : function(data){
+					if(flag == "정산"){
+						alert("정산 완료 처리하였습니다.");
+					}/* else{
+						alert("환불 완료 처리하였습니다.");
+					} */
+					location.reload();
+					opener.location.reload();
+				},
+				error : function(error){
+					alert('서버 오류로 변경에 실패했습니다. 다시 시도해주세요.');
+				}
+			})
+		}else{
+			alert("취소하였습니다.");
+		}
+	}
+	
+	$("#checkAll").on('click', function(){
+       if($("#checkAll").prop("checked")){
+           $("input[name='check']").prop("checked", true);
+       }else{
+           $("input[name='check']").prop("checked", false);
+       }
+   });	
+	
+	/**
+	 * 참여 회원 리스트에서 환불 완료 버튼 클릭시
+	 */
+	function refundGo(){
+		if($("input:checkbox[name='check']").is(":checked") == false){
+			alert("환불 완료로 처리할 결제 내역을 선택해주세요.");
+			return;
+		}
+		
+		var checkedTrueList = new Array();
+		
+		if($("input:checkbox[name='check']").is(":checked") == true){
+			$(":checkbox[name='check']:checked").each(function(i,e){
+				//alert("check된거 : " + e.value);
+				checkedTrueList.push(e.value);
+			});
+        }
+
+		var json = { 'checkedTrueList' : checkedTrueList };
+		
+		var con = confirm("환불 완료로 처리하시겠습니까?");
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/pay/refund',
+				type : 'post',
+				data: JSON.stringify(json),
+		        //dataType:'json',
+		        contentType:'application/json',
+				success : function(result){
+					alert("선택하신 내역을 환불 완료로 처리했습니다.");
+					location.reload();
+				},
+				error : function(xhr,error){
+					alert("서버 오류로 실패했습니다. 다시 시도해주세요!");
+					//alert("code:"+xhr.status+"\n"+"message:"+xhr.responseText+"\n"+"error:"+error);
+				}
+			})	
+		}else{
+			alert("취소하였습니다.");
+		}
+
+	}
+	
+	/**
+	 * 참여 회원 리스트에서 대출 상환(펀딩금 지급) 완료 버튼 클릭시
+	 */
+	function saveRepayment(){
+		if($("input:checkbox[name='check']").is(":checked") == false){
+			alert("대출 상환을 완료한 결제 내역을 선택해주세요.");
+			return;
+		}
+		
+		var checkedTrueList = new Array();
+		
+		if($("input:checkbox[name='check']").is(":checked") == true){
+			$(":checkbox[name='check']:checked").each(function(i,e){
+				//alert("check된거 : " + e.value);
+				checkedTrueList.push(e.value);
+			});
+        }
+
+		var json = { 'checkedTrueList' : checkedTrueList };
+		
+		var con = confirm("대출 상환 완료로 처리하시겠습니까?");
+		if(con){
+			$.ajax({
+				url : '<%= request.getContextPath() %>/admin/project/repayment',
+				type : 'post',
+				data: JSON.stringify(json),
+		        //dataType:'json',
+		        contentType:'application/json',
+				success : function(result){
+					alert("선택하신 내역을 대출 상환 완료로 처리했습니다.");
+					location.reload();
+				},
+				error : function(xhr,error){
+					alert("서버 오류로 실패했습니다. 다시 시도해주세요!");
+					//alert("code:"+xhr.status+"\n"+"message:"+xhr.responseText+"\n"+"error:"+error);
+				}
+			})	
+		}else{
+			alert("취소하였습니다.");
+		}
+	}
+	
+	
+	function fnExcelReport(id, title) {
+		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+		tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+		tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+		tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+		tab_text = tab_text + "<table border='1px'>";
+		var exportTable = $('#' + id).clone();
+		exportTable.find('input').each(function (index, elem) { $(elem).remove(); });
+		tab_text = tab_text + exportTable.html();
+		tab_text = tab_text + '</table></body></html>';
+		var data_type = 'data:application/vnd.ms-excel';
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf("MSIE ");
+		var fileName = title + '.xls';
+		//Explorer 환경에서 다운로드
+		if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+		if (window.navigator.msSaveBlob) {
+		var blob = new Blob([tab_text], {
+		type: "application/csv;charset=utf-8;"
+		});
+		navigator.msSaveBlob(blob, fileName);
+		}
+		} else {
+		var blob2 = new Blob([tab_text], {
+		type: "application/csv;charset=utf-8;"
+		});
+		var filename = fileName;
+		var elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob2);
+		elem.download = filename;
+		document.body.appendChild(elem);
+		elem.click();
+		document.body.removeChild(elem);
+		}
+	}
+	
+	function OpenWindow(UrlStr, WinTitle, WinWidth, WinHeight) {
+		winleft = (screen.width - WinWidth) / 2;
+		wintop = (screen.height - WinHeight) / 2;
+		var win = window.open(UrlStr , WinTitle , "scrollbars=yes,width="+ WinWidth +", " 
+								+"height="+ WinHeight +", top="+ wintop +", left=" 
+								+ winleft +", resizable=yes, status=yes"  );
+	  win.focus() ; 
+	}
+	
+</script>

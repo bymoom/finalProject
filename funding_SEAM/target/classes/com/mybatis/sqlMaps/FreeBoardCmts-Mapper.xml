@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FreeBoardCmts-Mapper">
+
+	<select id="selectFreeBoardCmtsList" resultType="freeBoardCmts">
+		select *
+		from view_free_board_cmts
+		where free_num = #{free_num}
+		order by free_cmts_num asc
+	</select>
+
+	<select id="selectFreeBoardCmts" resultType="freeBoardCmts">
+		select *
+		from view_free_board_cmts
+		where free_cmts_num = #{free_cmts_num}
+	</select>
+		
+	<select id="countFreeBoardCmts" resultType="int">
+		select count(*)
+		from free_board_cmts
+		where free_num = #{free_num}
+	</select>
+	
+	<update id="registFreeBoardCmts">
+		insert into free_board_cmts(free_num, free_cmts_num, free_cmts_contents, free_cmts_like, free_cmts_regdate, free_cmts_enabled, mem_num)
+		values(#{free_num}, seq_free_cmts_num.nextval, #{free_cmts_contents}, 0, sysdate, 1, #{mem_num})
+	</update>
+	
+	<update id="modifyFreeBoardCmts">
+		update free_board_cmts 
+		set 
+		free_cmts_contents = #{free_cmts_contents},
+		free_cmts_moddate = sysdate
+		where free_cmts_num = #{free_cmts_num}		
+	</update>
+	
+	<update id="modifyFreeBoardCmtsEnabled" parameterType="freeBoardCmts">
+		update free_board_cmts
+		set free_cmts_enabled = #{free_cmts_enabled}
+		where free_cmts_num = #{free_cmts_num}
+	</update>	
+	
+	<update id="removeFreeBoardCmts">
+		delete from free_board_cmts
+		where free_cmts_num = #{free_cmts_num}		
+	</update>
+	
+	<update id="increaseFreeCmtsLike" parameterType="int">
+		update free_board_cmts
+		set free_cmts_like = free_cmts_like + 1 
+		where free_cmts_num = #{free_cmts_num}
+	</update>
+
+	<update id="decreaseFreeCmtsLike" parameterType="int">
+		update free_board_cmts 
+		set free_cmts_like = free_cmts_like - 1 
+		where free_cmts_num = #{free_cmts_num}
+	</update>
+	
+</mapper>

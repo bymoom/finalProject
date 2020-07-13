@@ -1,0 +1,388 @@
+package com.funding.controller;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dao.ProjectProposeDAO;
+import com.funding.dto.MemberVO;
+import com.funding.dto.Project_ProposeVO;
+import com.funding.dto.Thumb_upVO;
+import com.funding.request.PreOrNextForBoardRequest;
+import com.funding.request.SearchCriteria;
+import com.funding.service.MemberService;
+import com.funding.service.NoticeService;
+import com.funding.service.ProjectProposeService;
+import com.funding.service.ThumbUpService;
+import com.funding.util.Summernote;
+
+@Controller
+public class ProposeController {
+
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private ProjectProposeService proposeService;
+	@Autowired
+	private NoticeService noticeService;
+	@Autowired
+	private ThumbUpService thService;
+	@Autowired
+	private ProjectProposeDAO proposeDAO;
+	
+	@Autowired
+	private String summernoteImgPath;
+	
+	//프로젝트 제안 게시판 조회
+	@RequestMapping("/menu/propose")
+	public ModelAndView projectProposeGET(ModelAndView model, SearchCriteria cri) throws Exception {
+		String url = "propose/propose.page";
+		Map<String, Object> dataMap = proposeService.getProposeList(cri);
+		List<Project_ProposeVO> likeDescList = proposeService.selectLikeDesc();
+		
+		
+		model.addAllObjects(dataMap);
+		model.addObject("likeDescList",likeDescList);
+		model.setViewName(url);
+		
+		
+		
+		
+		return model;
+	}
+	
+	@RequestMapping("/propose/searchList")
+	public ModelAndView proposeSearchList(ModelAndView model, SearchCriteria cri) throws Exception {
+		String url = "propose/propose.page";
+		Map<String, Object> dataMap = proposeService.getProposeList(cri);
+		model.addAllObjects(dataMap);
+		model.setViewName(url);
+		
+		return model;
+	}
+	
+	//프로젝트 제안 등록버튼 클릭
+	@RequestMapping(value="/menu/proposeRegist",method=RequestMethod.GET)
+	public ModelAndView proposeRegistGET(ModelAndView model)throws Exception{
+		String url="propose/proposeRegist.page";
+		
+		model.addObject("where","menu");
+		model.setViewName(url);
+		
+		return model;
+	}
+	
+	@RequestMapping(value="/menu/proposeRegist",method=RequestMethod.POST)
+	public String proposeRegistPOST(Project_ProposeVO propose)throws Exception{
+		String url="propose/regist_success";
+			String mem_name=propose.getMem_name();
+			MemberVO member = memberService.getMemberByName(mem_name);
+			int mem_num = member.getMem_num();
+			int pjtprp_num = proposeService.nextSeq();
+			propose.setPjtprp_num(pjtprp_num);			
+			propose.setMem_num(mem_num);
+			
+			try {
+				proposeService.insertPropose(propose);
+			}catch(SQLException e) {
+				e.printStackTrace();
+				url="propose/regist_fail";
+			}
+			
+		return url;
+	}
+	
+	@RequestMapping(value="/propose/regist/check",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> proposeRegistCheck(int mem_num)throws Exception{
+		ResponseEntity<String> entity = null;
+		try {
+			Project_ProposeVO propose = proposeService.checkTodayRegist(mem_num);
+			if(propose == null) {
+				entity = new ResponseEntity<String>("OK",HttpStatus.OK);
+			}else {
+				entity = new ResponseEntity<String>("NO", HttpStatus.OK);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+			
+		return entity;
+	}
+	
+	
+	//조회수 증가
+	@RequestMapping(value="/menu/proposeDetailForEnabled",method=RequestMethod.GET)
+	public String proposeDetailForEnabled(int pjtprp_num,Model model,HttpSession session,SearchCriteria cri)throws Exception{
+		String url = "propose/detail.page";
+		Project_ProposeVO propose = proposeService.selectProposeBy_num(pjtprp_num);
+				
+		PreOrNextForBoardRequest preOrNext = proposeDAO.preOrNext(pjtprp_num);
+		
+		model.addAttribute("where","menu");
+		model.addAttribute("preOrNext",preOrNext);
+		model.addAttribute("propose",propose);
+		
+		return url;
+	}
+	
+	//조회수 증가x (수정했을때 여기로 보낸다)
+	@RequestMapping(value="/menu/proposeDetail",method=RequestMethod.GET)
+	public String proposeDetail(int pjtprp_num,Model model,HttpSession session,SearchCriteria cri)throws Exception{
+		String url = "propose/detail.page";
+		Project_ProposeVO propose = proposeService.selectProposeBynum(pjtprp_num);
+		
+//		int num = proposeService.selectEnabled(pjtprp_num);
+//		MemberVO loginUser = (MemberVO) session.getAttribute("loginUser");
+//		String mem_name = loginUser.getMem_name();
+//		if(num == 0 && !mem_name.equals("관리자")) {
+//			url = "propose/dontRead_detail";
+//		}
+		
+		
+		model.addAttribute("propose",propose);
+		
+		return url;
+	}
+	
+
+	
+	@RequestMapping(value="/menu/modify",method=RequestMethod.GET)
+	public String modify(int pjtprp_num,Model model,SearchCriteria cri)throws Exception{
+		String url = "propose/modify.page";
+		
+		Project_ProposeVO propose = proposeService.selectProposeBy_num(pjtprp_num);
+		
+		int mem_num = propose.getMem_num();
+		model.addAttribute("where","menu");
+		MemberVO member = memberService.getMember(mem_num);
+		
+		model.addAttribute("propose",propose);
+		
+		
+		return url;
+	}
+	
+	@RequestMapping(value="/menu/proposeModify",method=RequestMethod.POST)
+	public String modifyPOST(Project_ProposeVO propose)throws Exception{
+		String url="propose/modify_success";
+		try {
+			proposeService.updatePropose(propose);
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			url="propose/modify_fail";
+		}
+		return url;
+	}
+	
+	@RequestMapping("/menu/delete")
+	public String delete(int pjtprp_num)throws Exception{
+		String url="propose/delete_success";
+		
+		proposeService.deletePropose(pjtprp_num);
+		
+		return url;
+	}
+	
+	@RequestMapping("/propose/disabled")
+	@ResponseBody
+	public ResponseEntity<String> checkedDisabled(@RequestBody Map<String,List<Integer>> jsonn)throws Exception{
+		ResponseEntity<String> entity = null;
+		List<Integer> num = (List<Integer>) jsonn.get("trueChecked");
+		
+		try {
+			for(int i=0; i<num.size(); i++) {
+				int pjtprp_num = num.get(i); 
+				proposeService.listDisabledPropose(pjtprp_num);
+				entity = new ResponseEntity<>(HttpStatus.OK);
+				System.out.println("성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공성공");
+			}
+		}catch(SQLException e) {
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/propose/enabled")
+	@ResponseBody
+	public ResponseEntity<String> checkedEnabled(@RequestBody Map<String,List<Integer>> jsonn)throws Exception{
+		ResponseEntity<String> entity = null;
+		List<Integer> fnum = (List<Integer>) jsonn.get("falseChecked");
+		List<Integer> tnum = (List<Integer>) jsonn.get("trueChecked");
+		
+		try {
+			for(int i=0; i<fnum.size(); i++) {
+				int pjtprp_num = fnum.get(i); 
+				proposeService.enabledPropose(pjtprp_num);
+			}
+			for(int i=0; i<tnum.size(); i++) {
+				int pjtprp_num = tnum.get(i); 
+				proposeService.disabledPropose(pjtprp_num);
+			}
+			
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping(value="/propose/thumbUpSelect",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> thumbUpSelect(int mem_num,int pjtprp_num)throws Exception{
+		ResponseEntity<String> entity = null;
+		
+		Thumb_upVO thumbUp = new Thumb_upVO();
+		thumbUp.setPjtprp_num(pjtprp_num);
+		thumbUp.setMem_num(mem_num);
+		
+			Thumb_upVO thumb = thService.selectThumbUpForPJTPRP(thumbUp);
+			
+			if(thumb != null) {
+				entity = new ResponseEntity<String>("OK",HttpStatus.OK);
+			}else {
+				entity = new ResponseEntity<String>("NODATA",HttpStatus.OK);
+			}
+			
+			
+		return entity;
+	}
+	
+	@RequestMapping(value="/propose/thumbUp",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> proposeThumbUp(int pjtprp_num, int mem_num)throws Exception{
+		ResponseEntity<String> entity = null;
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+pjtprp_num);
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+mem_num);
+		
+		Thumb_upVO thumbUp = new Thumb_upVO();
+		thumbUp.setPjtprp_num(pjtprp_num);
+		thumbUp.setMem_num(mem_num);
+		
+		try {
+			thService.registThumbUpForPJTPRP(thumbUp);
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+		return entity;
+	}
+	
+	@RequestMapping(value="/propose/thumbUpCancel",method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> proposeThumbUpCancel(int pjtprp_num, int mem_num)throws Exception{
+		ResponseEntity<String> entity = null;
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+pjtprp_num);
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+mem_num);
+		
+		Thumb_upVO thumbUp = new Thumb_upVO();
+		
+		thumbUp.setPjtprp_num(pjtprp_num);
+		thumbUp.setMem_num(mem_num);
+		try {
+			Thumb_upVO thumb = thService.selectThumbUpForPJTPRP(thumbUp);
+			if(thumb != null) {
+				int thumbup_num = thumb.getThumbup_num();
+				thService.removeThumbUp(thumbup_num);
+				proposeService.proposeLikeMinusCnt(pjtprp_num);
+			}
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return entity;
+	}
+	
+	@RequestMapping(value="menu/uploadImg", produces="text/plain;charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<String> uploadImg(MultipartFile file, HttpServletRequest request) throws Exception {
+		
+		ResponseEntity<String> result = null;
+
+		//System.out.println("upload.getOriginalFilename() : " + file.getOriginalFilename());
+		
+		/**
+		 * summernote 이미지 업로드 용도
+		 */
+		String savePath = this.summernoteImgPath;
+		String where = "pjtprp"; //새로 생성될 폴더명
+		Summernote summernote = new Summernote();
+		result = summernote.uploadImg(file, request, savePath, where);
+		//
+		
+		return result;
+	}
+	
+	
+	@RequestMapping(value="menu/deleteImg", produces="text/plain;charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<String> deleteImg(String fileName, HttpServletRequest request) throws Exception {
+		ResponseEntity<String> result = null;
+		String savePath = this.summernoteImgPath;
+		String where = "pjtprp"; //이미지가 저장되어있는 폴더명
+		
+		Summernote summernote = new Summernote();
+		result = summernote.deleteImg(request, fileName, savePath, where);
+		
+		return result;
+	}
+	
+	@RequestMapping("propose/success")
+	public String success(int pjtprp_num)throws Exception{
+		String url="propose/propose_success";
+		
+		try {
+			proposeService.successPropose(pjtprp_num);
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return url;
+	}
+	
+	//이전글
+	@RequestMapping("/propose/prev")
+	public ResponseEntity<String> prev(int pjtprp_num)throws Exception{
+		ResponseEntity<String> entity = null;
+		
+		try {
+			Project_ProposeVO propose = proposeService.proposeByNum(pjtprp_num);
+			if(propose != null) {
+				entity = new ResponseEntity<>(HttpStatus.OK);
+			}else {
+				entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return entity;
+	}
+}

@@ -1,0 +1,126 @@
+package com.funding.request;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class AdminMemberSearchCriteria {
+
+	private int page; //페이지 번호
+	private int perPageNum; //페이지당 리스트 개수
+	private String code_state; //회원 상태 str
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	private Date first_mem_regdate; //첫번째로 입력한 가입 날짜
+	@DateTimeFormat(pattern="yyyy-MM-dd")
+	private Date last_mem_regdate; //마지막으로 입력한 가입 날짜
+	private String searchType;  //검색구분
+	private String keyword;  //검색어
+	private String com_state_code_val; //소상공인 가입 승인 여부 코드
+	
+	private int code_num; //소상공인 회원 관리 페이지에서 사용
+	
+	public AdminMemberSearchCriteria() {
+		super();
+		this.page = 1;
+		this.perPageNum = 10;
+	}
+
+	public AdminMemberSearchCriteria(int page, int perPageNum, String code_state, Date first_mem_regdate,
+			Date last_mem_regdate, String searchType, String keyword, String com_state_code_val, int code_num) {
+		super();
+		this.page = page;
+		this.perPageNum = perPageNum;
+		this.code_state = code_state;
+		this.first_mem_regdate = first_mem_regdate;
+		this.last_mem_regdate = last_mem_regdate;
+		this.searchType = searchType;
+		this.keyword = keyword;
+		this.com_state_code_val = com_state_code_val;
+		this.code_num = code_num;
+	}
+
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getPerPageNum() {
+		return perPageNum;
+	}
+
+	public void setPerPageNum(int perPageNum) {
+		this.perPageNum = perPageNum;
+	}
+
+	public String getCode_state() {
+		return code_state;
+	}
+
+	public void setCode_state(String code_state) {
+		this.code_state = code_state;
+	}
+
+	public Date getFirst_mem_regdate() {
+		return first_mem_regdate;
+	}
+
+	public void setFirst_mem_regdate(Date first_mem_regdate) {
+		this.first_mem_regdate = first_mem_regdate;
+	}
+
+	public Date getLast_mem_regdate() {
+		return last_mem_regdate;
+	}
+
+	public void setLast_mem_regdate(Date last_mem_regdate) {
+		this.last_mem_regdate = last_mem_regdate;
+	}
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public int getCode_num() {
+		return code_num;
+	}
+	
+	public void setCode_num(int code_num) {
+		this.code_num = code_num;
+	}
+
+	public int getPageStartRowNum() {  //각 페이지마다 시작하는 행번호
+		return(this.page-1)*perPageNum;
+	}
+
+	public String getCom_state_code_val() {
+		return com_state_code_val;
+	}
+
+	public void setCom_state_code_val(String com_state_code_val) {
+		this.com_state_code_val = com_state_code_val;
+	}
+
+	@Override
+	public String toString() {
+		return "AdminSearchCriteria [page=" + page + ", perPageNum=" + perPageNum + ", code_state=" + code_state
+				+ ", first_mem_regdate=" + first_mem_regdate + ", last_mem_regdate=" + last_mem_regdate
+				+ ", searchType=" + searchType + ", keyword=" + keyword + ", com_state_code_val=" + com_state_code_val
+				+ ", code_num=" + code_num + "]";
+	}
+	
+}

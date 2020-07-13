@@ -1,0 +1,37 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<br>
+<div style="width:100%; text-align:center;">
+	<h3>글 등록하기</h3>
+</div>
+
+<div style="width:100%; text-align:right; margin-right:10px;">
+	<button id="proposeSuccess" type="button" class="btn btn-primary">완료</button>
+	<button type="button" class="btn btn-primary" onclick="registCancel();">취소</button>
+	
+</div>
+<hr style="border:1px solid blue;">
+<form name="form" action="<%=request.getContextPath() %>/menu/proposeRegist" method="post">
+	<br>
+	<label class="label">작성자</label><input name="mem_name" type="text" readonly value="${loginUser.mem_name }"><br>
+	<label class="label">제목</label><input name="pjtprp_title" type="text" style="width:37%;"><br>
+	<label class="label">내용</label><br>
+	<textarea name="pjtprp_contents" rows="20" cols="90" style="margin-left:20px;"></textarea>
+	
+	
+	
+	
+</form>
+
+<script>
+
+	function registCancel(){
+		var ask = confirm("취소하시면 작성한 내용이 사라집니다.\n취소 하시겠습니까?");
+		if(ask){
+			location.href="<%=request.getContextPath()%>/menu/propose";			
+		}
+	}
+	
+
+</script>

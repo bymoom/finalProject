@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>	
+	
+	<typeAliases>
+		<typeAlias type="java.lang.String" alias="str"/>
+		<typeAlias type="java.lang.Integer" alias="int"/>
+		<typeAlias type="java.util.Date" alias="date" />
+		<typeAlias type="java.util.HashMap" alias="hashMap"/>
+		<typeAlias type="com.funding.request.SearchCriteria" alias="cri"/>	
+			
+		<typeAlias type="com.funding.dto.ProjectVO" alias="project"/>
+		<typeAlias type="com.funding.dto.Pjt_pay_detailVO" alias="pjt_pay_detail"/>
+		<typeAlias type="com.funding.dto.Interest_pjtVO" alias="interest_pjt"/>
+		<typeAlias type="com.funding.dto.Project_cmtsVO" alias="project_cmts"/>
+		<typeAlias type="com.funding.request.PjtSearchCriteria" alias="pjtCri"/>
+		<typeAlias type="com.funding.dto.Pjt_bank_sum_attachVO" alias="pjt_bank_sum_attach"/>
+		<typeAlias type="com.funding.dto.Project_state_codeVO" alias="projectStateCode"/>
+		<typeAlias type="com.funding.dto.Project_type_codeVO" alias="projectTypeCode"/>
+		<typeAlias type="com.funding.request.InterestCancleRequest" alias="interestCancleReq"/>
+		<typeAlias type="com.funding.request.ProjectPayRequest" alias="projectpayreq"/>
+		<typeAlias type="com.funding.request.MypagePaylistRequest" alias="mypagePaylistReq"/>
+		
+		<typeAlias type="com.funding.dto.MemberVO" alias="member"/>
+		<typeAlias type="com.funding.dto.ComMemberVO" alias="commember"/>
+		<typeAlias type="com.funding.dto.PointVO" alias="point"/>
+		<typeAlias type="com.funding.dto.Mem_state_codeVO" alias="memStateCode"/>
+		<typeAlias type="com.funding.dto.ComMember_State_CodeVO" alias="comMemberStateCode"/>
+		
+		<typeAlias type="com.funding.dto.Project_ProposeVO" alias="propose"/>
+		
+		<typeAlias type="com.funding.dto.NoticeVO" alias="notice"/>		
+		<typeAlias type="com.funding.dto.Notice_atcVO" alias="ntc_attach"/>
+		
+		<typeAlias type="com.funding.dto.FreeBoardVO" alias="freeBoard"/>
+		<typeAlias type="com.funding.dto.FreeBoardAttachVO" alias="freeBoardAttach"/>
+		<typeAlias type="com.funding.dto.FreeBoardCmtsVO" alias="freeBoardCmts"/>
+		
+		<typeAlias type="com.funding.request.PreOrNextForBoardRequest" alias="preOrNextForBoardRequest"/>
+
+		<typeAlias type="com.funding.dto.ProjectProposeCmtVO" alias="proposeCmt"/>
+		
+		<typeAlias type="com.funding.dto.Thumb_upVO" alias="thumbUp"/>
+		<typeAlias type="com.funding.dto.PopupVO" alias="popup"/>
+		
+		<typeAlias type="com.funding.request.AdminMemberDetailRequest" alias="adminMemberDetailRequest"/>
+		<typeAlias type="com.funding.request.AdminComMemberDetailRequest" alias="adminComMemberDetailRequest"/>
+		<typeAlias type="com.funding.request.AdminProjectRequest" alias="adminProjectRequest"/>
+		<typeAlias type="com.funding.request.ComMemberDetailRequest" alias="comMemberDetailRequest"/>
+		
+		<typeAlias type="com.funding.dto.QnAVO" alias="qna"/>
+
+		<typeAlias type="com.funding.dto.BannerVO" alias="banner"/>
+		<typeAlias type="com.funding.dto.FaqVO" alias="FAQ"/>
+		<typeAlias type="com.funding.dto.PointManageVO" alias="pointManage"/>
+		
+		<typeAlias type="com.funding.dto.CalendarVO" alias="calendar"/>
+		
+	</typeAliases>
+	
+</configuration>
+
+
+
+
+
+
+

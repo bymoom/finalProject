@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Admin-Mapper">
+
+	<sql id="search">
+		<if test="searchType == 'name'.toString()">
+			and mem_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'email'.toString()">
+			and mem_email like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'phone'.toString()">
+			and mem_phone like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<select id="selectSearchMemberList" parameterType="cri" resultType="member">
+		select *
+		from member
+		where mem_num is not null
+		and code_num = 1
+		<include refid="search" />
+		order by mem_num desc
+	</select>
+	
+	<select id="selectSearchMemberListTotalCount" parameterType="cri" resultType="int">
+		select count(*)
+		from
+			(select *
+			from member
+			where mem_num is not null
+			and code_num = 1  			  	
+			<include refid="search" />)
+	</select>
+
+	<select id="selectSearchMemberListByRegDate" parameterType="date[]" resultType="member">
+		select *
+		from member
+		<![CDATA[
+		where code_num = 1
+		and mem_regdate >= #{mem_regdate}
+		and mem_regdate <= #{mem_regdate}
+		]]>
+	</select>
+</mapper>

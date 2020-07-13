@@ -1,0 +1,347 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+		<div class="container">
+           <div class="row justify-content-md-center">
+           
+			<div class="col-sm-12 text-center m-5">
+			<form role="form" method="post" action="pay" name="payForm">
+
+					<h1>결제 페이지</h1>
+
+					<br>
+					<div class="form-group mb-5">
+					
+						<p>${project.pjt_title}</p>
+						<strong>${project.comName }</strong> &nbsp;	${project.comAddr1 }
+					</div>
+					 <hr>
+                      <!-- radio -->
+                      <div class="form-group mt-5">
+                      	<h5>결제 방식 </h5>
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input" type="radio" id="kakao" name="pjt_pay_type" value="kakaopay" checked>
+                          <label for="kakao" class="custom-control-label">카카오페이</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input" type="radio" id="bank" name="pjt_pay_type" value="bankpay">
+                          <label for="bank" class="custom-control-label">무통장입금</label>
+                        </div>
+                 	 </div>
+                 	 
+		               <div class="card-body">
+		                  <div class="form-group row">
+		                    <label for="inputEmail3" class="col-sm-4 col-form-label">투자 금액</label>
+		                    <div class="col-sm-8">
+		                        <input name="pjt_pay_amount" type="text" id="pay" class="form-control" placeholder="1,000원 단위로 입력" 
+		                    					onkeyup="this.value=this.value.replace(/[\ㄱ-ㅎㅏ-ㅣ가-힣 a-z A-Z]/g, '');">
+		                    </div>
+		                  </div>
+		                  
+		                  <div class="form-group row">
+		                    <label for="inputEmail3" class="col-sm-4 col-form-label">예상 원금+수익금</label>
+		                    <div class="col-sm-8">
+		                    <label for="inputEmail3" class="col-form-label">2년 후 받으실 금액은 <span id="interest">0</span>원 입니다.</label>
+		                    </div>
+		                  </div>
+		                  <div class="form-group row">
+		                    <p class="col-sm-4 col-form-label"><strong>사용 포인트</strong><br>(보유포인트 : <span id="memPo">0</span>point)</p>
+		                    <div class="col-sm-8">
+		                      <input name="pjt_pay_usepoint" type="text" id="point" class="form-control" placeholder="1,000포인트 단위로 입력" 
+		                    					onkeyup="this.value=this.value.replace(/[\ㄱ-ㅎㅏ-ㅣ가-힣 a-z A-Z]/g, '');">
+		                    </div>
+		                  </div>
+		                  	<div class="form-group row text-right">
+		                    <p class="col-12 col-form-label" style="font-size:1.5em;"><strong>총 결제 금액 : <span id="payment">0</span>원</strong></p>
+		                    </div>
+	                        <div class="form-group row">
+	                        	<p class="col-sm-4 col-form-label"><strong>휴대폰 번호</strong></p>
+			                    <div class="col-sm-8">
+			                        <input name="pjt_pay_phone" type="text" id="phone" class="form-control" value="${loginUser.mem_phone }" 
+			                    					onkeyup="this.value=this.value.replace(/[\ㄱ-ㅎㅏ-ㅣ가-힣 a-z A-Z /,.~`!@#$%^&*()_+=\\\|\[\]\{\}\;\:\'\?\<\>]/g, '');">
+			                    </div>
+	                        </div>
+			                    <p class="float-right">※ 결제알림 문자를 받으실 휴대폰 번호를 입력해주세요.</p><br><br>
+	                       <hr>
+	                       
+	                 <div class="m-4">
+	                       <h4>결제시 유의사항 및 이용약관</h4>
+	                    <div class="form-check float-right">
+                          <input class="form-check-input agreeAll float-right" type="checkbox">
+                          <label class="form-check-label"><strong>전체 동의</strong></label>
+                        </div>
+                      
+	                        <textarea id="inputDescription1" class="form-control" rows="4" readonly>
+1. 진행 프로젝트는 FunSEAMding 철회 기준에 의거하여 프로젝트 종료일 7일 전부터 결제의 취소 및 환불이 불가합니다. 결제 취소 가능기간 내에 취소한 금액은 취소한 날로부터 영업일 기준 3~5일 이내로 환불이 진행됩니다. 
+
+2. 성공해야 리워드(목표액에 달성되어야 진행)방식의 진행 프로젝트는 펀딩 마감일 기준 목표액에 달성한 경우에만 등록된 카드로부터 인출이 진행됩니다. 프로젝트 종료일 1일 전까지 결제철회가 가능하며 펀딩 마감일 이후 프로젝트 성공 시 결제철회는 불가합니다. 
+
+3. 프로젝트가 이미 목표액에 달성하여 성공한 경우에는 결제의 취소 및 환불이 불가함을 양해바랍니다.
+
+4. 개별 서비스의 성격에 따라 회사는 별도 약관 및 이용조건에 따른 취소 및 환불 규정을 정할 수 있으며, 이 경우 개별 약관 및 이용조건 상의 취소 및 환불규정이 우선 적용됩니다. 이용안내에 규정되지 않은 취소 및 환불에 대한 사항에 대해서는 소비자 분쟁 해결 기준에 의거하여 처리됩니다.
+	                        </textarea>
+	                    <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+	                        <textarea id="inputDescription2" class="form-control" rows="4" readonly>
+‘참여하기’를 통한 결제 및 리워드 배송 서비스를 제공하기 위해 회원의 사전 동의 아래 제3자(프로젝트 개설자)에게 제공합니다. 
+
+개설자에게 전달되는 개인 정보는 기재된 목적 달성 후 파기에 대한 책임이 개설자에게 있으며, 파기하지 않아 생기는 문제에 대한 법적 책임은 개설자에게 있습니다. 
+
+아래 내용에 대하여 동의를 거부하실 수 있으며, 거부 시 서비스 이용이 제한됩니다.
+
+목적       :	펀딩 정보 확인 , 공지 및 민원처리
+항목       :	참여자 정보(이름, 이메일, 휴대폰 번호)
+보유기간 :	펀딩 마감 후 3 년
+	                        </textarea>
+	                    <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+                        <div>
+	                        <textarea id="inputDescription3" class="form-control" rows="4" readonly>
+FunSEAMding은 플랫폼을 제공하는 중개자로 크라우드펀딩을 받는 당사자가 아닙니다. 
+
+대출 상환 지연, 연체 등으로 인한 일체의 법적책임은 펀딩을 받는 소상공인이 부담합니다. 
+
+하지만 FunSEAMding는 소상공인과 후원자간의 원활한 의사소통을 위해 최선의 노력을 다하겠습니다.
+	                        </textarea>
+                        </div>
+		                <div class="form-check float-right pb-5">
+                          <input class="form-check-input agree float-right" type="checkbox" name="agree">
+                          <label class="form-check-label"><strong>동의합니다.</strong></label>
+                        </div>
+		                </div>
+				              <div style="display:none;">
+				              	<input name="mem_num" value="${loginUser.mem_num }">
+				              	<input name="pjt_num" value="${project.pjt_num }">
+				              </div>
+				              
+				         </div>
+	            		</form>
+           				  <button type="button" class="btn btn-outline-success btn-flat" onclick="payment()">결제하기</button>
+           				  <button type="button" class="btn btn-outline-success btn-flat" onclick="back()">취소</button>
+	                      </div>
+                    	</div>
+                    </div>
+              <hr>
+             
+           <!-- kakaoPay 사용 j쿼리 -->   
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>      
+              
+<script>
+/* 최종 금액 계산 */
+$('#pay').on('change',function(){
+	$('#payment').text($('#pay').val()*1-$('#point').val()*1);
+});
+$('#point').on('change',function(){
+	$('#payment').text($('#pay').val()*1-$('#point').val()*1);
+});
+
+
+var loginUserPoint ='';
+$(document).ready(function(){
+	
+	/* 포인트 셋팅 */
+	var data={
+			'mem_num':'${loginUser.mem_num}'
+	}
+	$.ajax({
+		method:'post',
+		url:'/project/getPoint',
+		headers:{
+			"Content-Type":"application/json",
+			"X-HTTP-Method-Override":"POST"
+		},
+		data:JSON.stringify(data),
+		dataType:"text", //받는 data 형식 지정,
+		contentType:'json',
+		success:function(data){
+			loginUserPoint=data;
+			$('#memPo').text(loginUserPoint);
+		},
+		error:function(error){
+			alert("포인트 조회 실패");
+		}
+	});
+	
+});
+
+$('#pay').on('change',function(){
+	var cash=$('#pay').val()*0.025*2+$('#pay').val()*1;
+	$('#interest').text(cash.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+})
+/* 전체 동의 */
+$('.agreeAll').on('click',function(){
+    var chk = $(this).is(":checked");
+    if(chk) $(".agree").prop('checked', true);
+    else  $(".agree").prop('checked', false);
+});
+
+/* 뒤로가기 */
+	function back(){
+		location.href="loanDetail?pjt_num=${project.pjt_num}";
+	}
+	
+/* 결제 */
+	function payment(){
+		//약관 동의
+        var isSeasonChk = false;
+        var arr_Season = document.getElementsByName("agree");
+        for(var i=0;i<arr_Season.length;i++){
+            if(arr_Season[i].checked == false) {
+                isSeasonChk = false;
+                alert("프로젝트 결제시 유의사항을 확인하고 동의해주세요.");
+                return;
+            }
+        }
+		//입력 여부
+
+		if(!$('#pay').val()){
+			alert('금액을 입력해주세요.');
+			$('#pay').focus();
+			return;
+		}
+		if($('#pay').val()%1000){
+			alert('1000단위가 아님')
+			$('#pay').focus();
+			return;
+		}
+		if($('#point').val()%1000){
+			alert('포인트가 1000단위가 아님');
+			$('#point').focus();
+			return;
+		}
+		
+		if($('#point').val()*1>loginUserPoint*1 ){
+			alert('보유한 포인트보다 많이 사용할수 없습니다.');
+			return;
+		}
+		if($('#pay').val()*1<=$('#point').val()*1){
+			alert('포인트는 결제 금액 이상 사용할수 없습니다..');
+			return;
+		}
+		
+		
+		//무통장 선택했을시
+		if($('input[name="pjt_pay_type"]:checked').val()=='bankpay'){
+			alert('신한은행 110-326-999-332 (주)FunSEAMding으로 입금하여 주시기 바랍니다.');
+			if(!$('#point').val()){
+				$('#point').attr('value','0');
+			}else{
+				var data={
+	    				'mem_num':'${loginUser.mem_num }',
+	    				'point':-$('#point').val()
+	    		}
+	    		//포인트 사용 처리
+	    		$.ajax({
+	    			method:'post',
+	    			url:'/project/usePoint',
+	    			headers:{
+	    				"Content-Type":"application/json",
+	    				"X-HTTP-Method-Override":"POST"
+	    			},
+	    			data:JSON.stringify(data),
+	    			dataType:"text", //받는 data 형식 지정,
+	    			contentType:'json',
+	    			success:function(data){
+	    			},
+	    			error:function(error){
+	    				alert('서버 장애로 포인트 결제에 실패하였습니다. 관리자에게 문의하여주시기 바랍니다.');
+	    			}
+	    			
+	    		});
+			}
+    		var form=document.payForm;
+    		form.submit();
+		}
+		
+		//카카오 선택했을시
+		if($('input[name="pjt_pay_type"]:checked').val()=='kakaopay'){
+			$(function(){
+		        var IMP = window.IMP; // 생략가능
+		        IMP.init('imp48366124'); // 'iamport' 대신 부여받은 "가맹점 식별코드"를 사용
+		        var msg;
+		        
+		        IMP.request_pay({
+		            pg : 'kakaopay',
+		            pay_method : 'card',
+		            merchant_uid : 'merchant_' + new Date().getTime(),
+		            name : '${project.pjt_title}',
+		            amount : $('#pay').val()-$('#point').val(),
+		            buyer_email : '${loginUser.mem_email }',
+		            buyer_name : '${loginUser.mem_name }',
+		            buyer_tel : $('#phone').val(),
+		            //m_redirect_url : 'http://www.naver.com'
+		        }, function(rsp) {
+		            if ( rsp.success ) {
+		                //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+		                jQuery.ajax({
+		                    url: "/payments/complete", //cross-domain error가 발생하지 않도록 주의해주세요
+		                    type: 'POST',
+		                    dataType: 'json',
+		                    data: {
+		                        imp_uid : rsp.imp_uid
+		                        //기타 필요한 데이터가 있으면 추가 전달
+		                    }
+		                }).done(function(data) {
+		                    //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+		                    if ( everythings_fine ) {
+		                        msg = '결제가 완료되었습니다.';
+		                        alert(msg);
+		                    } else {
+		                        //[3] 아직 제대로 결제가 되지 않았습니다.
+		                        //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+		                    }
+		                });
+		                
+		    			if(!$('#point').val()){
+		    				$('#point').attr('value','0');
+		    			}else{
+		    				var data={
+		    	    				'mem_num':'${loginUser.mem_num }',
+		    	    				'point':-$('#point').val()
+		    	    		}
+		    	    		//포인트 사용 처리
+		    	    		$.ajax({
+		    	    			method:'post',
+		    	    			url:'/project/usePoint',
+		    	    			headers:{
+		    	    				"Content-Type":"application/json",
+		    	    				"X-HTTP-Method-Override":"POST"
+		    	    			},
+		    	    			data:JSON.stringify(data),
+		    	    			dataType:"text", //받는 data 형식 지정,
+		    	    			contentType:'json',
+		    	    			success:function(data){
+		    	    			},
+		    	    			error:function(error){
+		    	    				alert('서버 장애로 포인트 결제에 실패하였습니다. 관리자에게 문의하여주시기 바랍니다.');
+		    	    			}
+		    	    			
+		    	    		});
+		    			}
+		    			
+		    			
+		                //성공시 디비저장
+		        		var form=document.payForm;
+		        		form.submit();
+		        		
+		        		
+		        		
+		            } else {
+		                msg = '결제에 실패하였습니다.${pjt_num}';
+		                alert(msg);
+		                //실패시 이동할 페이지
+		            }
+		        });
+		        
+		    });
+		}
+		
+	}
+</script>

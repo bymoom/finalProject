@@ -1,0 +1,63 @@
+package com.funding.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/")
+public class CommonController {
+
+	@RequestMapping(value = "/index.htm", method = RequestMethod.GET)
+	public String test() throws Exception {
+		String url = "home.page";
+		String js="js";
+		return url;
+	}
+
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public String test2() throws Exception {
+		String url = "commons/main.page";
+		return url;
+	}
+	
+	@RequestMapping(value = "/commons/propose", method = RequestMethod.GET)
+	public String test3() throws Exception {
+		String url = "commons/propose.page";
+		return url;
+	}
+	
+	
+	
+	@RequestMapping("/commons/login")
+	public String login() throws Exception {
+		String url = "commons/login";
+		
+		return url;
+	}
+	
+	@RequestMapping("/commons/joinIntro")
+	public String join() throws Exception {
+		String url = "commons/joinIntro";
+		
+		return url;
+	}
+	
+	@RequestMapping("/commons/find/id")
+	public String findId() throws Exception {
+		String url = "commons/findId";
+		
+		return url;
+	}
+
+	@RequestMapping("/commons/find/pw")
+	public String findPassword() throws Exception {
+		String url = "commons/findPw";
+		
+		return url;
+	}
+
+
+}
+
+

@@ -1,0 +1,8 @@
+package com.funding.dao;
+
+public interface NoticeDAO {
+	
+	
+	
+
+}

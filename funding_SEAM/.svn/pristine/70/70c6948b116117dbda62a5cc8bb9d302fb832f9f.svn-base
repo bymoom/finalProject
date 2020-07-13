@@ -1,0 +1,67 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.MemberVO;
+
+public class MemberDAOImpl implements MemberDAO {
+	
+	private SqlSession session;
+	public void setSqlSession(SqlSession session) {
+		this.session = session;
+	}
+	
+	@Override
+	public MemberVO selectMemberById(String id) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberById", id);
+		return member;
+	}
+	
+	@Override
+	public MemberVO selectMemberByNum(int mem_num) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberByNum", mem_num);
+		return member;
+	}
+
+	@Override
+	public void insertMember(MemberVO member) throws SQLException {
+		session.update("Member-Mapper.insertMember", member);
+	}
+	
+	@Override
+	public void insertComMember(MemberVO member) throws SQLException {
+		
+	}
+
+	@Override
+	public void updateMember(MemberVO member) throws SQLException {
+		//작성중.. 확인필요
+	}
+
+	@Override
+	public void deleteMember(String id) throws SQLException {
+		session.update("Member-Mapper.deleteMember", id);
+	}
+
+	@Override
+	public void disabledMember(String id) throws SQLException {
+		session.update("Member-Mapper.disableMember",id);
+	}
+
+	@Override
+	public void enabledMember(String id) throws SQLException {
+		session.update("Member-Mapper.enableMember",id);
+	}
+
+	@Override
+	public void updateRecentLoginTime(String id) throws SQLException {
+		session.update("Member-Mapper.updateRecentLoginTime",id);
+	}
+
+
+
+
+
+}

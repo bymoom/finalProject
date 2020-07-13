@@ -1,0 +1,8 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+
+public interface Pjt_pay_detailService {
+	
+	public int pjtSumPay(int pjt_num)throws SQLException;
+}

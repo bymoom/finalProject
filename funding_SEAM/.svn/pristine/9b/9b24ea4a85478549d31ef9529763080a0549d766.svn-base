@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Pjt_pay_detail-Mapper">
+
+	<select id="selectPjtPaySum" resultType="int">
+		select NVL(sum(pjt_pay_amount),0) sum
+		from pjt_pay_detail
+		where pjt_num=#{pjt_num}
+		and pjt_refund=0
+	</select>
+	
+	<update id="insertPjtPay" parameterType="pjt_pay_detail">
+		insert into pjt_pay_detail
+		(pjt_pay_num,pjt_pay_amount,pjt_pay_type,pjt_pay_usepoint,mem_num,pjt_num,pjt_pay_phone) 
+		values
+		(#{pjt_pay_num},#{pjt_pay_amount},#{pjt_pay_type},#{pjt_pay_usepoint},#{mem_num},#{pjt_num},#{pjt_pay_phone})
+	</update>
+
+	<select id="selectPjsPaySeqNext" resultType="int">
+	select seq_pjt_pay_num.nextval as pjt_pay_num
+	from dual
+	</select>
+	
+	<!-- 후원 현황 -->
+	<select id="selectPjtPayTableListByMemNum" resultType="projectpayreq" parameterType="hashMap">
+	select *
+	from project,pjt_pay_detail
+	where project.pjt_num=pjt_pay_detail.pjt_num
+	and pjt_pay_detail.mem_num=#{mem_num}
+	order by pjt_pay_num desc
+	</select>
+	
+	<select id="selectPjtPayTableListByMemNumCount" resultType="int" parameterType="hashMap">
+	select count(*)
+	from project,pjt_pay_detail
+	where project.pjt_num=pjt_pay_detail.pjt_num
+	and pjt_pay_detail.mem_num=#{mem_num}
+	order by pjt_pay_num desc
+	</select>
+	
+	<!-- 모든 결제 내역 조회 -->
+	<select id="selectPjtAllPayListByMemNum" resultType="mypagePaylistReq" parameterType="hashMap">
+	SELECT project.pjt_title, project.pjt_enddate, pjt_pay_detail.*
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	ORDER BY pjt_pay_num ASC
+	</select>
+	
+	<select id="r" resultType="int" parameterType="hashMap">
+	SELECT COUNT(*)
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	ORDER BY pjt_pay_num ASC
+	</select>
+	
+	<!-- 결제 내역 조회 -->
+	<select id="selectPjtPayListByMemNum" resultType="mypagePaylistReq" parameterType="hashMap">
+	SELECT project.pjt_title, project.pjt_enddate, pjt_pay_detail.*
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	AND pjt_pay_detail.pjt_refund = 0
+	ORDER BY pjt_pay_num ASC
+	</select>
+
+	<select id="selectPjtPayListByMemNumCount" resultType="int" parameterType="hashMap">
+	SELECT COUNT(*)
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	AND pjt_pay_detail.pjt_refund = 0
+	ORDER BY pjt_pay_num ASC
+	</select>
+
+	<select id="selectPjtRefundListByMemNum" resultType="mypagePaylistReq" parameterType="hashMap">
+	SELECT project.pjt_title, project.pjt_enddate, pjt_pay_detail.*
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	AND pjt_pay_detail.pjt_refund = 2
+	ORDER BY pjt_pay_num ASC
+	</select>
+
+	<select id="selectPjtRefundListByMemNumCount" resultType="int" parameterType="hashMap">
+	SELECT COUNT(*)
+	FROM project, pjt_pay_detail
+	WHERE project.pjt_num=pjt_pay_detail.pjt_num
+	AND pjt_pay_detail.mem_num=#{mem_num} 
+	AND pjt_pay_detail.pjt_refund = 2
+	ORDER BY pjt_pay_num ASC
+	</select>
+
+	
+</mapper>

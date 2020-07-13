@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    
+<!-- Main content -->
+<div class="row justify-content-center">
+	<div class="col-md-9" style="max-width:960px;">
+		<h3 style="padding:10px;">글쓰기</h3>
+		<hr>
+		<div class ="card-tools" style="width:100%;text-align:right;">
+			<button type="button" class="btn btn-outline-success btn-flat" id="registBtn">등 록</button>
+			<button type="button" class="btn btn-outline-success btn-flat" id="cancelBtn" onclick="javascript:history.go(-1);">취 소</button>
+		</div>
+		<br/>
+		<form role="form" class="form-horizontal" method="post" action="regist" name="registForm">
+			<input type="hidden" name="mem_num" value="${loginUser.mem_num}" />
+			<div class="form-group">
+				<input type="text" id="title" name='free_title' class="form-control" placeholder="제목을 쓰세요.">
+			</div>							
+			<div class="form-group">
+				<textarea class="textarea" name="free_contents" id="contents" rows="20" placeholder="1000자 내외로 작성하세요." style="display: none;"></textarea>
+			</div>
+		</form>
+	</div>
+	<!-- end row -->
+</div>
+<!-- /.content -->
+
+<%@ include file="../../commons/summernote_js.jsp" %>
+
+<script>
+	 $('#registBtn').on('click',function(e){
+		//alert("$(input[name])");
+		var form = document.registForm;
+		
+		if(form.title.value == ""){
+			alert("제목은 필수입니다.");
+			return;
+		}
+
+		if(form.contents.value == ""){
+			alert("내용을 입력해주세요.");
+			return;
+		}
+		
+		if(form.title.value.length > 150){
+			alert("제목은 150자 이상을 초과할 수 없습니다.");
+			return;
+		}
+		
+		/* if(form.contents.value.length > 1000){
+			alert("글자수가 1000자를 초과할 수 없습니다.");
+			return;
+		} */
+		
+		form.submit();
+	});
+	
+	$('#cancelBtn').on('click', function(e){
+		//alert("cancel btn click");
+		window.opener.location.href='list';
+		window.close();
+	});
+</script>

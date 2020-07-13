@@ -1,0 +1,328 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.member.ComMemberDAO;
+import com.funding.dao.project.Pjt_bank_sum_attachDAO;
+import com.funding.dao.project.Pjt_pay_detailDAO;
+import com.funding.dao.project.ProjectDAO;
+import com.funding.dao.project.Project_state_codeDAO;
+import com.funding.dao.project.Project_type_codeDAO;
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.Pjt_bank_sum_attachVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.InterestCancleRequest;
+import com.funding.request.MainPageMaker;
+import com.funding.request.MainSearchCriteria;
+import com.funding.request.PageMaker;
+import com.funding.request.PjtPageMaker;
+import com.funding.request.PjtSearchCriteria;
+import com.funding.request.SearchCriteria;
+
+public class ProjectServiceImpl implements ProjectService {
+	
+	@Autowired
+	public ProjectDAO projectDAO;
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
+	
+	@Autowired
+	private Pjt_pay_detailDAO pjt_pay_detailDAO;
+	public void setPjt_pay_detailDAO(Pjt_pay_detailDAO pjt_pay_detailDAO) {
+		this.pjt_pay_detailDAO=pjt_pay_detailDAO;
+	}
+	
+	@Autowired
+	private ComMemberDAO comMemberDAO;
+	public void setComMemberDAO(ComMemberDAO comMemberDAO) {
+		this.comMemberDAO = comMemberDAO;
+	}
+	
+	@Autowired
+	private Pjt_bank_sum_attachDAO pjt_bank_sum_attachDAO;
+	public void setPjt_bank_sum_attachDAO(Pjt_bank_sum_attachDAO pjt_bank_sum_attachDAO) {
+		this.pjt_bank_sum_attachDAO = pjt_bank_sum_attachDAO;
+	}
+	
+	@Autowired
+	private Project_state_codeDAO project_state_codeDAO;
+	public void setProject_state_codeDAO(Project_state_codeDAO project_state_codeDAO) {
+		this.project_state_codeDAO = project_state_codeDAO;
+	}
+	
+	@Autowired
+	private Project_type_codeDAO project_type_codeDAO;
+	public void setProject_type_codeDAO(Project_type_codeDAO project_type_codeDAO) {
+		this.project_type_codeDAO = project_type_codeDAO;
+	}
+	
+
+	@Override
+	public Map<String, Object> getDonationProjectList(PjtSearchCriteria pjtCri) throws SQLException {
+		List<ProjectVO> list = projectDAO.categorySelectDonationProjectList(pjtCri);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+
+		}
+		
+		PjtPageMaker pjtPageMaker=new PjtPageMaker();
+		pjtPageMaker.setPjtCri(pjtCri);
+		pjtPageMaker.setTotalCount(projectDAO.categorySelectDonationProjectListCount(pjtCri));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("pjtPageMaker", pjtPageMaker);
+		return dataMap;
+	}
+	@Override
+	public Map<String, Object> getLoanProjectList(PjtSearchCriteria pjtCri) throws SQLException {
+		List<ProjectVO> list = projectDAO.categorySelectLoanProjectList(pjtCri);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+		}
+		
+		PjtPageMaker pjtPageMaker=new PjtPageMaker();
+		pjtPageMaker.setPjtCri(pjtCri);
+		pjtPageMaker.setTotalCount(projectDAO.categorySelectLoanProjectListCount(pjtCri));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("pjtPageMaker", pjtPageMaker);
+		return dataMap;
+	}
+
+
+	@Override
+	public ProjectVO getProject(int pjt_num) throws SQLException {
+			projectDAO.projectViewCount(pjt_num);
+			ProjectVO project = projectDAO.selectProjectByNum(pjt_num);
+		
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(pjt_num);
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String comAddr1=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_addr1();
+			project.setComAddr1(comAddr1);
+			
+		return project;
+	}
+
+
+	@Override
+	public List<ProjectVO> getSearchProjectList(String val) throws SQLException {
+		List<ProjectVO> projectList = projectDAO.searchSelectProjectList(val);
+		return projectList;
+	}
+
+
+	@Override
+	public int selectProjectCount(String val) throws SQLException {
+		int count = projectDAO.selectProjectCount(val);
+		return count;
+	}
+
+
+	@Override
+	public void donationProjectRegist(ProjectVO project,Pjt_bank_sum_attachVO pjt_bank_sum_attach) throws SQLException {
+		int seq = projectDAO.insertProjectSeq();
+		
+		//project등록
+		project.setPjt_num(seq);
+		projectDAO.insertDonationProject(project);
+		
+		//project attach등록
+		pjt_bank_sum_attach.setPjt_num(seq);
+		pjt_bank_sum_attachDAO.insertPjtBankSumAttach(pjt_bank_sum_attach);
+		
+	}
+	@Override
+	public void loanProjectRegist(ProjectVO project,Pjt_bank_sum_attachVO pjt_bank_sum_attach) throws SQLException {
+		int seq = projectDAO.insertProjectSeq();
+		
+		//project등록
+		project.setPjt_num(seq);
+		projectDAO.insertLoanProject(project);
+		
+		//project attach등록
+		pjt_bank_sum_attach.setPjt_num(seq);
+		pjt_bank_sum_attachDAO.insertPjtBankSumAttach(pjt_bank_sum_attach);
+		
+	}
+
+
+	@Override
+	public Map<String, Object> getRegistProjectList(SearchCriteria cri, int mem_num) throws SQLException {
+		List<ProjectVO> list = projectDAO.projectRegistList(cri, mem_num);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+			project.setPjt_state_code_val(project_state_codeDAO.selectGetPjtStateCodeVal(project.getPjt_state_code()));
+			project.setPjt_type_code_val(project_type_codeDAO.selectGetPjtTypeCodeVal(project.getPjt_type_code()));
+		}
+		
+		PageMaker PageMaker=new PageMaker();
+		PageMaker.setCri(cri);
+		PageMaker.setTotalCount(projectDAO.projectRegistListCount(cri,mem_num));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("pageMaker", PageMaker);
+		return dataMap;
+	}
+
+
+	@Override
+	public void modifyProject(ProjectVO project,Pjt_bank_sum_attachVO pjt_bank_sum_attach) throws SQLException {
+		projectDAO.updateProject(project);
+		pjt_bank_sum_attachDAO.updatePjtBankSumAttach(pjt_bank_sum_attach);
+	}
+
+
+	@Override
+	public Map<String, Object> getProgressProjectList(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		List<ProjectVO> list = projectDAO.projectProgressList(pjtCri, mem_num);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+			project.setPjt_state_code_val(project_state_codeDAO.selectGetPjtStateCodeVal(project.getPjt_state_code()));
+			project.setPjt_type_code_val(project_type_codeDAO.selectGetPjtTypeCodeVal(project.getPjt_type_code()));
+
+		}
+		
+		PjtPageMaker pjtPageMaker=new PjtPageMaker();
+		pjtPageMaker.setPjtCri(pjtCri);
+		pjtPageMaker.setTotalCount(projectDAO.projectProgressListCount(pjtCri,mem_num));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("pjtPageMaker", pjtPageMaker);
+		return dataMap;
+	}
+
+
+	@Override
+	public Map<String, Object> getMainProjectList(MainSearchCriteria mainCri) throws SQLException {
+		List<ProjectVO> list = projectDAO.selectProjectListMain(mainCri);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+		}
+		
+		MainPageMaker mainPageMaker=new MainPageMaker();
+		mainPageMaker.setMainCri(mainCri);
+		mainPageMaker.setTotalCount(projectDAO.selectProjectListMainCount(mainCri));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("mainPageMaker", mainPageMaker);
+		return dataMap;
+	}
+
+
+	@Override
+	public Map<String, Object> getInterestProjectList(PjtSearchCriteria pjtCri, int mem_num) throws SQLException {
+		List<InterestCancleRequest> list = projectDAO.selectInterestPjtListBymemNum(pjtCri, mem_num);
+		
+		for(InterestCancleRequest project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+			project.setPjt_state_code_val(project_state_codeDAO.selectGetPjtStateCodeVal(project.getPjt_state_code()));
+			project.setPjt_type_code_val(project_type_codeDAO.selectGetPjtTypeCodeVal(project.getPjt_type_code()));
+
+		}
+		
+		PjtPageMaker pjtPageMaker=new PjtPageMaker();
+		pjtPageMaker.setPjtCri(pjtCri);
+		pjtPageMaker.setTotalCount(projectDAO.selectInterestPjtListBymemNumCount(pjtCri, mem_num));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("pjtPageMaker", pjtPageMaker);
+		return dataMap;
+	}
+
+
+	@Override
+	public Map<String, Object> getPjtPayList(MainSearchCriteria mainCri, int mem_num) throws SQLException {
+		List<ProjectVO> list = projectDAO.selectPjtPayListByMemNum(mainCri, mem_num);
+		
+		for(ProjectVO project : list) {
+			int sum=pjt_pay_detailDAO.selectPjtPaySum(project.getPjt_num());
+			project.setPjtPaySum(sum);
+			
+			String comName=comMemberDAO.selectComMemberByMemNum(project.getMem_num()).getCom_bsns_name();
+			project.setComName(comName);
+			
+			String sumnail=pjt_bank_sum_attachDAO.selectSumNameByPjtNum(project.getPjt_num());
+			project.setPjt_atc_sum_name(sumnail);
+			
+		}
+		
+		MainPageMaker mainPageMaker=new MainPageMaker();
+		mainPageMaker.setMainCri(mainCri);
+		mainPageMaker.setTotalCount(projectDAO.selectPjtPayListByMemNumCount(mainCri,mem_num));
+		
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		dataMap.put("projectList", list);
+		dataMap.put("mainPageMaker", mainPageMaker);
+		return dataMap;
+	}
+
+
+}

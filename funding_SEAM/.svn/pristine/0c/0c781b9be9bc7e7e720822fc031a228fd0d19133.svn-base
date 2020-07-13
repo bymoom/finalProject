@@ -1,0 +1,399 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:if test="${loginUser.mem_name ne '관리자' }">
+<script id="reply-template" type="text/x-handlebars-template">
+	{{#each .}}
+		{{#if pjtprp_cmts_enabled includeZero=false}}
+		<hr>
+		<div class="itemdiv dialogdiv replyLi row" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>
+			
+			<div class="col-md-2">
+				<div class="name user-block" style="cursor: pointer;">
+					<img class="img-circle img-bordered-sm" src="https://source.unsplash.com/category/nature/100/100" alt="user image">
+					&nbsp;&nbsp;<h8>{{mem_name}}</h8>
+					<span class="description">{{prettifyDate pjtprp_cmts_regdate}}</span>
+				</div>
+			</div>
+				
+				<div class="col-md-10 content{{pjtprp_cmts_num}}" style="1200px;">
+					<div class="col-sm-1 float-left">
+						<i class="ace-icon fa fa-quote-left" style="color:#555;"></i>
+					</div>
+					<div class="col-sm-6 float-left contentCmt" style="width:900px;white-space:normal;">
+						<span style="line-height:130%;color:#555;width:900px;word-break:break-all;" id="cont{{pjtprp_cmts_num}}" class="dd" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>{{prettify pjtprp_cmts_contents}}</span>
+					</div>
+					
+					<div class="col-sm-1 float-left">
+						<i class="ace-icon fa fa-quote-right" style="color:#555;"></i>
+					</div>
+					<div class="col-sm-3 float-left">
+						<a href="#a" id="replyLikeYet" class="link-black text-sm col-sm-2 replyLikeYet" data-pjtprp_cmts_num={{pjtprp_cmts_num}} ></a>
+						<a href="#a" style="display:none;" id="replyLike-{{pjtprp_cmts_num}}" class="link-black text-sm col-sm-2 replyLike" data-pjtprp_cmts_num={{pjtprp_cmts_num}} ></a>
+					</div>
+					<div class="btn-group btn-group-sm col-sm-1 float-left">
+						<button type="button" class="btn btn-outline-success btn-flat float-right" id="modifyReplyBtn" style="display:{{loginUserCheckForModifyBtn mem_name}};"
+	    					data-mem_name={{mem_name}} data-pjtprp_cmts_num={{pjtprp_cmts_num}} data-pjtprp_cmts_contents={{pjtprp_cmts_contents}}><i class="fas fa-wrench"></i></button>
+						<button class="btn btn-outline-success btn-flat" id="delBtn" style="display:{{loginUserCheckForModifyBtn mem_name}};"><i class="fas fa-trash"></i></button>
+					</div>
+				</div>
+				<div class="input-group input-group-sm mb-0 col-md-10 modifyDiv{{pjtprp_cmts_num}}" data-pjtprp_cmts_num={{pjtprp_cmts_num}} style="display:none;">
+						<textarea class="form-control modifyText{{pjtprp_cmts_num}}" rows="3" wrap=hard data-pjtprp_cmts_num={{pjtprp_cmts_num}}>{{pjtprp_cmts_contents}}</textarea>
+             		 <div class="input-group-append">
+                   		<button type="button" class="btn btn-outline-success btn-flat modSendBtn" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>수정</button>
+                   		<button type="button" class="btn btn-outline-success btn-flat canBtn" data-pjtprp_cmts_num={{pjtprp_cmts_num}} data-pjtprp_cmts_contents={{pjtprp_cmts_contents}}>취소</button>
+              		</div>
+				<br>
+    		</div>
+			</div>
+		{{/if}}
+	{{/each}}
+</script>
+</c:if>
+
+<c:if test="${loginUser.mem_name eq '관리자' }">
+<script id="reply-template" type="text/x-handlebars-template">
+	{{#each .}}
+	<hr>
+		<div class="itemdiv dialogdiv replyLi row" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>
+			<div class="col-1">
+				<input type='checkbox' class="checkBox" name='check' value={{pjtprp_cmts_num}}>
+			</div>
+			<div class="col-md-2">
+				<div class="name user-block" style="cursor: pointer;">
+					<img class="img-circle img-bordered-sm" src="https://source.unsplash.com/category/nature/100/100" alt="user image">
+					&nbsp;&nbsp;<h8>{{mem_name}}</h8>
+					<span class="description">{{prettifyDate pjtprp_cmts_regdate}}</span>
+				</div>
+			</div>
+				
+
+				<div class="col-md-9 content{{pjtprp_cmts_num}}" style="1000px;">
+					<div class="col-sm-1 float-left">
+						<i class="ace-icon fa fa-quote-left" style="color:#555;"></i>
+					</div>
+					<div class="col-sm-6 float-left contentCmt" style="width:900px;white-space:normal;" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>
+						<span style="line-height:130%;color:#555;width:900px;word-break:break-all;" id="cont{{pjtprp_cmts_num}}" class="dd" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>{{prettify pjtprp_cmts_contents}}</span>
+					</div>
+					<textarea style="display:none;" class="tt{{pjtprp_cmts_num}}" rows="3">{{prettify pjtprp_cmts_contents}}</textarea>
+					<div class="col-sm-1 float-left">
+						<i class="ace-icon fa fa-quote-right" style="color:#555;"></i>
+					</div>
+					<div class="col-sm-3 float-left">
+						<a href="#a" id="replyLikeYet" class="link-black text-sm col-sm-2 replyLikeYet" data-pjtprp_cmts_num={{pjtprp_cmts_num}} ></a>
+						<a href="#a" style="display:none;" id="replyLike-{{pjtprp_cmts_num}}" class="link-black text-sm col-sm-2 replyLike" data-pjtprp_cmts_num={{pjtprp_cmts_num}} ></a>
+					</div>
+					<div class="btn-group btn-group-sm col-sm-1 float-left">
+						<button type="button" class="btn btn-outline-success btn-flat float-right" id="modifyReplyBtn" style="display:{{loginUserCheckForModifyBtn mem_name}};"
+	    					data-mem_name={{mem_name}} data-pjtprp_cmts_num={{pjtprp_cmts_num}} data-pjtprp_cmts_contents={{pjtprp_cmts_contents}}><i class="fas fa-wrench"></i></button>
+						<button class="btn btn-outline-success btn-flat"  data-pjtprp_cmts_num={{pjtprp_cmts_num}} id="delBtn" style="display:{{loginUserCheckForModifyBtn mem_name}};"><i class="fas fa-trash"></i></button>
+					</div>
+				</div>
+				<div class="input-group input-group-sm mb-0 col-md-9 modifyDiv{{pjtprp_cmts_num}}" data-pjtprp_cmts_num={{pjtprp_cmts_num}} style="display:none;">
+						<textarea class="form-control modifyText{{pjtprp_cmts_num}}" rows="3" wrap=hard data-pjtprp_cmts_num={{pjtprp_cmts_num}}>{{pjtprp_cmts_contents}}</textarea>
+             		 <div class="input-group-append">
+                   		<button type="button" class="btn btn-outline-success btn-flat modSendBtn" data-pjtprp_cmts_num={{pjtprp_cmts_num}}>수정</button>
+                   		<button type="button" class="btn btn-outline-success btn-flat canBtn" data-pjtprp_cmts_num={{pjtprp_cmts_num}} data-pjtprp_cmts_contents={{pjtprp_cmts_contents}}>취소</button>
+              		</div>
+				<br>
+    		</div>
+			</div>
+	{{/each}}
+</script>
+</c:if>
+<script>
+
+
+var pjtprp_num = ${propose.pjtprp_num}; //게시글번호
+//var replyPage=1;
+//var lastPageNum=-1;
+
+/**
+ * 리스트 출력
+ */
+getPage("<%=request.getContextPath()%>/replies/propose/list/"+pjtprp_num);
+
+function getPage(replyUrl){		
+	$.getJSON(replyUrl,function(data){
+		printData(data.proposeCmtsList, $('#repliesDiv'), $('#reply-template'));
+		//printPaging(data.pageMaker,$('.pagination'));
+	});
+}
+
+var printData = function(replyArr, target, templateObject){
+	var template=Handlebars.compile(templateObject.html());
+	var html=template(replyArr);
+	$('.replyLi').remove();
+	target.append(html);
+	
+	$(".dd").each(function(i,v){
+		var h = $(this).text();
+		//alert(h);
+		$(this).html(h);
+	});
+};
+	
+/* var printPaging=function(pageMaker,target){
+	var str="";
+	lastPageNum=pageMaker.realEndPage;
+	if(pageMaker.prev){
+		str+="<li><a href='"+(pageMaker.startPage-1)
+				+"'> << </a></li>";
+	}
+	for(var i=pageMaker.startPage,len=pageMaker.endPage;i<=len;i++){
+		var strClass = pageMaker.cri.page==i?'class=active':'';
+		str+="<li "+strClass+"><a href='"+i+"'>"+i+"</a></li>";
+	}
+	if(pageMaker.next){
+		str+="<li><a href='"+(pageMaker.endPage+1)
+			+"'> >> </a></li>";
+	}
+	target.html(str);
+} */
+
+/**
+ * 날짜 출력
+ */
+Handlebars.registerHelper("prettifyDate",function(pjtprp_cmts_regdate){
+	var dateObj=new Date(pjtprp_cmts_regdate);
+	var year=dateObj.getFullYear();
+	var month=dateObj.getMonth()+1;
+	var date=dateObj.getDate();
+	return year+"/"+month+"/"+date;
+});
+
+Handlebars.registerHelper("prettify",function(a){
+	var b=a.replace(/\n/g,'<br>');
+	return b; 
+});
+
+
+/**
+ * 로그인 유저 체크해서 작성자와 같으면 수정 버튼 띄우기
+ * 일단 admin으로 체크함 -> 추후에 수정 필요
+ */
+Handlebars.registerHelper("loginUserCheckForModifyBtn",function(mem_name){
+	
+	var result="none";
+	
+
+	
+	if(mem_name=="${loginUser.mem_name}"){
+		$('input[name="check"]').show();
+		result="visible";
+	}
+	return result;
+});
+ 
+
+
+<%-- $('.pagination').on('click','li a',function(event){
+	event.preventDefault();
+	replyPage=$(this).attr("href");
+	getPage("<%=request.getContextPath()%>/replies/"+bno+"/"+replyPage);
+}); --%>
+
+/**
+ * 댓글 등록
+ */
+function reply_regist_go(){
+
+	var mem_name = "${loginUser.mem_name}"; //로그인 유저의 회원번호 보낼것
+	var pjtprp_cmts_contents = $('#pjtprp_cmts_contents').val();
+	var mem_num = "${loginUser.mem_num}";
+	if(mem_name==""){
+		alert('로그인 후 이용 가능합니다.');
+		return false;
+	}
+	var button = $('<button>').attr({
+		'type' : 'button',
+		'value' : '수정'
+	});
+	
+	if(pjtprp_cmts_contents==""){
+		alert('댓글 내용은 필수입니다.');
+		$('#pjtprp_cmts_contents').focus().css("border-color","red");					
+		return;
+	}
+	
+	var data={	
+			"pjtprp_num" : pjtprp_num,
+			"mem_name" : mem_name,
+			"mem_num" : mem_num,
+			"pjtprp_cmts_contents" : pjtprp_cmts_contents
+	}
+	
+	$.ajax({
+		url:"<%=request.getContextPath()%>/replies/propose/regist",
+		type:"post",
+		data:JSON.stringify(data),	
+		headers:{
+			"Content-Type":"application/json",
+			"X-HTTP-Method-Override":"post"
+		},
+		success:function(data){
+				alert('댓글이 등록되었습니다.');
+				$('.text').append();
+				window.location.reload();			
+				$('#pjtprp_cmts_contents').val("");
+		},
+		error:function(error){
+			alert('서버 오류로 인하여 댓글 등록을 실패했습니다.');
+		}
+	});
+}
+
+/**
+ * 선택 댓글 비활성화
+ */
+function proposeCmtDisabled(){
+	var trueChecked = new Array();
+	var falseChecked = new Array();
+	
+	if($(":checkbox[class='checkBox']").is(":checked") == false){
+		alert("비활성화할 글을 선택해주세요!");
+		return;
+	}
+	
+	if($(':checkbox[class="checkBox"]').is(':checked') == true){
+		$(':checkbox[class="checkBox"]:checked').each(function(i,e){
+			trueChecked.push(e.value);
+		});
+	}
+	
+	if($(":checkbox[class='checkBox']").not(":checked")){
+		$(":checkbox[class='checkBox']:not(:checked)").each(function(i,e){
+			//alert("check안된거 : " + e.value);
+			falseChecked.push(e.value);
+		});
+    }
+	var jsonn={"trueChecked":trueChecked,
+				"falseChecked":falseChecked}
+	
+	console.log(jsonn);
+	
+	$.ajax({
+		url : '<%=request.getContextPath()%>/propose/cmt/disabled',
+		type : 'post',
+		data : JSON.stringify(jsonn),
+		contentType : 'application/json',
+		success : function(data){
+			alert("댓글 블라인드 처리를 완료했습니다.");
+			window.location.reload(true);
+		},
+		error : function(err){
+			alert("실패");
+		}
+	});
+}
+
+/**
+ * 선택 댓글 활성화
+ */
+
+
+
+
+
+
+$("div#repliesDiv").on('click','#modifyReplyBtn',function(event){
+	var cmtNum=$(this).attr('data-pjtprp_cmts_num');
+	$('.content'+cmtNum).css('display','none');
+	$('.modifyDiv'+cmtNum).css('display','');
+	
+	
+	/* alert($(this).parents('.replyLi').attr('data-pjtprp_cmts_num')); */
+});
+	$('div#repliesDiv').on('click','.canBtn',function(){
+		var cmtNum=$(this).attr('data-pjtprp_cmts_num');
+		var contents = $('#cont'+cmtNum).html();
+		var content = contents.replace(/<br>/g,'\n');
+		
+		$('.modifyText'+cmtNum).val(content);
+		
+		$('.content'+cmtNum).css('display','');
+		$('.modifyDiv'+cmtNum).css('display','none');
+		
+	});
+
+/**
+ * 댓글 수정시 뜨는 모달창에 댓글 번호, 기존 댓글 내용 데이터 심기
+ */
+$('#repliesDiv').on('click','.replyLi',function(e){	
+	var reply = $(this);
+	$('#modal_pjtprp_cmts_contents').val(reply.find('div.text span').text());
+	$('.modal-title').html(reply.attr('data-pjtprp_cmts_num'));
+});
+
+/* 댓글 수정하기 */
+$('#repliesDiv').on('click','.modSendBtn',function(e){
+	var pjtprp_cmts_num = $(this).attr('data-pjtprp_cmts_num');
+	var pjtprp_cmts_contents=$('.modifyText'+pjtprp_cmts_num).val();
+	
+	var pjtprp_num = ${propose.pjtprp_num};
+	
+	var dataJson={pjtprp_cmts_contents:pjtprp_cmts_contents};		
+	
+	$.ajax({
+		method:'put',
+		url:"<%=request.getContextPath()%>/propose/cmt/modify/"+pjtprp_cmts_num,
+		headers:{
+			"Content-Type":"application/json",
+			"X-HTTP-Method-Override":"PUT"
+		},
+		data:JSON.stringify(dataJson),
+		dataType:'text',
+		success:function(result){
+				alert("수정되었습니다.");
+				getPage("<%=request.getContextPath()%>/replies/propose/list/"+pjtprp_num);
+				window.location.reload();
+		},
+		error:function(error){
+			alert("댓글 수정에 실패했습니다.");
+		},
+		complete:function(){
+			$('#modifyModal').modal('hide');
+		}
+	});
+	
+});
+
+/* 댓글 삭제 */
+$('#repliesDiv').on('click','#delBtn',function(e){
+	
+	var ask = confirm('정말 삭제하시겠습니까?');
+	
+	if(ask){
+	
+	var pjtprp_cmts_num = $(this).attr('data-pjtprp_cmts_num');
+	
+	$.ajax({
+		method:'delete',
+		url:"<%=request.getContextPath()%>/propose/cmt/delete/"+pjtprp_cmts_num,
+		headers:{
+			"Content-Type":"application/json",
+			"X-HTTP-Override":"delete"
+		},
+		dataType:'text',
+		success:function(result){
+				alert("삭제되었습니다.");				
+				window.location.reload();
+		},
+		error:function(error){
+			alert('삭제 실패했습니다.');			
+		},
+		complete:function(){
+			$('#modifyModal').modal('hide');
+		}
+	});
+}
+});
+
+$('#replyDelBtn').on('click',function(event){
+	var pjtprp_cmts_num = $('.modal-title').html();
+	
+	
+});
+</script>

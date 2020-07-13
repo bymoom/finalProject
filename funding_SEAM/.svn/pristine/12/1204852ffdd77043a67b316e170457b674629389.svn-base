@@ -1,0 +1,62 @@
+package com.funding.service.admin;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.admin.AdminProjectManageDAO;
+import com.funding.dto.Project_state_codeVO;
+import com.funding.dto.Project_type_codeVO;
+import com.funding.request.AdminProjectPageMaker;
+import com.funding.request.AdminProjectRequest;
+import com.funding.request.AdminProjectSearchCriteria;
+
+public class AdminProjectManageServiceImpl implements AdminProjectManageService {
+
+	@Autowired
+	private AdminProjectManageDAO adminProjectManageDAO;
+	public void setAdminProjectManageDAO(AdminProjectManageDAO adminProjectManageDAO) {
+		this.adminProjectManageDAO = adminProjectManageDAO;
+	}
+	
+	@Override
+	public Map<String, Object> getSearchProjectList(AdminProjectSearchCriteria cri) throws SQLException {
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		
+		/**
+		 * 프로젝트 관련 코드 리스트
+		 */
+		List<Project_type_codeVO> pjtTypeCodeList = adminProjectManageDAO.selectPjtTypeCode();
+		List<Project_state_codeVO> pjtStateCodeList = adminProjectManageDAO.selectPjtStateCode();
+		
+		/**
+		 * 대기자 수
+		 */
+		int stateStandByTotalCount = adminProjectManageDAO.selectStateToStandByTotalCount();
+		int calcStandByTotalCount = adminProjectManageDAO.selectCalcToStandByTotalCount();
+		
+		/**
+		 * 프로젝트 리스트
+		 */
+		List<AdminProjectRequest> projectList = adminProjectManageDAO.selectSearchProjectList(cri);
+		int totalCount = adminProjectManageDAO.selectSearchProjectListTotalCount(cri);
+		
+		AdminProjectPageMaker pageMaker = new AdminProjectPageMaker();
+		pageMaker.setCri(cri);
+		pageMaker.setTotalCount(totalCount);
+		
+		dataMap.put("pjtTypeCodeList", pjtTypeCodeList);
+		dataMap.put("pjtStateCodeList", pjtStateCodeList);
+		dataMap.put("stateStandByTotalCount", stateStandByTotalCount);
+		dataMap.put("calcStandByTotalCount", calcStandByTotalCount);
+		dataMap.put("projectList", projectList);
+		dataMap.put("pageMaker", pageMaker);
+				
+		return dataMap;
+	}
+
+}

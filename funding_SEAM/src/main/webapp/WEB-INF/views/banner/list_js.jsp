@@ -1,0 +1,42 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<script>
+	$('#registBtn').on('click',function(){
+		OpenWindow('<%=request.getContextPath()%>/admin/banner/regist','등록',1280,800);
+	});
+	
+	/* 수정버튼 클릭 */
+	$(':button[name="modifyBtn"]').on('click',function(){
+		var b_num=$(this).parent().prevAll('.bnum').val();
+		OpenWindow('<%=request.getContextPath()%>/admin/banner/modify?b_num='+b_num,'수정',1280,800);
+	});
+	
+	/* 삭제버튼 클릭 */
+	$(':button[name="deleteBtn"]').on('click',function(){
+		
+		var b_num=$(this).parent().prevAll('.bnum').val();
+		var ask = confirm('정말 삭제하시겠습니까?');
+		if(ask){
+			location.href="<%=request.getContextPath()%>/admin/banner/delete?b_num="+b_num;
+		}
+	});
+	
+	/* 중지버튼 클릭 */
+	$('button[name="stopBtn"]').on('click',function(){
+		var b_num=$(this).parent().prevAll('.bnum').val();
+		var ask = confirm('해당 배너를 중지하시겠습니까?');
+		if(ask){
+			location.href="<%=request.getContextPath()%>/admin/banner/disabled?b_num="+b_num;
+		}
+	});
+	
+	/* 활성버튼 클릭 */
+	$('button[name="enableBtn"]').on('click',function(){
+		var b_num=$(this).parent().prevAll('.bnum').val();
+		var ask = confirm('해당 배너를 활성화 하시겠습니까?');
+		if(ask){
+			location.href="<%=request.getContextPath()%>/admin/banner/enabled?b_num="+b_num;
+			}
+		});
+</script>

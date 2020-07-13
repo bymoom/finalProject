@@ -1,0 +1,22 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.funding.dto.QnA_CmtsVO;
+
+public interface QnA_cmtsDAO {
+	
+	List<QnA_CmtsVO> selectQnACmtsList(int qa_num)throws SQLException;
+	
+	int countQnACmts(int qa_cmts_num)throws SQLException;
+	
+	void registQnACmts(QnA_CmtsVO qnaCmts)throws SQLException;
+	
+	void modifyQnACmts(QnA_CmtsVO qnaCmts)throws SQLException;
+	
+	void modifyQnACmtsEnabled(QnA_CmtsVO qnaCmts)throws SQLException;
+	
+	void removeQnACmts(int qa_cmts_num)throws SQLException;
+
+}

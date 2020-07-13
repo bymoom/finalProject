@@ -1,0 +1,34 @@
+package com.funding.dao.myinfo;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.MemberVO;
+
+public class MyinfoDAOImpl implements MyinfoDAO {
+	
+	private SqlSession session;	
+	public void setSqlSession(SqlSession session) {
+		this.session = session;
+	}
+
+	@Override
+	public MemberVO selectMemberById(String id) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberById", id);
+		return member;
+	}
+
+	@Override
+	public void updateMember(MemberVO member) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateMemberPassword(String mem_pw, String mem_email) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

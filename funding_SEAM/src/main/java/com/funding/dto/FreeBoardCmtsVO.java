@@ -1,0 +1,157 @@
+package com.funding.dto;
+
+import java.util.Date;
+
+public class FreeBoardCmtsVO {
+
+	private int free_cmts_num; //댓글 번호
+	private String free_cmts_contents; //댓글 내용
+	private int free_cmts_like; //댓글 좋아요
+	private Date free_cmts_regdate; //댓글 작성일자
+	private Date free_cmts_moddate; //댓글 수정일자
+	private int free_cmts_parent_num; //댓글 부모번호
+	private int free_cmts_enabled; //댓글 활성화여부
+	private int free_num; //자유게시판 번호
+	private int mem_num; //작성자
+	
+	private String mem_name; //free_board_cmts 테이블엔 없음
+	private String mem_email; //free_board_cmts 테이블엔 없음
+	private String mem_profile_img; //free_board_cmts 테이블엔 없음
+	private int cmtsCount; //해당 게시글의 댓글 총 개수, free_board_cmts 테이블엔 없음
+
+	public FreeBoardCmtsVO() {}
+
+	public FreeBoardCmtsVO(int free_cmts_num, String free_cmts_contents, int free_cmts_like, Date free_cmts_regdate,
+			Date free_cmts_moddate, int free_cmts_parent_num, int free_cmts_enabled, int free_num, int mem_num,
+			String mem_name, String mem_email, String mem_profile_img, int cmtsCount) {
+		super();
+		this.free_cmts_num = free_cmts_num;
+		this.free_cmts_contents = free_cmts_contents;
+		this.free_cmts_like = free_cmts_like;
+		this.free_cmts_regdate = free_cmts_regdate;
+		this.free_cmts_moddate = free_cmts_moddate;
+		this.free_cmts_parent_num = free_cmts_parent_num;
+		this.free_cmts_enabled = free_cmts_enabled;
+		this.free_num = free_num;
+		this.mem_num = mem_num;
+		this.mem_name = mem_name;
+		this.mem_email = mem_email;
+		this.mem_profile_img = mem_profile_img;
+		this.cmtsCount = cmtsCount;
+	}
+
+	public int getFree_cmts_num() {
+		return free_cmts_num;
+	}
+
+	public void setFree_cmts_num(int free_cmts_num) {
+		this.free_cmts_num = free_cmts_num;
+	}
+
+	public String getFree_cmts_contents() {
+		return free_cmts_contents;
+	}
+
+	public void setFree_cmts_contents(String free_cmts_contents) {
+		this.free_cmts_contents = free_cmts_contents;
+	}
+
+	public int getFree_cmts_like() {
+		return free_cmts_like;
+	}
+
+	public void setFree_cmts_like(int free_cmts_like) {
+		this.free_cmts_like = free_cmts_like;
+	}
+
+	public Date getFree_cmts_regdate() {
+		return free_cmts_regdate;
+	}
+
+	public void setFree_cmts_regdate(Date free_cmts_regdate) {
+		this.free_cmts_regdate = free_cmts_regdate;
+	}
+
+	public Date getFree_cmts_moddate() {
+		return free_cmts_moddate;
+	}
+
+	public void setFree_cmts_moddate(Date free_cmts_moddate) {
+		this.free_cmts_moddate = free_cmts_moddate;
+	}
+
+	public int getFree_cmts_parent_num() {
+		return free_cmts_parent_num;
+	}
+
+	public void setFree_cmts_parent_num(int free_cmts_parent_num) {
+		this.free_cmts_parent_num = free_cmts_parent_num;
+	}
+
+	public int getFree_cmts_enabled() {
+		return free_cmts_enabled;
+	}
+
+	public void setFree_cmts_enabled(int free_cmts_enabled) {
+		this.free_cmts_enabled = free_cmts_enabled;
+	}
+
+	public int getFree_num() {
+		return free_num;
+	}
+
+	public void setFree_num(int free_num) {
+		this.free_num = free_num;
+	}
+
+	public int getMem_num() {
+		return mem_num;
+	}
+
+	public void setMem_num(int mem_num) {
+		this.mem_num = mem_num;
+	}
+
+	public String getMem_name() {
+		return mem_name;
+	}
+
+	public void setMem_name(String mem_name) {
+		this.mem_name = mem_name;
+	}
+
+	public String getMem_email() {
+		return mem_email;
+	}
+
+	public void setMem_email(String mem_email) {
+		this.mem_email = mem_email;
+	}
+	
+	public String getMem_profile_img() {
+		return mem_profile_img;
+	}
+
+	public void setMem_profile_img(String mem_profile_img) {
+		this.mem_profile_img = mem_profile_img;
+	}
+
+	public int getCmtsCount() {
+		return cmtsCount;
+	}
+
+	public void setCmtsCount(int cmtsCount) {
+		this.cmtsCount = cmtsCount;
+	}
+
+	@Override
+	public String toString() {
+		return "FreeBoardCmtsVO [free_cmts_num=" + free_cmts_num + ", free_cmts_contents=" + free_cmts_contents
+				+ ", free_cmts_like=" + free_cmts_like + ", free_cmts_regdate=" + free_cmts_regdate
+				+ ", free_cmts_moddate=" + free_cmts_moddate + ", free_cmts_parent_num=" + free_cmts_parent_num
+				+ ", free_cmts_enabled=" + free_cmts_enabled + ", free_num=" + free_num + ", mem_num=" + mem_num
+				+ ", mem_name=" + mem_name + ", mem_email=" + mem_email + ", mem_profile_img=" + mem_profile_img
+				+ ", cmtsCount=" + cmtsCount + "]";
+	}
+	
+}

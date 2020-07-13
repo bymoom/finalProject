@@ -1,0 +1,12 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.ProjectVO;
+
+public interface ProjectService {
+
+	public Map<String, Object> getProjectList()throws SQLException;
+}

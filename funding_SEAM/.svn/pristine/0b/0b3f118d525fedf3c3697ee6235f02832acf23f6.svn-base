@@ -1,0 +1,84 @@
+package com.funding.dto;
+
+public class ComMemberVO {
+	
+	private int com_num;				//업체번호
+	private String com_bsns_name;		//사업장명
+	private String com_bsns_rep_name;	//대표자명
+	private String com_bsns_number;		//사업자등록번호
+	private String com_bsns_phone;		//대표전화번호
+	private String com_bsns_reg_license;//사업자등록증
+	private String com_bsns_cert;		//소상공인증명서
+	private int mem_num;				//회원번호
+	
+	public int getCom_num() {
+		return com_num;
+	}
+	public void setCom_num(int com_num) {
+		this.com_num = com_num;
+	}
+	public String getCom_bsns_name() {
+		return com_bsns_name;
+	}
+	public void setCom_bsns_name(String com_bsns_name) {
+		this.com_bsns_name = com_bsns_name;
+	}
+	public String getCom_bsns_rep_name() {
+		return com_bsns_rep_name;
+	}
+	public void setCom_bsns_rep_name(String com_bsns_rep_name) {
+		this.com_bsns_rep_name = com_bsns_rep_name;
+	}
+	public String getCom_bsns_number() {
+		return com_bsns_number;
+	}
+	public void setCom_bsns_number(String com_bsns_number) {
+		this.com_bsns_number = com_bsns_number;
+	}
+	public String getCom_bsns_phone() {
+		return com_bsns_phone;
+	}
+	public void setCom_bsns_phone(String com_bsns_phone) {
+		this.com_bsns_phone = com_bsns_phone;
+	}
+	public String getCom_bsns_reg_license() {
+		return com_bsns_reg_license;
+	}
+	public void setCom_bsns_reg_license(String com_bsns_reg_license) {
+		this.com_bsns_reg_license = com_bsns_reg_license;
+	}
+	public String getCom_bsns_cert() {
+		return com_bsns_cert;
+	}
+	public void setCom_bsns_cert(String com_bsns_cert) {
+		this.com_bsns_cert = com_bsns_cert;
+	}
+	public int getMem_num() {
+		return mem_num;
+	}
+	public void setMem_num(int mem_num) {
+		this.mem_num = mem_num;
+	}
+	@Override
+	public String toString() {
+		return "ComMemberVO [com_num=" + com_num + ", com_bsns_name=" + com_bsns_name + ", com_bsns_rep_name="
+				+ com_bsns_rep_name + ", com_bsns_number=" + com_bsns_number + ", com_bsns_phone=" + com_bsns_phone
+				+ ", com_bsns_reg_license=" + com_bsns_reg_license + ", com_bsns_cert=" + com_bsns_cert + ", mem_num="
+				+ mem_num + "]";
+	}
+	public ComMemberVO(int com_num, String com_bsns_name, String com_bsns_rep_name, String com_bsns_number,
+			String com_bsns_phone, String com_bsns_reg_license, String com_bsns_cert, int mem_num) {
+		super();
+		this.com_num = com_num;
+		this.com_bsns_name = com_bsns_name;
+		this.com_bsns_rep_name = com_bsns_rep_name;
+		this.com_bsns_number = com_bsns_number;
+		this.com_bsns_phone = com_bsns_phone;
+		this.com_bsns_reg_license = com_bsns_reg_license;
+		this.com_bsns_cert = com_bsns_cert;
+		this.mem_num = mem_num;
+	}
+	
+	public ComMemberVO() {	}
+
+}

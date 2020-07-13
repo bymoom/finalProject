@@ -1,0 +1,53 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<body>
+<br><br><br><br><br>
+<div class="container">
+	<div class="row justify-content-md-center">
+		<div class="col-2 name user-block">
+			<img class="img-circle img-bordered-sm" src="<%=request.getContextPath()%>/mypage/info/picture/${loginUser.mem_num}" 
+			alt="user image" style="width: 100px; height: 100px; object-fit:cover; object-position:center; object-repeat:no-repeat;"
+			onerror="this.src='/resources/images/profile-picture.png'">
+		</div>
+		
+		<div class="col-8 name user-block mb-5">
+			<h5>
+			<c:if test="${loginUser.code_num eq 0 }">
+			관리자
+			</c:if>
+			<c:if test="${loginUser.code_num eq 1 }">
+			일반회원
+			</c:if>
+			<c:if test="${loginUser.code_num eq 2 }">
+			소상공인
+			</c:if>
+			</h5>
+
+			${loginUser.mem_email }<br>
+			<h8>${loginUser.mem_name }님</h8><br>
+			보유 포인트 : <fmt:formatNumber value="${point }" pattern="#,###" />포인트
+			
+		</div>
+		<br>
+		<div class="col-12 mt-5 mb-3">	
+		<h4 class="text-center">${loginUser.mem_name }님이 참여중인 프로젝트 현황</h4>
+		<a class="float-right" onclick="mypageGo('/mypage/project/paylist');" style="cursor:pointer;">-더보기</a><br>
+		
+		</div>
+		  <div class="container">
+		      <div class="row contents1 text-center">
+		
+		      </div>
+		  </div>
+	</div>
+</div>
+	<form style="display: hidden" method="POST" id="detailform">
+	  <input type="hidden" name="pjt_num" value=""/>
+	</form>
+
+<%@ include file="./projectList_js.jsp" %>  
+</body>

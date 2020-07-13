@@ -1,0 +1,16 @@
+package com.funding.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class MainController {
+
+	@RequestMapping(value="/commons/popUp",method=RequestMethod.GET)
+	public String popUp() throws Exception{
+		String url="popup/popup.open";
+		
+		return url;
+	}
+}

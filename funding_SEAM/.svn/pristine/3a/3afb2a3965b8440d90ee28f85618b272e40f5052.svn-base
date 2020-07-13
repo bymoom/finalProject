@@ -1,0 +1,63 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+	<!-- 일반 회원 리스트 -->
+	<div class="container">
+		<div class="row justify-content-md-center cols-xl-4"></div>
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">팝업 리스트</h3>
+            <div style="width:100%;text-align:right;">
+            <button type="button" class="btn btn-danger" id="registBtn">팝업 등록</button>
+            </div> 
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body table-responsive p-0" style="height: auto;">
+         
+            
+            <table class="table table-head-fixed text-center">
+              <thead>
+                <tr>
+                  <th>번 호</th>
+                  <th>팝업 이름</th>
+                  <th>파일 경로</th>
+                  <th>Top</th>
+                  <th>Left</th>
+                  <th>가로</th>
+                  <th>세로</th>
+                  <th>등록일</th>
+                  <th>종료일</th>
+                  <th>수정/삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+			<c:forEach items="${memberList }" var="member">
+				<tr style='font-size:0.85em;'>
+					<td>1</td>
+					<td>test</td>
+					<td>test경로</td>
+					<td></td>
+					<td></td>
+					<td>${member.mem_phone }</td>
+					<td>${member.mem_phone }</td>
+					<td style="width:130px;">${member.mem_phone }</td>
+					<td style="width:130px;">${member.mem_phone }</td>
+					<td>
+						<button type="button" class="btn btn-primary" id="modifyBtn">수정</button>&nbsp;
+						<button type="button" class="btn btn-primary" id="deleteBtn">삭제</button>
+					</td>
+				</tr>
+			</c:forEach>
+          </tbody>
+         </table>
+       </div>
+   <%@include file="list_js.jsp"%>
+      <!-- /.card-body -->
+      <div class="card-footer">
+		<%-- <%@ include file="/WEB-INF/views/admin/pagination.jsp" %>	 --%>			
+	  </div>
+    <!-- /.card -->
+    </div>
+    </div>
+   </div>

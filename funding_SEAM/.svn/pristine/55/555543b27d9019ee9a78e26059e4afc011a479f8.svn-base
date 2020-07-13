@@ -1,0 +1,108 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>회원가입 - FUN&#36;&#123;SEAM&#125;DING</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/commons/css/util.css" />
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/commons/css/main.css" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- icheck bootstrap -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/bootstrap/dist/css/adminlte.min.css">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+<style>
+
+#contBox .btnBox {
+}
+
+#contBox .btnBox li button {
+    display: block;
+    width: 300px;
+    height: 280px;
+    background: #b8e3ef;
+    color: #000;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 18px;
+    letter-spacing: -.5px;
+    box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.2);
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+ul {
+    display: block;
+    list-style: none;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+ul li {
+	list-style: none;
+	float: left;
+	padding: 30px 30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+	<!-- 버튼 고정 영역 -->
+	<div id="contBox">
+		<div class="btnBox">
+			<ul>
+				<li>
+					<a href="#">
+					<button class="btn btn-block bg-gradient-primary btn-lg">일반회원</button>
+					</a>
+				</li>
+				<li>
+					<a href="#">
+					<button class="btn btn-block btn-success btn-lg">소상공인</button>
+					</a>
+				</li>
+			</ul>		
+		</div>
+	</div>
+	
+<!-- 	<div class="limiter"> -->
+<!-- 		<div class="wrap-join-intro"> -->
+<!-- 			<div class="container-login100-form-btn"> -->
+<!-- 				<div> -->
+<!-- 					<button class="btn btn-block bg-gradient-primary btn-lg"> -->
+<!-- 						로그인 -->
+<!-- 					</button> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- 	<button class="btn btn-primary btn-block btn-flat">TEST BUTTON</button> -->
+
+<!-- jQuery -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="<%=request.getContextPath() %>/resources/bootstrap/dist/js/adminlte.min.js"></script>
+</body>
+
+
+
+</html>

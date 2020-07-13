@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.9.5.201807030714-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[true]]></enableImports>
+	<configs>
+		<config>src/main/resources/com/funding/context/servlet-context.xml</config>
+		<config>src/main/resources/com/funding/context/root-context.xml</config>
+		<config>src/main/resources/com/funding/context/dataSource-context.xml</config>
+		<config>src/main/resources/com/funding/context/application-context.xml</config>
+		<config>src/main/resources/com/funding/context/security-context.xml</config>
+		<config>src/main/resources/com/funding/context/seungjae-application-context.xml</config>
+		<config>src/main/resources/com/funding/context/task-context.xml</config>
+	</configs>
+	<autoconfigs>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

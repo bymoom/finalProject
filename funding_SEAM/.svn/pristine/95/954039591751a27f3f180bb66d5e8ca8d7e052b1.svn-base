@@ -1,0 +1,250 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<head>
+	<style>
+	.fileDrop{
+		width:80%;
+		height:120px;
+		border:1px dotted gray;		
+		margin:auto;
+	}
+		
+	.over{
+		display:block;
+		width:100%;
+		white-space:nowrap;
+		overflow:hidden;
+		text-overflow:ellipsis;
+	}
+	</style>
+
+</head>
+
+
+<!-- inline scripts related to this page end -->
+<script type="text/javascript">
+
+var fileFormData = new FormData();
+var registForm = $('form#regist');
+
+function docSubmit(){
+	var form = document.getElementById("regist");
+	// setEditorForm(); // 에디터의 데이터를 폼에 삽입
+	if (!confirm("저장 하시겠습니까?")) return false;
+
+	$(window).unbind("beforeunload");     //?
+	
+	/* waitMsg(); */	/* Processing message */
+	
+	if ($('.template-upload') && $('.template-upload').length > 0) {
+		//$('#fileuploadstartconfirm').val(1);
+		$('.fileupload-buttonbar').find('.start').click();
+//		$('button[type=submit]').click();
+		//return false;
+	} else {	
+		
+		//업로드된 파일 개수.
+		var index=0;
+
+		//업로드 되는 파일 개수 확인
+		var fileNum=0;
+		
+		for(var i of fileFormData.values()){
+			++fileNum;
+		}
+							
+		
+		for(var value of fileFormData.values()){
+			
+			//file을 업로드하기 위한  formData()를 생성.
+			var dataForm=new FormData();
+			dataForm.append('file',value);		
+			
+			var loginUser="/${loginUser.mem_num}";
+			$.ajax({
+				url:"<%=request.getContextPath()%>/upload",
+				type:"post",
+				data:dataForm,
+				processData:false,
+				contentType:false,
+				success:function(data){
+					var fileName,fileType,uuid;
+					var splitName;
+					if(checkImageType(data)){
+						splitName=data.substring(14+loginUser.length).split('$$');						
+						fileType="1";
+					}else{
+						splitName=data.substring(12+loginUser.length).split('$$');						
+						fileType="0";
+					}
+					uuid=splitName[0];
+					fileName=splitName[1];
+					
+					var uploadPath=data.substring(0,12+loginUser.length).replace(/\//g,"\\");
+					var input1=$('<input>').attr('type','hidden')
+					  					   .attr('name','attachList['+index+'].ntc_atc_uuid')
+					   					   .val(uuid);
+					
+					var input2=$('<input>').attr('type','hidden')
+					   					   .attr('name','attachList['+index+'].ntc_atc_fileName')
+					   					   .val(fileName);
+					var input3=$('<input>').attr('type','hidden')
+										   .attr('name','attachList['+index+'].ntc_atc_fileType')
+										   .val(fileType);
+					var input4=$('<input>').attr('type','hidden')
+										   .attr('name','attachList['+index+'].ntc_atc_uploadPath')
+										   .val(uploadPath);
+					
+					registForm.prepend(input1).prepend(input2).prepend(input3).prepend(input4);
+					index++;					
+				}
+				
+			}); 
+		}	
+		 
+		var submitTime=setInterval(function(e){
+			if(fileNum==index){
+				// ajax에 의한 파일업로드가 완료되면 submit을 진행한다.
+				controlSubmit(regist);
+				
+				// 해당 setInterval을 종료.
+				clearInterval(submitTime);
+			}
+		},500);  
+	}
+	
+}
+
+
+function goSubmit(cmd,docId){ 
+	var frm = document.getElementById("regist");
+	switch(cmd) {
+		case "post":				 
+			//if (!docSubmit()) return;
+			docSubmit();
+			//frm.submit();
+			break;
+		case "close":
+			if(confirm("편집중인 문서는 저장되지 않습니다 !\n창을 닫으시겠습니까 ?")){
+				history.go(-1);
+			}
+			return;
+			break;
+		default:
+			return;
+			break;
+	} 
+		
+
+}
+
+ $('div#upload').css("display","block");
+/* form.attr("enctype","multipart/form-data"); */
+$('div.bbsId').css("display","block");
+$('div.preserveId').css("display","none");
+$('div.title').css("display","block");
+$('div.content').css("display","block");
+$('div.uploadFile').css("display","block");
+
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+<script id="templateAttach" type="text/x-handlebars-template">
+<li style="width:12%;font-size:0.8em;position:relative;">
+	<a href="{{fileName}}" class="btn btn-default btn-xs pull-right delbtn"
+	   style="position:absolute;right:0;top:0;padding:0;" >
+		<i class="fa fa-window-close"></i>
+	</a>
+	
+	<span class="mailbox-attachment-icon has-img">
+      <img src="{{imgsrc}}" alt=""></span> 
+	 <span class="over" >{{fileName}}</span>
+	    
+</li>
+</script>
+
+<script>
+var template=Handlebars.compile($('#templateAttach').html());
+
+function getUploadFileInfo(fileName,imgsrc){
+	
+	var fileNameFormat = fileName.substring(fileName.lastIndexOf('.')+1);	
+	if(!checkImageType(fileNameFormat)){
+		var icon="";
+		switch(fileNameFormat){
+		case "doc":case "docx": icon="doc"; break;
+		case "ppt":case "pptx": icon="ppt"; break;
+		case "xlsx": case "xls": case "csv": icon="xls"; break;
+		case "hwp": icon = "hwp"; break;
+		case "zip": icon = "zip"; break;
+		case "pdf": icon = "pdf"; break;
+		default:icon = "file";		
+		}		
+		
+		imgsrc="<%=request.getContextPath()%>/resources/images/"+icon+".png";
+	}
+	return {fileName:fileName,imgsrc:imgsrc};	
+}
+
+function checkImageType(fileName){
+	var pattern=/jpg|gif|png|jpeg/i;	
+	return fileName.toLowerCase().match(pattern);
+}
+
+
+$(document).on("dragenter dragover drop",function(event){
+	event.preventDefault();
+});
+
+
+$('.fileDrop').on('drop',function(event){
+	event.preventDefault();
+	
+	var files=event.originalEvent.dataTransfer.files;	
+	var attachedNum=$('.uploadedList li').length;
+	
+	if((files.length+attachedNum)>3){
+		alert("파일 업로드는 3개까지만 허용됩니다.");
+		return;
+	}
+	var fileName,imgsrc;
+	
+	if (files) {
+	    [].forEach.call(files, readAndPreview);
+	 }
+	
+	function readAndPreview(file) {
+	   
+		var reader = new FileReader();
+		reader.addEventListener("load", function () {	
+			
+			fileFormData.append(file.name,file);
+			
+			var fileInfo=getUploadFileInfo(file.name,this.result);
+			var html=template(fileInfo);
+			$('.uploadedList').append(html);
+		}, false);
+		
+		reader.readAsDataURL(file);
+	}
+	
+});
+
+
+$('.uploadedList').on('click','.delbtn',function(e){
+	e.preventDefault();
+	
+	var that=$(this).parent('li').remove();
+	fileFormData.delete($(this).attr("href"));
+});
+</script>
+
+<%@ include file="../../commons/summernote_js.jsp" %>
+
+
+
+
+
+

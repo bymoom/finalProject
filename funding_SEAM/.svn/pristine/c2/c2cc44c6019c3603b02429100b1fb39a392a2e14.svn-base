@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+	<div class="col-3 mt-5">
+	<nav class="guide_nav" style="color:black;">
+		<a onclick="mypageGo('/mypage/main');" style="text-decoration:none; cursor:pointer;"><h3>마이페이지</h3></a>
+	    <div class="inner">
+	        <ul class="list-group list-group-flush" style="list-style: none;">
+	             <li class="list-group-item " class="on">
+	                <a onclick="mypageGo('/mypage/interest/interestList');" class="link_cont" 
+	                style="font-size: 1.125em; cursor:pointer;"><strong>관심프로젝트</strong></a>
+	            </li>
+	            <li class="list-group-item" class="on">
+	                <a class="link_cont" style="font-size: 1.125em;"><strong>후원 현황</strong></a>
+	                <ul class="lnb_depth p-3" style="list-style: none;">
+	                    <li id="comCro_li" class="on"><a onclick="mypageGo('/mypage/project/paylist');" class="link_depth" style="cursor:pointer;">- 후원현황</a></li>
+<!-- 	                    <li id="comCro_li" class="on"><a onclick="mypageGo('/mypage/paylist/askRefundList');" class="link_depth" style="cursor:pointer;">- 환불요청</a></li> -->
+	                    <li id="comJoi_li" class="on"><a onclick="mypageGo('/mypage/paylist/list');" class="link_depth" style="cursor:pointer;">- 결제/환불 내역</a></li>
+	                </ul>
+	            </li>
+	            
+	            <c:if test="${loginUser.code_num ne 1 }">
+	            <li class="list-group-item">
+	                <a class="link_cont" style="font-size: 1.125em;">
+	                <strong>프로젝트 현황</strong></a>
+	                <ul class="list_sub p-3" style="list-style: none;">
+	                    <li id="gstRew" class=""><a href="/mypage/project/projectTypeChoice">- 프로젝트 등록</a></li>
+	                    <li id="gstInv" class=""><a onclick="mypageGo('/mypage/project/registList');" style="cursor:pointer;">- 프로젝트 등록 현황</a></li>
+	                    <li id="gstInv" class=""><a onclick="mypageGo('/mypage/project/progressList');" style="cursor:pointer;">- 승인된 프로젝트 진행 현황</a></li>
+	                </ul>
+	            </li>
+	            </c:if>
+	            
+	            <li class="list-group-item">
+	                <a href="#" class="link_cont" style="font-size: 1.125em;">
+	                <strong>회원 정보</strong></a>
+	                <ul class="list_sub p-3" style="list-style: none;">
+	                    <li id="mkrRew" class=""><a href="/mypage/info/calmain">- 출석체크</a></li>
+	                    <c:if test="${loginUser.code_num eq 1 }">
+	                    <li id="mkrInva" class=""><a href="/mypage/info/beforeDetail">- 정보 수정</a></li>
+	                    </c:if>
+	                    <c:if test="${loginUser.code_num eq 2 }">
+	                    <li id="mkrInv" class=""><a href="/mypage/info/beforeDetailCom">- 정보 수정</a></li>
+	                    </c:if>
+	                    <c:if test="${loginUser.code_num ne 0 }">
+	                    <li id="mkrInv" class=""><a href="/mypage/info/withdrawForm">- 탈퇴</a></li>
+	                    </c:if>
+	                </ul>
+	            </li>
+	        </ul>
+	    </div>
+	</nav>
+	</div>
+
+
+<script>
+function mypageGo(url){
+	var jobForm=$('#mypageform');
+	jobForm.attr("action",url).attr("method","post");
+	jobForm.submit();
+}
+</script>

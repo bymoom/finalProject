@@ -1,0 +1,246 @@
+package com.funding.controller.freeboard;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.funding.dto.FreeBoardCmtsVO;
+import com.funding.dto.Thumb_upVO;
+import com.funding.service.ThumbUpService;
+import com.funding.service.freeboard.FreeBoardCmtsService;
+
+//url : /replies
+///replies/all/{bno}		list : GET방식, bno번 게시글의 댓글 목록
+///replies/{rno}			modify : PUT,PATCH방식, rno 댓글의 수정 
+///replies/{rno}			remove : DELETE 방식, rno 댓글의 삭제
+///replies 					regist : POST 방식 : 댓글 입력
+///replies/{bno}/{page} 	page list: GET방식 
+//bno번 게시글의 페이징 처리된 댓글 목록
+
+@Controller
+@RequestMapping("freeBoard/replies/*")
+public class FreeBoardCmtsController {
+
+	@Autowired
+	private FreeBoardCmtsService freeBoardCmtsService;
+	
+	@Autowired
+	private ThumbUpService thumbUpService;
+		
+	@RequestMapping(value="list/{free_num}", method=RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> list(@PathVariable("free_num") int free_num) throws Exception {
+		
+		ResponseEntity<Map<String, Object>> result = null;
+		Map<String, Object> dataMap = new HashMap<>();
+
+		try {
+			List<FreeBoardCmtsVO> freeBoardCmtsList = freeBoardCmtsService.getFreeBoardCmtsList(free_num);
+			dataMap.put("freeBoardCmtsList", freeBoardCmtsList);
+			result = new ResponseEntity<>(dataMap, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	//@RequestBody : json.stringify 받기 위해
+	@RequestMapping(value="regist", method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> regist(@RequestBody FreeBoardCmtsVO freeBoardCmts) throws Exception {
+		ResponseEntity<String> entity = null;
+		System.out.println(freeBoardCmts.toString());
+		try {
+			freeBoardCmtsService.regist(freeBoardCmts);
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	
+	@RequestMapping(value="modify/{free_cmts_num}", method= {RequestMethod.PUT, RequestMethod.PATCH})
+	@ResponseBody
+	public ResponseEntity<String> modify(@PathVariable("free_cmts_num") int free_cmts_num, @RequestBody FreeBoardCmtsVO freeBoardCmts) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		System.out.println(freeBoardCmts.toString());
+		freeBoardCmts.setFree_cmts_num(free_cmts_num);
+		
+		try {
+			freeBoardCmtsService.modify(freeBoardCmts);
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return entity;
+	}
+	
+	@RequestMapping(value="remove/{free_cmts_num}", method=RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity<String> remove(@PathVariable("free_cmts_num") int free_cmts_num) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {
+			freeBoardCmtsService.remove(free_cmts_num);
+			entity = new ResponseEntity<>(HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return entity;
+	}
+	
+	@RequestMapping(value="enabled", method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> enabled(@RequestBody Map<String, int[]> json) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		int[] checkedTrueArr = json.get("checkedTrueList");
+		int[] checkedFalseArr = json.get("checkedFalseList");
+		
+		FreeBoardCmtsVO freeBoardCmts = new FreeBoardCmtsVO();
+
+		/*for(int i = 0; i < checkedTrueArr.length; i++) {
+			System.out.println(i + "번쨰 checkedTrue : " + checkedTrueArr[i]);
+		}
+		for(int i = 0; i < checkedFalseArr.length; i++) {
+			System.out.println(i + "번째 checkedFalse : " + checkedFalseArr[i]);
+		}*/
+		
+		try {
+			if(checkedTrueArr != null) {
+				for(int enabledTrueFreeCmtsNum : checkedTrueArr) {
+					freeBoardCmts.setFree_cmts_num(enabledTrueFreeCmtsNum);
+					freeBoardCmts.setFree_cmts_enabled(0); //비활성화
+					freeBoardCmtsService.modifyEnabled(freeBoardCmts);
+					//System.out.println("비활성화 체크된 댓글 수정 성공!");
+				}
+			}
+
+			if(checkedFalseArr != null) {
+				for(int enabledFalseFreeCmtsNum : checkedFalseArr) {
+					freeBoardCmts.setFree_cmts_num(enabledFalseFreeCmtsNum);
+					freeBoardCmts.setFree_cmts_enabled(1); //활성화
+					freeBoardCmtsService.modifyEnabled(freeBoardCmts);
+					//System.out.println("비활성화 체크 안된 댓글 수정 성공!");
+				}
+			}
+			
+			result = new ResponseEntity<>(HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return result;
+	}
+	
+	@RequestMapping("thumbUpSelect")
+	@ResponseBody
+	public ResponseEntity<Map<String, Integer>> thumbUpSelect(int[] free_cmts_num, int mem_num) throws Exception {
+		ResponseEntity<Map<String, Integer>> result = null;
+		
+		for(int freeCmtsNum : free_cmts_num) {
+			//System.out.println("free_cmts_num : " + freeCmtsNum);
+			//System.out.println("mem_num : " + mem_num);
+
+			try {
+				Thumb_upVO thumbUp = new Thumb_upVO();
+				thumbUp.setFree_cmts_num(freeCmtsNum);
+				thumbUp.setMem_num(mem_num);
+				
+				thumbUp = thumbUpService.selectThumbUpForFreeBoard_CMTS(thumbUp);
+				
+				if(thumbUp != null) {
+					FreeBoardCmtsVO freeBoardCmts = freeBoardCmtsService.selectFreeBoardCmts(freeCmtsNum);
+					int free_cmts_like = freeBoardCmts.getFree_cmts_like();
+					
+					Map<String, Integer> data = new HashMap<>();
+					data.put("free_cmts_num", thumbUp.getFree_cmts_num());
+					data.put("free_cmts_like", free_cmts_like);
+
+					//thumb_up 테이블에 데이터가 있는 경우 like 리턴
+					result = new ResponseEntity<>(data, HttpStatus.OK);
+					System.out.println("like");
+				}else {
+					//thumb_up 테이블에 데이터가 없는 경우 likeYet 리턴 
+					result = new ResponseEntity<>(HttpStatus.OK);
+					System.out.println("likeYet");
+				}
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+				result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+		}
+		
+		
+		return result;
+	}
+	
+	@RequestMapping("thumbUpRegist")
+	public ResponseEntity<Integer> thumbUpRegist(Thumb_upVO thumbUp) throws Exception {
+		ResponseEntity<Integer> result = null;
+		
+		try {
+			thumbUpService.registThumbUpForFreeBoard_CMTS(thumbUp);
+			
+			freeBoardCmtsService.modifyFreeCmtsLike(thumbUp.getFree_cmts_num(), "add");
+			
+			FreeBoardCmtsVO freeBoardCmts = freeBoardCmtsService.selectFreeBoardCmts(thumbUp.getFree_cmts_num());
+			int free_cmts_like = freeBoardCmts.getFree_cmts_like();
+			
+			result = new ResponseEntity<>(free_cmts_like, HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping("thumbUpRemove")
+	public ResponseEntity<Integer> thumbUpRemove(Thumb_upVO thumbUp) throws Exception {
+		ResponseEntity<Integer> result = null;
+		
+		System.out.println("thumbUp : " + thumbUp.getFree_cmts_num() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		try {
+			//free_num과 mem_name으로 조회하여 해당 좋아요 번호 찾기
+			thumbUp = thumbUpService.selectThumbUpForFreeBoard_CMTS(thumbUp);
+			int thumbup_num = thumbUp.getThumbup_num();
+		
+			thumbUpService.removeThumbUp(thumbup_num);
+			
+			freeBoardCmtsService.modifyFreeCmtsLike(thumbUp.getFree_cmts_num(), "sub");
+
+			FreeBoardCmtsVO freeBoardCmts = freeBoardCmtsService.selectFreeBoardCmts(thumbUp.getFree_cmts_num());
+			int free_cmts_like = freeBoardCmts.getFree_cmts_like();
+			
+			result = new ResponseEntity<>(free_cmts_like, HttpStatus.OK);
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return result;
+	}
+	
+}

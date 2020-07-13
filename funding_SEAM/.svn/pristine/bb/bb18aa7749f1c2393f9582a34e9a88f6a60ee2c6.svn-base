@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<div class="card-body box-profile">
+  <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle" src="https://source.unsplash.com/category/nature" alt="User profile picture" style="width:150px;height:150px;">
+  </div>
+  <h3 class="profile-username text-center">${comMember.mem_name }</h3>
+  <p class="text-muted text-center">${comMember.code_state }</p>
+
+  <div class="col-12 text-center">
+    <div class="card">
+      <div class="card-header">
+        <h3>회원 상세 정보</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <table class="table table-bordered">
+		  	<tr>
+		  		<th>이메일</th>
+		  		<td>${comMember.mem_email }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>전화번호</th>
+		  		<td>${comMember.mem_phone }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>가입 일자</th>
+		  		<td><fmt:formatDate value="${comMember.mem_regdate }" pattern="yyyy-MM-dd"/></td>
+		  	</tr>
+		  	<tr>
+		  		<th>마지막 로그인 일자</th>
+		  		<td><fmt:formatDate value="${comMember.mem_lastdate }" pattern="yyyy-MM-dd"/></td>
+		  	</tr>
+		  	<tr>
+		  		<th>보유 포인트</th>
+		  		<td>${point }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>사업장명</th>
+		  		<td>${comMember.com_bsns_name }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>대표자명</th>
+		  		<td>${comMember.com_bsns_rep_name }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>사업자 등록 번호</th>
+		  		<td>${comMember.com_bsns_number }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>대표 전화번호</th>
+		  		<td>${comMember.com_bsns_phone }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>주소</th>
+		  		<td>${comMember.com_zipcode }&nbsp;${comMember.com_addr1 }&nbsp;${comMember.com_addr2 }</td>
+		  	</tr>
+		  	<tr>
+		  		<th>첨부파일</th>
+		  		<td></td>
+		  	</tr>
+		 </table>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer clearfix">
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+  <br/>
+  <div class="col-12 text-center">
+    <div class="card">
+      <div class="card-header">
+        <h3>프로젝트 참여 목록</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>                  
+            <tr>
+              <th>번호</th>
+              <th>프로젝트</th>
+              <th>유형</th>
+              <th>금액</th>
+              <th>결제 일자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <c:if test="${empty comMemberProjectPayList }">
+            	<tr>
+					<td colspan="5">
+						<strong>후원 내역이 없습니다.</strong>
+					</td>
+				</tr>
+            </c:if>
+          	<c:if test="${!empty comMemberProjectPayList }">
+	          	<c:forEach items="${comMemberProjectPayList}" var="comMemberProjectPayDetail">
+		            <tr>
+		              <td>${comMemberProjectPayDetail.pjt_num }</td>
+		              <td><img src="https://source.unsplash.com/category/nature" style="width:100px;height:100px;">&nbsp;${comMemberProjectPayDetail.pjt_title }</td>
+		              <td>${comMemberProjectPayDetail.pjt_type_code_val }</td>
+		              <td>${comMemberProjectPayDetail.pjt_pay_amount }</td>
+		              <td><fmt:formatDate value="${comMemberProjectPayDetail.ptj_pay_date }" pattern="yyyy-MM-dd"/></td>
+		            </tr>
+	            </c:forEach>
+            </c:if>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer clearfix">
+        <%@ include file="/WEB-INF/views/pagination/pagination.jsp" %>	
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+  <br/>
+  <div class="col-12 text-center">
+    <div class="card">
+      <div class="card-header">
+        <h3>프로젝트 진행 목록</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>                  
+            <tr>
+              <th>번호</th>
+              <th>카테고리</th>
+              <th>프로젝트</th>
+              <th>유형</th>
+              <th>기간</th>
+            </tr>
+          </thead>
+          <tbody>
+            <c:if test="${empty comMemberProjectList }">
+            	<tr>
+					<td colspan="5">
+						<strong>등록한 프로젝트가 없습니다.</strong>
+					</td>
+				</tr>
+            </c:if>
+          	<c:if test="${!empty comMemberProjectList }">
+	          	<c:forEach items="${comMemberProjectList}" var="comMemberProject">
+		            <tr>
+		              <td>${comMemberProject.pjt_num }</td>
+		              <td>${comMemberProject.pjt_category }</td>
+		              <td><img src="https://source.unsplash.com/category/nature" style="width:100px;height:100px;">&nbsp;${comMemberProject.pjt_title }</td>
+		              <td>${comMemberProject.pjt_type_code_val }</td>
+		              <td>
+		              	<fmt:formatDate value="${comMemberProject.pjt_startdate }" pattern="yyyy-MM-dd"/>
+		              	~
+		              	<fmt:formatDate value="${comMemberProject.pjt_enddate }" pattern="yyyy-MM-dd"/>
+		              </td>
+		            </tr>
+	            </c:forEach>
+            </c:if>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer clearfix">
+        <%@ include file="/WEB-INF/views/pagination/pagination.jsp" %>	
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+</div>

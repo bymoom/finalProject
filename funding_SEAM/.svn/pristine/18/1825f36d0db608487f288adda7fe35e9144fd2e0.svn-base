@@ -1,0 +1,16 @@
+package com.funding.controller.admin;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/admin/point/*")
+public class PointController {
+	
+	@RequestMapping("main")
+	public String main()throws Exception{
+		String url="pay&point/main.admin_page";
+		
+		return url;
+	}
+}

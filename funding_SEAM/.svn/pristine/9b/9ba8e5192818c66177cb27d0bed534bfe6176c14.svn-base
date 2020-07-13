@@ -1,0 +1,29 @@
+package com.funding.controller.admin;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping("/admin/*")
+public class PopupController {
+	
+	@RequestMapping("popup/list")
+	public String popupList()throws Exception{
+		String url="popup/list.admin_page";
+		return url;
+	}
+	
+	@RequestMapping(value="popup/regist",method=RequestMethod.GET)
+	public String regist()throws Exception{
+		String url="popup/regist.admin_open";
+		
+		return url;
+	}
+	
+	@RequestMapping(value="popup/regist",method=RequestMethod.POST)
+	public String registPOST()throws Exception{
+		String url="";
+		return url;
+	}
+}

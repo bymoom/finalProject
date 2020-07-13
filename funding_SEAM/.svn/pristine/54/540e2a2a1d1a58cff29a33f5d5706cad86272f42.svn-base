@@ -1,0 +1,9 @@
+package com.funding.util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class EmailSender {
+
+//	@Autowired
+//	public JavaMailSender mailSender;
+}

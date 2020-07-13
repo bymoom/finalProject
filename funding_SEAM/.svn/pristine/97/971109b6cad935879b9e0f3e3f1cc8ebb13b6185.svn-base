@@ -1,0 +1,87 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.ComMemberVO;
+import com.funding.dto.MemberVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.MemberRegistRequest;
+import com.funding.request.SearchCriteria;
+
+public interface MemberService {
+	//로그인
+	void login(String id, String pwd)throws SQLException, NotFoundIDException, InvalidPasswordException;
+
+	MemberVO findId(String mem_name, String mem_phone)throws SQLException, NotFoundIDException, InvalidPasswordException;
+
+	//회원리스트조회
+	List<MemberVO> getMemberList()throws SQLException;	
+	Map<String,Object> getMemberList(SearchCriteria cri)throws SQLException;
+
+	//휴면계정 조회
+	List<MemberVO> getDormantMemberList() throws SQLException;
+	
+	String getDormantMember(String mem_email) throws SQLException;
+	
+	//회원정보조회
+	MemberVO getMember(String id) throws SQLException;
+	MemberVO getMember(int mem_num) throws SQLException;
+	ComMemberVO getComMember(int mem_num) throws SQLException;
+	int getMemNum(String id) throws SQLException;
+	
+	String getMemberByIdPwUuid(String mem_email, String mem_pw, String uuid_key) throws SQLException;
+	
+	MemberVO getMemberByName(String mem_name) throws SQLException;
+	
+	Date getMemberLoginLastDate(String id) throws SQLException;
+	
+	
+	int getLoginFailCount(String id) throws SQLException;
+	
+	// seq_mem_num.nextval 가져오기
+	int getSeqMemNumNextval() throws SQLException;
+	
+	//일반회원등록
+	void regist(MemberVO member)throws SQLException;
+	
+	//업체회원등록
+	void registComMember(MemberVO member) throws SQLException;
+	
+	//일반회원수정
+	void modify(MemberVO member)throws SQLException;
+
+	//일반회원수정
+	void modifyComMember(MemberVO member)throws SQLException;
+
+	//회원삭제
+	void remove(String id)throws SQLException;
+	void removeComMember(int mem_num) throws SQLException;
+	
+	//회원정지
+	void disabled(String id)throws SQLException;
+	
+	//회원활성
+	void enabled(String id)throws SQLException;
+	
+	//로그인실패 횟수++
+	void updatePlusLoginFailCount(String id) throws SQLException;
+	
+	//로그인실패 횟수 초기화
+	void updateClearLoginFailCount(String id) throws SQLException;
+	
+	//마지막로그인 날짜 업데이트
+	void updateLoginLastDate(String id) throws SQLException;
+	
+	//회원 비밀번호 변경 
+	void updateMemberPassword(String mem_pw, String mem_email) throws SQLException;
+	
+	//uuid_key 업데이트
+	void updateUuidKey(String uuid_key, String mem_email) throws SQLException;
+	
+	String getUuidKeyById(String mem_email) throws SQLException;
+
+}

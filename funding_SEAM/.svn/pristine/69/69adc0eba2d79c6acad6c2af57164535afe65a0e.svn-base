@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member-Mapper">
+	
+	<sql id="search">
+		
+<!-- 		<if test="searchType == 'n'.toString()"> -->
+<!-- 			and name like '%'||#{keyword}||'%'			 -->
+<!-- 		</if> -->
+<!-- 		<if test="searchType == 'i'.toString()"> -->
+<!-- 			and id like '%'||#{keyword}||'%'			 -->
+<!-- 		</if> -->
+<!-- 		<if test="searchType == 'p'.toString()"> -->
+<!-- 			and (phone_c like '%'||#{keyword}||'%' or phone_p like '%'||#{keyword}||'%')			 -->
+<!-- 		</if> -->
+<!-- 		<if test="searchType == 'e'.toString()"> -->
+<!-- 			and email like '%'||#{keyword}||'%'			 -->
+<!-- 		</if>		 -->
+	</sql>
+
+	<select id="selectMemberList" resultType="member">
+		select 
+		* 
+		from member
+	</select>
+
+	<select id="selectMemberById" resultType="member">
+		select 
+		* 
+		from member 
+		where mem_email=#{mem_email}
+	</select>
+	
+	<update id="insertMember" parameterType="member">
+		insert into 
+		member(mem_num, mem_email, mem_pw, mem_name, mem_phone, mem_profile_img, mem_profile_ori, mem_regdate, mem_lastdate, mem_point, code_num, code_state)
+		values(seq_mem_num.nextval, #{mem_email}, #{mem_pw}, #{mem_name}, #{mem_phone}, #{mem_profile_img}, #{mem_profile_ori}, sysdate, sysdate, 0, 1, 1);
+	</update>
+	
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		#{mem_pw}, #{mem_name}, #{mem_phone}, #{mem_profile_img}, #{mem_profile_ori}, sysdate
+		
+		where mem_email = #{mem_email}
+	</update>
+	
+	
+	<update id="deleteMember" parameterType="str" >
+		delete 
+		from member 
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="disableMember" >
+		update 
+		member
+		set
+		code_state=0
+		where mem_email=#{mem_email}
+	</update>
+	
+	<update id="updateRecentLoginTime" >
+		update member 
+		set
+		lastdate = sysdate
+		where mem_email=#{mem_email}	
+	</update>
+	
+	
+</mapper>
+
+
+
+

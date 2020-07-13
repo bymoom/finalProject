@@ -1,0 +1,11 @@
+package com.funding.dao.myinfo;
+
+import java.sql.SQLException;
+
+import com.funding.dto.CalendarVO;
+
+public interface CalendarDAO {
+	
+	void insertDailyCheck(CalendarVO cal) throws SQLException;
+
+}

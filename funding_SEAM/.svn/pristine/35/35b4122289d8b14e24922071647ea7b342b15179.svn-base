@@ -1,0 +1,156 @@
+package com.funding.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.funding.dto.MemberVO;
+import com.funding.exception.InvalidPasswordException;
+import com.funding.exception.NotFoundIDException;
+import com.funding.request.MemberRegistRequest;
+import com.funding.service.MemberService;
+
+@Controller
+@RequestMapping("/member/*")
+public class MemberController {
+
+	@Autowired
+	private MemberService memberService;
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	//일반회원가입
+	@RequestMapping("registForm")
+	public String registForm() throws Exception {
+		String url = "member/regist";
+		return url;
+	}
+	
+	//소상공인 회원가입
+	@RequestMapping("registComForm")
+	public String registComForm() throws Exception {
+		String url = "member/registCom";
+		return url;
+	}
+	
+	@RequestMapping(value = "regist.do", method = RequestMethod.POST)
+	public String regist(	MemberRegistRequest registReq,
+							HttpServletResponse response,
+							Model model) throws Exception {
+		String url = "redirect:/main";
+		MemberVO member = registReq.toMemberVO();
+		model.addAttribute("member", member);		
+		try {
+			memberService.regist(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "member/regist_fail";
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping(value = "registCom.do", method = RequestMethod.POST)
+	public String registCom(	MemberRegistRequest registReq,
+							HttpServletResponse response,
+							Model model) throws Exception {
+		String url = "redirect:/main";
+		MemberVO member = registReq.toMemberVO();
+		model.addAttribute("member", member);		
+		try {
+			memberService.registComMember(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+			url = "member/regist_fail";
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping("/joinIntro")
+	public String join() throws Exception {
+		String url = "member/joinIntro";
+		
+		return url;
+	}
+	
+	@RequestMapping("/findId")
+	public String findIdForm() throws Exception {
+		String url = "member/findIdForm";
+		return url;
+	}
+	
+	@RequestMapping(value = "/findId.do", method=RequestMethod.POST)
+	public String findId() throws Exception {
+		String url = "member/";
+		
+		return url;
+	}
+
+	@RequestMapping("/findPw")
+	public String findPwForm() throws Exception {
+		String url = "member/findPwForm";
+		return url;
+	}
+
+	@RequestMapping(value = "/findPw.do", method=RequestMethod.POST)
+	public String findPw() throws Exception {
+		String url = "member/";
+		
+		return url;
+	}
+	
+	@RequestMapping(value = "/requestFindId", method=RequestMethod.POST)
+	public ResponseEntity<Map<String, String>> requestFindId(String mem_name, String mem_phone, HttpServletResponse response) throws Exception {
+//		ResponseEntity<Map<String, Boolean>> entity = null;
+		ResponseEntity<Map<String, String>> entity = null;
+		
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+
+		Map<String, String> strResult = new HashMap<String, String>();
+		
+		MemberVO mem = null;
+
+		try {
+//			memberService.login(mem_email, "");
+			mem = memberService.findId(mem_name, mem_phone);
+		}
+		catch (NotFoundIDException e) {		
+//			result.put("result", true);		//아이디가 없음
+			strResult.put("strResult", "");	//아이디가 없음
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+//			return  new ResponseEntity<Map<String, Boolean>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return  new ResponseEntity<Map<String, String>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(mem != null)		//아이디가 존재
+			strResult.put("strResult", mem.getMem_email());
+		
+//		entity = new ResponseEntity<Map<String, Boolean>>(result, HttpStatus.OK);
+		entity = new ResponseEntity<Map<String, String>>(strResult, HttpStatus.OK);
+		return entity;
+	}
+	
+	@RequestMapping(value = "/findId_ok", method=RequestMethod.GET)
+	public String findIdOk(String email, HttpServletRequest request) throws Exception {
+		String url = "member/findId_ok";
+		
+		request.setAttribute("email", email);
+		
+		return url;
+	}
+	
+}

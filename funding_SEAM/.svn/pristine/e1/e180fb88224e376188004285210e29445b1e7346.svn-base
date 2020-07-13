@@ -1,0 +1,108 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="<%= request.getContextPath() %>/resources/bootstrap/plugins/chart.js/Chart.min.js"></script>
+<script src="<%= request.getContextPath() %>/resources/bootstrap/dist/js/demo.js"></script>
+<script src="<%= request.getContextPath() %>/resources/bootstrap/dist/js/pages/dashboard3.js"></script>
+</head>
+<body>
+	<div class="card col-5" style="margin-left:50px;">
+       <div class="card-header border-0" style="background:white;">
+         <div class="d-flex justify-content-between">
+           <h2>회원 가입</h2>
+           <a href="javascript:void(0);">회원 관리 페이지로 이동</a>
+         </div>
+       </div>
+       <div class="card-body">
+         <div class="d-flex">
+           <p class="d-flex flex-column">
+             <span class="text-bold text-lg">총 회원 수</span>
+             <span>총 회원 수</span>
+           </p>
+           <p class="ml-auto d-flex flex-column text-right">
+             <span class="text-success">
+               <i class="fas fa-arrow-up"></i> 회원 가입 상승률
+             </span>
+             <span class="text-muted">Since last week</span>
+           </p>
+         </div>
+         <div class="position-relative mb-4"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+           <canvas id="barChart" height="200" style="display: block; width: 388px; height: 300px;" width="388" class="chartjs-render-monitor"></canvas>
+         </div>
+       </div>
+     </div>
+</body>
+
+<script>
+
+$(function () {
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+   var date = new Date();
+   //alert(date.getFullYear());
+   //alert(date.getMonth()+1);
+   //alert(date.getDate());
+   
+   var now = date.getFullYear() + "." + (date.getMonth()+1) + ".";
+   
+   var areaChartData = {
+     labels  : [now + (date.getDate()-6) + ".", now + (date.getDate()-5) + ".", now + (date.getDate()-4) + ".", now + (date.getDate()-3) + ".", now + (date.getDate()-2) + ".", now + (date.getDate()-1) + ".", now + date.getDate() + "."],
+     datasets: [
+       {
+         label               : '소상공인 회원',
+         backgroundColor     : 'rgba(60,141,188,0.9)',
+         borderColor         : 'rgba(60,141,188,0.8)',
+         pointRadius          : false,
+         pointColor          : '#3b8bba',
+         pointStrokeColor    : 'rgba(60,141,188,1)',
+         pointHighlightFill  : '#fff',
+         pointHighlightStroke: 'rgba(60,141,188,1)',
+         data                : [28, 48, 40, 19, 86, 27, 90]
+       },
+       {
+         label               : '일반 회원',
+         backgroundColor     : 'rgba(210, 214, 222, 1)',
+         borderColor         : 'rgba(210, 214, 222, 1)',
+         pointRadius         : false,
+         pointColor          : 'rgba(210, 214, 222, 1)',
+         pointStrokeColor    : '#c1c7d1',
+         pointHighlightFill  : '#fff',
+         pointHighlightStroke: 'rgba(220,220,220,1)',
+         data                : [65, 59, 80, 81, 56, 55, 40]
+       },
+     ]
+   }
+
+  //-------------
+  //- BAR CHART -
+  //-------------
+  var barChartCanvas = $('#barChart').get(0).getContext('2d')
+  var barChartData = jQuery.extend(true, {}, areaChartData)
+  var temp0 = areaChartData.datasets[0]
+  var temp1 = areaChartData.datasets[1]
+  barChartData.datasets[0] = temp1
+  barChartData.datasets[1] = temp0
+
+  var barChartOptions = {
+    responsive              : true,
+    maintainAspectRatio     : false,
+    datasetFill             : false
+  }
+
+  var barChart = new Chart(barChartCanvas, {
+    type: 'bar', 
+    data: barChartData,
+    options: barChartOptions
+  })
+
+
+})
+</script>
+
+</html>

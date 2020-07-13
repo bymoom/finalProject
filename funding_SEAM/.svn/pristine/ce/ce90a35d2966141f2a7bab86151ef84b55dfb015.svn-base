@@ -1,0 +1,41 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<section class="new-section">
+
+
+  <h2 style="text-align:center;">프로젝트 제안</h2><br><br>
+			<div class="wrap-table100" style="margin-left:275px;">
+				<div class="table100">
+					<table>
+						<thead>
+							<tr class="table100-head">
+								<th class="column1">No</th>
+								<th class="column2">작성자</th>
+								<th class="column3">제목</th>
+								<th class="column4">등록일자</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${propose}" var="pps">
+								<tr>
+									<td>${pps.pjtprp_num }</td>
+									<td>${pps.mem_num }</td>
+									<td>${pps.pjtprp_contents }</td>
+									<td>${pps.pjtprp_regdate}</td>
+								</tr>
+								
+							</c:forEach>
+								
+						</tbody>
+					</table>
+				</div>
+			</div>
+		
+		<script src="<%=request.getContextPath() %>/resources/mart/vendor/jquery/jquery-3.2.1.min.js"></script>
+		<script src="<%=request.getContextPath() %>/resources/mart/vendor/bootstrap/js/popper.js"></script>
+		<script src="<%=request.getContextPath() %>/resources/mart/vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script src="<%=request.getContextPath() %>/resources/mart/vendor/select2/select2.min.js"></script>
+		<script src="<%=request.getContextPath() %>/resources/mart/js/main.js"></script>
+</section>

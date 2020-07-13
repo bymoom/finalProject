@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>	
+	
+	<typeAliases>
+		<typeAlias type="java.lang.String" alias="str"/>
+		<typeAlias type="java.lang.Integer" alias="int"/>
+		<typeAlias type="com.funding.request.SearchCriteria" alias="cri"/>		
+		<typeAlias type="com.funding.dto.ProjectVO" alias="project"/>
+		<typeAlias type="com.funding.dto.Pjt_pay_detailVO" alias="pjt_pay_detail"/>
+		
+		<typeAlias type="com.funding.dto.MemberVO" alias="member"/>
+		<typeAlias type="com.funding.dto.ComMemberVO" alias="commember"/>
+		
+		
+		<typeAlias type="com.funding.dto.Project_ProposeVO" alias="propose"/>
+		
+		<typeAlias type="com.funding.dto.NoticeVO" alias="notice"/>		
+		<typeAlias type="com.funding.dto.Notice_atcVO" alias="ntc_attach"/>
+		
+		<typeAlias type="com.funding.dto.FreeBoardVO" alias="freeBoard"/>
+		<typeAlias type="com.funding.dto.FreeBoardAttachVO" alias="freeBoardAttach"/>
+		<typeAlias type="com.funding.dto.FreeBoardCmtsVO" alias="freeBoardCmts"/>
+		<typeAlias type="com.funding.dto.ProjectProposeCmtVO" alias="proposeCmt"/>
+		
+		
+	</typeAliases>
+	
+</configuration>
+
+
+
+
+
+
+

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- summernoteImgPath -->
+	<bean id="summernoteImgPath" class="java.lang.String">
+		<constructor-arg value="${filePath.summernote.images}" />
+	</bean>
+			  	
+	<!-- DAO -->
+	<bean id="freeBoardDAO"
+		  class="com.funding.dao.freeboard.FreeBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="freeBoardCmtsDAO"
+		  class="com.funding.dao.freeboard.FreeBoardCmtsDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="adminMemberManageDAO"
+		  class="com.funding.dao.admin.AdminMemberManageDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+		  
+	<bean id="adminComMemberManageDAO"
+		  class="com.funding.dao.admin.AdminComMemberManageDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+
+	<bean id="adminProjectManageDAO"
+		  class="com.funding.dao.admin.AdminProjectManageDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+
+	<bean id="adminProjectPayManageDAO"
+		  class="com.funding.dao.admin.AdminProjectPayManageDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+
+	<bean id="adminMainDAO"
+		  class="com.funding.dao.admin.AdminMainDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+		  />
+
+		  
+	<!-- Service -->
+	<bean id="freeBoardService"
+		  class="com.funding.service.freeboard.FreeBoardServiceImpl"
+		  p:freeBoardDAO-ref="freeBoardDAO"	
+		  p:freeBoardCmtsDAO-ref="freeBoardCmtsDAO"	  
+		  />
+		  
+	<bean id="freeBoardCmtsService"	  
+		  class="com.funding.service.freeboard.FreeBoardCmtsServiceImpl"
+		  p:freeBoardCmtsDAO-ref="freeBoardCmtsDAO"
+		  />
+		  
+	<bean id="adminMemberManageService"
+		  class="com.funding.service.admin.AdminMemberManageServiceImpl"
+		  p:adminMemberManageDAO-ref="adminMemberManageDAO"
+		  />
+		  
+	<bean id="adminComMemberManageService"
+		  class="com.funding.service.admin.AdminComMemberManageServiceImpl"
+		  p:adminComMemberManageDAO-ref="adminComMemberManageDAO"
+		  />	  
+
+	<bean id="adminProjectManageService"
+		  class="com.funding.service.admin.AdminProjectManageServiceImpl"
+		  p:adminProjectManageDAO-ref="adminProjectManageDAO"
+		  p:pjt_pay_detailDAO-ref="pjt_pay_detailDAO"
+		  />	  
+
+	<bean id="adminProjectPayManageService"
+		  class="com.funding.service.admin.AdminProjectPayManageServiceImpl"
+		  p:adminProjectPayManageDAO-ref="adminProjectPayManageDAO"	
+		  />
+		  
+	<bean id="adminMainService"
+		  class="com.funding.service.admin.AdminMainServiceImpl"
+		  p:adminMainDAO-ref="adminMainDAO"	
+		  />
+</beans>

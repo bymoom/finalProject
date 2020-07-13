@@ -1,0 +1,147 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.MemberVO;
+import com.funding.request.MemberRegistRequest;
+import com.funding.request.SearchCriteria;
+
+public class MemberDAOImpl implements MemberDAO {
+	
+	private SqlSession session;
+	public void setSqlSession(SqlSession session) {
+		this.session = session;
+	}
+	
+	@Override
+	public MemberVO selectMemberById(String id) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberById", id);
+		return member;
+	}
+	
+	@Override
+	public MemberVO selectMemberByNum(int mem_num) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberByNum", mem_num);
+		return member;
+	}
+
+	@Override
+	public void insertMember(MemberVO member) throws SQLException {
+		session.update("Member-Mapper.insertMember", member);
+	}
+	
+	@Override
+	public void insertComMember(MemberRegistRequest memReq) throws SQLException {
+		session.update("Member-Mapper.insertComMember", memReq);
+	}
+
+	@Override
+	public void updateMember(MemberVO member) throws SQLException {
+		//작성중.. 확인필요
+	}
+
+	@Override
+	public void deleteMember(String id) throws SQLException {
+		session.update("Member-Mapper.deleteMember", id);
+	}
+
+	@Override
+	public void disabledMember(String id) throws SQLException {
+		session.update("Member-Mapper.disableMember",id);
+	}
+
+	@Override
+	public void enabledMember(String id) throws SQLException {
+		session.update("Member-Mapper.enableMember",id);
+	}
+
+	@Override
+	public void updateRecentLoginTime(String id) throws SQLException {
+		session.update("Member-Mapper.updateRecentLoginTime",id);
+	}
+
+	@Override
+	public MemberVO selectMemberByName(String mem_name) throws SQLException {
+		MemberVO member = session.selectOne("Member-Mapper.selectMemberByName",mem_name);
+		
+		return member;
+	}
+
+	@Override
+	public MemberVO selectMemberByNameAndPhone(String mem_name, String mem_phone) throws SQLException {
+//		MemberVO member = session.selectOne("Member-Mapper.findIdByEmailAndPhone")
+		MemberVO vo = new MemberVO();
+		vo.setMem_name(mem_name);
+		vo.setMem_phone(mem_phone);
+		MemberVO member = session.selectOne("Member-Mapper.findIdByEmailAndPhone", vo);
+		return member;
+	}
+
+	@Override
+	public List<MemberVO> selectMemberList() throws SQLException {
+		List<MemberVO> memberList = session.selectList("Member-Mapper.selectMemberList", null);
+		return memberList;
+	}
+
+	@Override
+	public List<MemberVO> selectMemberList(SearchCriteria cri) throws SQLException {
+		int offset = cri.getPageStartRowNum();
+		int limit = cri.getPerPageNum();
+		RowBounds rowBounds = new RowBounds(offset, limit);
+
+		List<MemberVO> memberList = null;
+		
+		memberList = session.selectList("Member-Mapper.selectSearchMemberList", cri,rowBounds);
+
+		return memberList;
+	}
+
+	@Override
+	public int selectMemberListCount() throws SQLException {
+		int count = session.selectOne("Member-Mapper.selectMemberListCount", null);
+		return count;
+	}
+
+	@Override
+	public int selectMemberListCount(SearchCriteria cri) throws SQLException {
+		int count=0;		
+		count = session.selectOne("Member-Mapper.selectSearchMemberListCount",cri);
+		return count;
+	}
+
+	////
+	@Override
+	public Date selectLastDateById(String id) throws SQLException {
+		Date date = null;
+		date = session.selectOne("Member-Mapper.selectMemberLoginLastDate", id);
+		return date;
+	}
+
+	@Override
+	public void updatePlusLoginFailCount(String id) throws SQLException {
+		session.update("Member-Mapper.plusLoginFailCount", id);
+	}
+
+	@Override
+	public void updateClearLoginFailCount(String id) throws SQLException {
+		session.update("Member-Mapper.updateClearLoginFailCount", id);
+	}
+
+	@Override
+	public void updateLoginLastDate(String id) throws SQLException {
+		session.update("Member-Mapper.updateLoginLastDate", id);
+	}
+
+	@Override
+	public int selectLoginFailCount(String id) throws SQLException {
+		int loginFailCnt = session.selectOne("Member-Mapper.selectLoginFailCount", id);
+		return loginFailCnt;
+	}
+
+
+}

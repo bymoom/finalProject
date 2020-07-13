@@ -1,0 +1,75 @@
+package com.funding.dto;
+
+import java.util.Date;
+
+public class QnAVO {
+	private int qa_num;
+	private String qa_title;
+	private String qa_contents;
+	private Date qa_regdate;
+	private Date qa_moddate;
+	private int qa_view_cnt;
+	private int mem_num;
+	private int qa_secret;
+	private String qa_pwd;
+	
+	
+	
+	public int getQa_secret() {
+		return qa_secret;
+	}
+	public void setQa_secret(int qa_secret) {
+		this.qa_secret = qa_secret;
+	}
+	public String getQa_pwd() {
+		return qa_pwd;
+	}
+	public void setQa_pwd(String qa_pwd) {
+		this.qa_pwd = qa_pwd;
+	}
+	public int getQa_num() {
+		return qa_num;
+	}
+	public void setQa_num(int qa_num) {
+		this.qa_num = qa_num;
+	}
+	public String getQa_title() {
+		return qa_title;
+	}
+	public void setQa_title(String qa_title) {
+		this.qa_title = qa_title;
+	}
+	public String getQa_contents() {
+		return qa_contents;
+	}
+	public void setQa_contents(String qa_contents) {
+		this.qa_contents = qa_contents;
+	}
+	public Date getQa_regdate() {
+		return qa_regdate;
+	}
+	public void setQa_regdate(Date qa_regdate) {
+		this.qa_regdate = qa_regdate;
+	}
+	public Date getQa_moddate() {
+		return qa_moddate;
+	}
+	public void setQa_moddate(Date qa_moddate) {
+		this.qa_moddate = qa_moddate;
+	}
+	public int getQa_view_cnt() {
+		return qa_view_cnt;
+	}
+	public void setQa_view_cnt(int qa_view_cnt) {
+		this.qa_view_cnt = qa_view_cnt;
+	}
+	public int getMem_num() {
+		return mem_num;
+	}
+	public void setMem_num(int mem_num) {
+		this.mem_num = mem_num;
+	}
+	
+	
+
+}

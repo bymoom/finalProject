@@ -1,0 +1,29 @@
+package com.funding.service.project;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.funding.dao.project.ProjectDAO;
+import com.funding.dto.ProjectVO;
+
+public class ProjectServiceImpl implements ProjectService {
+	
+	@Autowired
+	public ProjectDAO projectDAO;
+	public void setProjectDAO(ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+	}
+
+	@Override
+	public Map<String, Object> getProjectList() throws SQLException {
+		Map<String, Object> dataMap=new HashMap<String,Object>();
+		List<ProjectVO> list = projectDAO.selectProjectList();
+		dataMap.put("projectList", list);
+		return dataMap;
+	}
+
+}

@@ -1,0 +1,52 @@
+package com.funding.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.funding.dto.QnA_CmtsVO;
+
+public class QnA_cmtsDAOImpl implements QnA_cmtsDAO{
+	
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public List<QnA_CmtsVO> selectQnACmtsList(int qa_num) throws SQLException {
+		List<QnA_CmtsVO> qnaCmtsList = sqlSession.selectList("QACmts-Mapper.selectQnACmtsList",qa_num);
+		return qnaCmtsList;
+	}
+
+	@Override
+	public int countQnACmts(int qa_cmts_num) throws SQLException {
+		int count = sqlSession.selectOne("QACmts-Mapper.countQnACmts",qa_cmts_num);
+		return count;
+	}
+
+	@Override
+	public void registQnACmts(QnA_CmtsVO qnaCmts) throws SQLException {
+		sqlSession.update("QACmts-Mapper.registQnACmts", qnaCmts);
+	}
+
+	@Override
+	public void modifyQnACmts(QnA_CmtsVO qnaCmts) throws SQLException {
+		sqlSession.update("QACmts-Mapper.modifyQnACmts", qnaCmts);
+		
+	}
+
+	@Override
+	public void modifyQnACmtsEnabled(QnA_CmtsVO qnaCmts) throws SQLException {
+		sqlSession.update("QACmts-Mapper.modifyQnACmtsEnabled", qnaCmts);
+		
+	}
+
+	@Override
+	public void removeQnACmts(int qa_cmts_num) throws SQLException {
+		sqlSession.update("QACmts-Mapper.removeQnACmts",qa_cmts_num);
+		
+	}
+
+}

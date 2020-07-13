@@ -1,0 +1,44 @@
+package com.funding.controller.mypage.info;
+
+import java.util.Date;
+
+public class CalendarListToJsonDTO {
+	private String title;
+	private String start;
+	private String end;
+	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getStart() {
+		return start;
+	}
+	public void setStart(String start) {
+		this.start = start;
+	}
+	public String getEnd() {
+		return end;
+	}
+	public void setEnd(String end) {
+		this.end = end;
+	}
+	
+	public CalendarListToJsonDTO() {}
+	public CalendarListToJsonDTO(String title, String start, String end) {
+		super();
+		this.title = title;
+		this.start = start;
+		this.end = end;
+	}
+
+	
+	
+
+	
+	
+	
+	
+}

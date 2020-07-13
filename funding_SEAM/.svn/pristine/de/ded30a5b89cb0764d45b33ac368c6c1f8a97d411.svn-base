@@ -1,0 +1,13 @@
+package com.funding.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.funding.dto.Project_ProposeVO;
+import com.funding.request.SearchCriteria;
+
+public interface ProjectProposeService {
+	
+	List<Project_ProposeVO> getProposeList(SearchCriteria cri) throws SQLException;
+}

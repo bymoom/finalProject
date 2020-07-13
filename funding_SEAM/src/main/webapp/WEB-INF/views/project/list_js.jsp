@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<script type="text/x-handlebars-template" id="pjt-list-template">
+{{#each .}}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm  projectCard" OnClick="detailgo({{pjt_num }})" style="cursor:pointer;">
+               <img src="/project/picture/get?picture={{pjt_atc_sum_name}}" width="100%" height="225" />
+                   <div class="card-body">
+
+						{{comName }}&nbsp;&nbsp;&nbsp; {{pjt_category }}<br> 
+		                
+		                  <div style="height: 70px;">
+		                  <p class="font-weight-bold">{{pjt_title }}</p>
+		                  </div>
+								
+							D-{{prettifyDate pjt_enddate}}
+								
+	                      <!-- 그래프 -->
+						  <div class="col-sm-12">
+		                    <span class="irs irs--flat js-irs-3"><span class="irs">
+		                    <span class="irs-line" tabindex="0"></span>
+		                    <span class="irs-min" style="visibility: visible;">0%</span>
+		                    <span class="irs-max" style="visibility: visible;">100%</span>
+		                    <span class="irs-from" style="visibility: hidden;">0</span>
+		                    <span class="irs-to" style="visibility: hidden;">0</span>
+		                    </span><span class="irs-grid"></span>
+		                    <span class="irs-bar irs-bar--single" style="left: 0px; width: {{percentGrape pjtPaySum pjt_cash}}%;"></span><span class="irs-shadow shadow-single" style="display: none;"></span>
+		                    </span>
+		                    <input id="range_6" type="text" name="range_6" value="" class="irs-hidden-input" tabindex="-1" readonly="">
+		                  </div>
+	                           
+		                	{{percent pjtPaySum pjt_cash}}% : 달성 금액 {{prettifyNumber pjtPaySum }}
+            </div>
+          </div>
+        </div>
+
+{{/each}}
+</script>
+
+<script>
+function enterkey() {
+    if (window.event.keyCode == 13) {
+         search();
+    }
+}
+
+Handlebars.registerHelper("prettifyNumber",function(x){
+
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+});
+
+Handlebars.registerHelper("prettifyDate",function(timeValue){
+	var nowDate=new Date();
+	var nowObj=nowDate.getTime();
+	
+	var prettify=timeValue-nowObj;
+	
+	var gapDay=Math.ceil(prettify/(60*1000*60*24));
+	return gapDay;
+});
+
+Handlebars.registerHelper("percent",function(paySum, cash){
+	var percent = paySum/cash*100;
+	return parseFloat(percent.toFixed(1));
+});
+
+Handlebars.registerHelper("percentGrape",function(paySum, cash){
+	var percent = paySum/cash*100;
+	if(percent >= 100){
+		percent = 100;
+	}
+	return parseFloat(percent.toFixed(1));
+});
+
+
+/* 페이징 */
+var realEndPage='${pjtPageMaker.realEndPage}';
+getPage("<%=request.getContextPath()%>/project/getlist?page=1&categoryType=${pjtPageMaker.pjtCri.categoryType}&keyword=${pjtPageMaker.pjtCri.keyword}");
+
+var printData=function(replyArr,target,templateObject){
+	var template=Handlebars.compile(templateObject.html());
+	var html = template(replyArr);	
+	target.append(html);
+}
+
+var count=1;
+var flag = true;
+function getPage(pageInfo,why){
+	$.ajax({
+		url:pageInfo,
+		type:"get",
+		success:function(dataMap){
+			printData(dataMap.projectList,$('.contents'),$('#pjt-list-template'));
+			
+			count++;
+			flag = true;
+		},
+		error:function(error){
+			alert("서버 장애로 프로젝트 목록이 생략됩니다.");
+		}
+	});
+}
+
+/* 스크롤 이벤트 */
+window.onscroll = function(ev) {
+    if ((window.innerHeight + window.scrollY)+400 >= document.body.offsetHeight) {
+		if(count<=realEndPage && flag == true){
+			flag = false;
+			console.log(count);
+			
+       	 	getPage("<%=request.getContextPath()%>/project/getlist?page="+count+"&categoryType=${pjtPageMaker.pjtCri.categoryType}&keyword=${pjtPageMaker.pjtCri.keyword}");
+			
+			
+			return;
+		}
+    }
+};
+
+/* 카테고리별 조회 */
+function category(menu){
+	
+	if(menu=='all'){
+		location.href="/project/list";
+		return;		
+	}
+	var jobForm=$('#jobForm');
+	jobForm.find("[name='page']").val(1);
+	jobForm.find("[name='categoryType']").val(menu);
+	jobForm.find("[name='keyword']").val($('input[name="keyword"]').val());
+	jobForm.attr("action","list").attr("method","post");
+	jobForm.submit();
+}
+
+
+function search(){
+	$('input[name="keyword"]').val($('[aria-label="Search"]').val());
+	category($('input[name="categoryType"]').val());
+}
+$('#searchBtn').on('click',function(){
+	search();
+});
+
+/* 디테일 이동 */
+function detailgo(a){
+	var jobForm=$('#detailform');
+	jobForm.find("[name='pjt_num']").val(a);
+	jobForm.attr("action","detail").attr("method","post");
+	jobForm.submit();
+}
+
+
+</script>

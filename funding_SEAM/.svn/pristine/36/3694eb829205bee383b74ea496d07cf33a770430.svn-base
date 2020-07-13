@@ -1,0 +1,114 @@
+package com.funding.controller.admin;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.dto.ProjectVO;
+import com.funding.request.AdminComMemberDetailRequest;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminProjectSearchCriteria;
+import com.funding.service.admin.AdminComMemberManageService;
+import com.funding.service.admin.AdminProjectManageService;
+
+@Controller
+@RequestMapping("admin/project/*")
+public class AdminProjectManageController {
+
+	@Autowired
+	private AdminProjectManageService adminProjectManageService;
+	
+	@Autowired
+	private AdminComMemberManageService adminComMemberService;
+	
+	@RequestMapping("list")
+	public ModelAndView list(AdminProjectSearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "admin/project/list.admin_page";
+	
+		try {
+			Map<String, Object> dataMap = adminProjectManageService.getSearchProjectList(cri);
+			
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	@RequestMapping("detail")
+	public ModelAndView detail(int pjt_num, int mem_num, AdminDetailPageMaker pageMaker, ModelAndView mnv) throws Exception {
+		String url = "admin/project/detail.admin_open";
+
+		Map<String, Object> dataMap = adminProjectManageService.getProject(pageMaker, pjt_num);
+		AdminComMemberDetailRequest comMember = adminComMemberService.getComMemberByMemNum(mem_num);
+
+		dataMap.put("comMember", comMember);
+		
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	@Resource(name="projectUploadPath")
+	private String projectUploadPath;
+	
+	@RequestMapping("/receiveDoc")
+	@ResponseBody
+	public ResponseEntity<byte[]> receiveDoc(String fileName) throws Exception {
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			in = new FileInputStream(projectUploadPath + File.separator + fileName);
+			
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment;filename=\"" + new String(fileName.getBytes("utf-8"), "ISO-8859-1") + "\"");
+			
+			entity = new ResponseEntity<>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
+		}catch(IOException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}finally {
+			in.close();
+		}
+		return entity;
+	}
+	
+	@RequestMapping("/modifyState")
+	public ResponseEntity<String> modifyState(ProjectVO project) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			adminProjectManageService.modifyProjectState(project);
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	
+}

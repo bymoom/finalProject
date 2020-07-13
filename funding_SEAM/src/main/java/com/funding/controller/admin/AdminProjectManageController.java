@@ -1,0 +1,234 @@
+package com.funding.controller.admin;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.controller.EmailSender;
+import com.funding.dto.EmailVO;
+import com.funding.dto.Pjt_pay_detailVO;
+import com.funding.dto.ProjectVO;
+import com.funding.request.AdminComMemberDetailRequest;
+import com.funding.request.AdminDetailPageMaker;
+import com.funding.request.AdminProjectSearchCriteria;
+import com.funding.service.admin.AdminComMemberManageService;
+import com.funding.service.admin.AdminProjectManageService;
+import com.funding.util.JavaSendSms;
+
+@Controller
+@RequestMapping("admin/project/*")
+public class AdminProjectManageController {
+
+	@Autowired
+	private AdminProjectManageService adminProjectManageService;
+	
+	@Autowired
+	private AdminComMemberManageService adminComMemberService;
+	
+	@Autowired
+	public EmailSender mailSender;
+	
+	@Autowired
+	public EmailVO email;
+	
+	@RequestMapping("list")
+	public ModelAndView list(AdminProjectSearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "admin/project/list.admin_page";
+	
+		try {
+			Map<String, Object> dataMap = adminProjectManageService.getSearchProjectList(cri);
+			
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	@RequestMapping("detail")
+	public ModelAndView detail(int pjt_num, int mem_num, AdminDetailPageMaker pageMaker, ModelAndView mnv) throws Exception {
+		String url = "admin/project/detail.admin_open";
+
+		Map<String, Object> dataMap = adminProjectManageService.getProject(pageMaker, pjt_num);
+		AdminComMemberDetailRequest comMember = adminComMemberService.getComMemberByMemNum(mem_num);
+
+		dataMap.put("comMember", comMember);
+		
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	@Resource(name="projectUploadPath")
+	private String projectUploadPath;
+	
+	@RequestMapping("/receiveDoc")
+	@ResponseBody
+	public ResponseEntity<byte[]> receiveDoc(String fileName) throws Exception {
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			in = new FileInputStream(projectUploadPath + File.separator + fileName);
+			
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment;filename=\"" + new String(fileName.getBytes("utf-8"), "ISO-8859-1") + "\"");
+			
+			entity = new ResponseEntity<>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
+		}catch(IOException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}finally {
+			in.close();
+		}
+		return entity;
+	}
+	
+	@RequestMapping("modifyState")
+	public ResponseEntity<String> modifyState(ProjectVO project) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			if(project.getPjt_state_code() == 2) {
+				project.setPjt_enabled(1);
+			}
+			
+			adminProjectManageService.modifyProjectState(project);
+			
+			/**
+			 * 문자 발송
+			 */
+			AdminComMemberDetailRequest comMember = adminComMemberService.getComMemberByMemNum(project.getMem_num());
+			JavaSendSms javaSendSms = new JavaSendSms();
+
+			if(project.getPjt_state_code() == 2) {
+				javaSendSms.sendsms(comMember.getMem_phone(), "안녕하세요! FUN SEAM DING에 참여해주셔서 감사합니다! 등록하신 프로젝트가 승인되었습니다. 목표 금액에 꼭 달성하시길 기원합니다.");
+			}else if(project.getPjt_state_code() == 3) {
+				System.out.println("comMember.getMem_phone() : " + comMember.getMem_phone() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println("project.getPjt_state_comment() : " + project.getPjt_state_comment() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				javaSendSms.sendsms(comMember.getMem_phone(), project.getPjt_state_comment());
+			}
+			
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping("modifyCalc")
+	public ResponseEntity<String> modifyCalc(int pjt_num) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			adminProjectManageService.modifyProjectCalcDate(pjt_num);
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+
+	@RequestMapping("modifyRepay")
+	public ResponseEntity<String> modifyRepay(ProjectVO project) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			if(project.getPjt_calculate_code() == 3) { //상환 미완료 선택한 경우
+				adminProjectManageService.modifyProjectCalculateCode(project);
+			}else if(project.getPjt_calculate_code() == 4) { //상환 완료 선택한 경우
+				adminProjectManageService.modifyProjectRepayDate(project.getPjt_num());
+			}
+			
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping("modifyThumbsUp")
+	public ResponseEntity<String> modifyThumbsUp(ProjectVO project) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			adminProjectManageService.modifyProjectThumbsUp(project);
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+
+	@RequestMapping("modifyEnabled")
+	public ResponseEntity<String> modifyEnabled(ProjectVO project) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		try {
+			adminProjectManageService.modifyProjectEnabled(project);
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping(value="repayment", method=RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> repayment(@RequestBody Map<String, int[]> json) throws Exception {
+		ResponseEntity<String> result = null;
+		
+		int[] checkedTrueArr = json.get("checkedTrueList");
+		
+		/*for(int i = 0; i < checkedTrueArr.length; i++) {
+			System.out.println(i + "번쨰 checkedTrue : " + checkedTrueArr[i]);
+		}*/
+		
+		try {
+			for(int pjt_pay_num : checkedTrueArr) {
+				adminProjectManageService.updateRepayment(pjt_pay_num);
+			}
+			
+			result = new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+	}
+	
+}

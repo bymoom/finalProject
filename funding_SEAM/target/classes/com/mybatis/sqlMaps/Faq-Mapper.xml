@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Faq-Mapper">
+	<select id="selectFaqList" resultType="FAQ">
+		select faq.*,member.mem_name
+		from faq,member
+		where faq.mem_num = member.mem_num
+		order by faq.faq_num desc
+	</select>
+	
+	<select id="selectFaqListCount" resultType="int">
+		select count(*)
+		from faq
+	</select>
+	
+	<select id="selectFaqListByFaqNum" resultType="FAQ">
+		select *
+		from faq
+		where faq_num=#{faq_num}
+	</select>
+	
+	<select id="selectFaqSeqNext" resultType="int">
+		select seq_faq_num.nextval from dual
+	</select>
+	
+	<update id="insertFAQ">
+		insert into
+		faq (faq_num,faq_title,faq_contents,mem_num)
+		values(#{faq_num},#{faq_title},#{faq_contents},#{mem_num})
+	</update>
+	
+	<update id="modifyFAQ">
+		update 
+		faq set
+		faq_title=#{faq_title},
+		faq_contents=#{faq_contents},
+		faq_moddate=sysdate
+		where faq_num=#{faq_num}	
+	</update>
+	
+	<update id="deleteFAQ">
+		delete faq
+		where faq_num=#{faq_num}
+	</update>
+	
+	<update id="increaseViewCnt" parameterType="int">
+		update 
+		faq
+		set 
+		faq_view_cnt=faq_view_cnt+1 
+		where faq_num=#{faq_num}
+	</update>
+	
+</mapper>

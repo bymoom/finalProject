@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ntc-atc-mapper">
+
+	<select id="selectAttachByNotice_num" resultType="ntc_attach" parameterType="int">
+		select * 
+		from ntc_attach 
+		where notice_num = #{notice_num}
+	</select>	
+	
+	<select id="selectAttachByNtc_atc_num" resultType="ntc_attach" parameterType="int">
+		select *
+		from ntc_attach
+		where ntc_atc_num=#{ntc_atc_num}
+	</select>
+	
+	<update id="insertAttach" parameterType="ntc_attach">
+		insert into 
+		ntc_attach (ntc_atc_num, ntc_atc_uploadpath, ntc_atc_filename, ntc_atc_filetype, notice_num, ntc_atc_uuid, ntc_atc_regdate)
+		values (seq_ntc_atc_num.nextval, #{ntc_atc_uploadPath}, #{ntc_atc_fileName},#{ntc_atc_fileType},#{notice_num}, #{ntc_atc_uuid, jdbcType=VARCHAR}, sysdate )
+	</update>
+	
+	<update id="deleteAttach" parameterType="int">
+		delete from ntc_attach where ntc_atc_num = #{ntc_atc_num}
+	</update>
+	
+	<update id="deleteAllAttach" parameterType="int">
+		delete 
+		from ntc_attach 
+		where notice_num = #{notice_num}
+	</update>
+
+</mapper>

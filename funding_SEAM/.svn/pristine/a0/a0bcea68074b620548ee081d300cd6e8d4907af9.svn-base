@@ -1,0 +1,36 @@
+package com.funding.controller.admin;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.funding.request.AdminProjectSearchCriteria;
+import com.funding.service.admin.AdminProjectManageService;
+
+@Controller
+@RequestMapping("admin/project/*")
+public class AdminProjectManageController {
+
+	@Autowired
+	private AdminProjectManageService adminProjectManageService;
+	
+	@RequestMapping("list")
+	public ModelAndView list(AdminProjectSearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "admin/project/list.admin_page";
+	
+		try {
+			Map<String, Object> dataMap = adminProjectManageService.getSearchProjectList(cri);
+			
+			mnv.addAllObjects(dataMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+}

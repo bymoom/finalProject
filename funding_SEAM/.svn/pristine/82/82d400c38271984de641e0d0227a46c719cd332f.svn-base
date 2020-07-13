@@ -1,0 +1,15 @@
+package com.funding.dao.project;
+
+import java.sql.SQLException;
+
+import com.funding.dto.Project_type_codeVO;
+
+public class Project_type_codeDAOImpl implements Project_type_codeDAO {
+
+	@Override
+	public Project_type_codeVO selectProjectTypeCode() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
